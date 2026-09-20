@@ -1,0 +1,161 @@
+// ============================================================
+// GSQL installed queries.
+// Install with:  python -m scripts.setup_tigergraph --queries
+// ============================================================
+
+USE GRAPH HackathonGraph
+
+// ---- generic entity layer (fallback path for non-templated questions) --
+
+CREATE OR REPLACE QUERY entityLookup(STRING nameSubstr) FOR GRAPH HackathonGraph {
+    Seed = {Entity.*};
+    Result = SELECT e FROM Seed:e
+             WHERE lower(e.name) LIKE "%" + lower(nameSubstr) + "%"
+             LIMIT 10;
+    PRINT Result;
+}
+
+CREATE OR REPLACE QUERY kHopNeighborhood(VERTEX<Entity> seed, INT hops) FOR GRAPH HackathonGraph {
+    SetAccum<VERTEX<Entity>> @@visited;
+    INT remaining = hops;
+    Start = {seed};
+    @@visited += seed;
+    WHILE remaining > 0 DO
+        Next = SELECT t FROM Start:s -(RELATED_TO:e)- Entity:t
+               WHERE t NOT IN @@visited;
+        @@visited += Next;
+        Start = Next;
+        remaining = remaining - 1;
+    END;
+    Result = {@@visited};
+    PRINT Result;
+}
+
+CREATE OR REPLACE QUERY entitySupportingChunks(VERTEX<Entity> seed) FOR GRAPH HackathonGraph {
+    Start = {seed};
+    Chunks = SELECT c FROM Start:e -(MENTIONS:m)- Chunk:c;
+    PRINT Chunks;
+}
+
+// ---- vector search over chunk embeddings -------------------------------
+//
+// Cosine similarity computed in GSQL over the LIST<DOUBLE> embedding,
+// rather than via a native vector index. That is a deliberate portability
+// choice: native VECTOR attributes exist only on recent TigerGraph
+// versions, and a query that fails to install on a judge's Community
+// Edition instance is worse than one that is slightly slower everywhere.
+// src/tigergraph_client.py calls this first and falls back to scoring in
+// Python only if it isn't installed, so either path returns the same
+// ranking.
+//
+// The query vector must be L2-normalised by the caller (src/embeddings.py
+// normalises on the way in), so only the stored vector's norm is divided
+// out here.
+CREATE OR REPLACE QUERY chunkVectorSearch(LIST<DOUBLE> queryVector, INT k) FOR GRAPH HackathonGraph {
+    SumAccum<DOUBLE> @dot;
+    SumAccum<DOUBLE> @sq;
+    DOUBLE eps = 0.000000001;
+
+    Seed = {Chunk.*};
+    Scored = SELECT c FROM Seed:c
+             WHERE c.embedding.size() == queryVector.size()
+             ACCUM
+                 FOREACH i IN RANGE[0, queryVector.size() - 1] DO
+                     c.@dot += queryVector.get(i) * c.embedding.get(i),
+                     c.@sq  += c.embedding.get(i) * c.embedding.get(i)
+                 END
+             POST-ACCUM
+                 c.@dot = c.@dot / (sqrt(c.@sq) + eps)
+             ORDER BY c.@dot DESC
+             LIMIT k;
+
+    PRINT Scored[Scored.chunk_id AS chunk_id, Scored.doc_id AS doc_id,
+                 Scored.text AS text, Scored.@dot AS score];
+}
+
+// ---- structured Olympic-event layer (primary path — exact answers) -----
+
+// Powers aggregation ("how many X events at Y had >N competitors"),
+// superlative ("which X event at Y had the most competitors"), lookup
+// ("how many nations competed in <title>"), and venue+date questions.
+//
+// minCompetitors = -1 means "no filter"; pass "" for any string filter you
+// don't need. All string matching goes through the lowercased mirror
+// attributes so results match the Python backend exactly — see the note in
+// schema.gsql.
+CREATE OR REPLACE QUERY filterOlympicEvents(
+    STRING discipline, STRING gamesId, INT minCompetitors,
+    STRING venueSubstr, STRING dateSubstr, STRING eventNameSubstr
+) FOR GRAPH HackathonGraph {
+    Seed = {OlympicEvent.*};
+    Result = SELECT e FROM Seed:e
+             WHERE (discipline == "" OR e.discipline_lc == lower(discipline))
+               AND (gamesId == "" OR e.games_id == gamesId)
+               AND (minCompetitors == -1 OR e.competitors > minCompetitors)
+               AND (venueSubstr == "" OR e.venue_lc LIKE "%" + lower(venueSubstr) + "%")
+               AND (dateSubstr == "" OR e.date_lc LIKE "%" + lower(dateSubstr) + "%")
+               AND (eventNameSubstr == "" OR e.event_name_lc LIKE "%" + lower(eventNameSubstr) + "%");
+    PRINT Result;
+}
+
+// Powers temporal questions ("the Games immediately before <year>"). The
+// whole edition set is small (20 vertices for this corpus), so returning
+// it wholesale is cheaper than a traversal per question, and the client
+// caches it for the run.
+CREATE OR REPLACE QUERY gamesChronology() FOR GRAPH HackathonGraph {
+    Result = {GamesEdition.*};
+    PRINT Result;
+}
+
+// Walks the GAMES_SEQUENCE chain to the adjacent edition of the SAME
+// season — editions of the other season are stepped over, because "the
+// Summer Olympics immediately before 2016" is 2012, not the 2014 Winter
+// Games. Provided as a graph-native alternative to resolving the chain
+// client-side.
+CREATE OR REPLACE QUERY adjacentGamesEdition(
+    STRING gamesId, STRING season, STRING direction
+) FOR GRAPH HackathonGraph {
+    STRING cursor = gamesId;
+    STRING found = "";
+    INT guard = 0;
+
+    WHILE cursor != "" AND found == "" AND guard < 50 DO
+        Cur = {GamesEdition.*};
+        Cur = SELECT g FROM Cur:g WHERE g.games_id == cursor;
+        FOREACH g IN Cur DO
+            IF direction == "before" THEN
+                cursor = g.prev_id;
+            ELSE
+                cursor = g.next_id;
+            END;
+        END;
+        IF cursor != "" THEN
+            Nxt = {GamesEdition.*};
+            Nxt = SELECT g FROM Nxt:g WHERE g.games_id == cursor AND g.season == season;
+            FOREACH g IN Nxt DO
+                found = g.games_id;
+            END;
+        END;
+        guard = guard + 1;
+    END;
+
+    PRINT found AS games_id;
+}
+
+// Counts events per discipline at one Games edition — the "which
+// discipline held the most events" hop that chained questions need before
+// they can issue their real aggregation.
+CREATE OR REPLACE QUERY disciplineEventCounts(STRING gamesId, INT minCompetitors)
+FOR GRAPH HackathonGraph {
+    MapAccum<STRING, INT> @@counts;
+    Seed = {OlympicEvent.*};
+    Result = SELECT e FROM Seed:e
+             WHERE e.games_id == gamesId
+               AND (minCompetitors == -1 OR e.competitors > minCompetitors)
+             ACCUM @@counts += (e.discipline -> 1);
+    PRINT @@counts AS counts;
+}
+
+INSTALL QUERY entityLookup, kHopNeighborhood, entitySupportingChunks,
+              chunkVectorSearch, filterOlympicEvents, gamesChronology,
+              adjacentGamesEdition, disciplineEventCounts

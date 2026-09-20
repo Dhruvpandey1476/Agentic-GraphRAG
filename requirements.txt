@@ -1,0 +1,11 @@
+pyTigerGraph>=1.6.1
+anthropic>=0.40.0
+openai>=1.50.0
+numpy>=1.26.0
+scikit-learn>=1.4.0
+tiktoken>=0.7.0
+python-dotenv>=1.0.1
+tqdm>=4.66.0
+pydantic>=2.7.0
+flask>=3.0.3
+pytest>=8.0.0

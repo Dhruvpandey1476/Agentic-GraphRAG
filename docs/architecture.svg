@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 860" width="1180" height="860"
+     font-family="-apple-system,Segoe UI,Roboto,Helvetica,sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7"
+            orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a93b3"/>
+    </marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7"
+            orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#38c793"/>
+    </marker>
+    <style>
+      .t   { fill:#e8ecf7; font-size:13px }
+      .h   { fill:#e8ecf7; font-size:14px; font-weight:700 }
+      .lbl { fill:#8a93b3; font-size:11px }
+      .mono{ fill:#8a93b3; font-size:10.5px;
+             font-family:ui-monospace,SFMono-Regular,Consolas,monospace }
+      .sec { fill:#8a93b3; font-size:11px; font-weight:700; letter-spacing:.08em }
+      .box { fill:#151c33; stroke:#232b4a; rx:10 }
+      .box2{ fill:#111730; stroke:#232b4a; rx:8 }
+      .ln  { stroke:#8a93b3; stroke-width:1.4; fill:none; marker-end:url(#a) }
+      .lnag{ stroke:#38c793; stroke-width:1.8; fill:none; marker-end:url(#ag) }
+      .lndash{ stroke:#8a93b3; stroke-width:1.2; fill:none; stroke-dasharray:4 3;
+               marker-end:url(#a) }
+    </style>
+  </defs>
+
+  <rect width="1180" height="860" fill="#0b1020"/>
+  <text x="32" y="38" class="h" font-size="19">Agentic GraphRAG on TigerGraph — architecture</text>
+  <text x="32" y="59" class="lbl">Three pipelines over one graph. The only variable between
+    Pipeline 2 and Pipeline 3 is adaptivity.</text>
+
+  <!-- ============ INGESTION ============ -->
+  <text x="32" y="96" class="sec">INGESTION  (offline, 0 LLM calls)</text>
+  <rect x="32" y="106" width="200" height="86" class="box"/>
+  <text x="46" y="128" class="t">corpus.jsonl</text>
+  <text x="46" y="147" class="lbl">2,951 Wikipedia docs</text>
+  <text x="46" y="163" class="lbl">2,187 with event infoboxes</text>
+  <text x="46" y="181" class="mono">data/corpus.jsonl</text>
+
+  <rect x="266" y="106" width="212" height="86" class="box"/>
+  <text x="280" y="128" class="t">Deterministic parser</text>
+  <text x="280" y="147" class="lbl">regex over infobox blocks</text>
+  <text x="280" y="163" class="lbl">no LLM → exact, free</text>
+  <text x="280" y="181" class="mono">ingestion/infobox.py</text>
+
+  <rect x="512" y="106" width="212" height="86" class="box"/>
+  <text x="526" y="128" class="t">Chunk + embed</text>
+  <text x="526" y="147" class="lbl">9,065 chunks</text>
+  <text x="526" y="163" class="lbl">tfidf | ollama | openai</text>
+  <text x="526" y="181" class="mono">embeddings.py</text>
+
+  <line x1="232" y1="149" x2="264" y2="149" class="ln"/>
+  <line x1="478" y1="149" x2="510" y2="149" class="ln"/>
+
+  <!-- ============ GRAPH ============ -->
+  <text x="758" y="96" class="sec">TIGERGRAPH</text>
+  <rect x="758" y="106" width="390" height="232" class="box"/>
+  <text x="774" y="130" class="h">HackathonGraph</text>
+  <text x="774" y="149" class="mono">schema/schema.gsql · schema/queries.gsql</text>
+
+  <rect x="774" y="162" width="176" height="76" class="box2"/>
+  <text x="786" y="181" class="t" font-size="12">Structured layer</text>
+  <text x="786" y="198" class="lbl">OlympicEvent</text>
+  <text x="786" y="213" class="lbl">GamesEdition · Discipline</text>
+  <text x="786" y="230" class="lbl">IN_GAMES · GAMES_SEQUENCE</text>
+
+  <rect x="962" y="162" width="172" height="76" class="box2"/>
+  <text x="974" y="181" class="t" font-size="12">Vector + text layer</text>
+  <text x="974" y="198" class="lbl">Document · Chunk</text>
+  <text x="974" y="213" class="lbl">Entity · MENTIONS</text>
+  <text x="974" y="230" class="lbl">chunkVectorSearch</text>
+
+  <rect x="774" y="250" width="360" height="72" class="box2"/>
+  <text x="786" y="269" class="t" font-size="12">Installed GSQL queries</text>
+  <text x="786" y="286" class="mono">filterOlympicEvents · gamesChronology · adjacentGamesEdition</text>
+  <text x="786" y="301" class="mono">disciplineEventCounts · chunkVectorSearch · entityLookup</text>
+  <text x="786" y="316" class="lbl">MockGraph implements the same interface for offline runs</text>
+
+  <line x1="724" y1="149" x2="756" y2="180" class="ln"/>
+  <line x1="378" y1="192" x2="770" y2="250" class="lndash"/>
+
+  <!-- ============ PIPELINES ============ -->
+  <text x="32" y="382" class="sec">THREE PIPELINES  (same graph, same model, same embedder)</text>
+
+  <!-- P1 -->
+  <rect x="32" y="394" width="330" height="120" class="box" stroke="#5b8def"/>
+  <text x="48" y="418" class="h" fill="#5b8def">1 · RAG</text>
+  <text x="48" y="440" class="t" font-size="12">embed question → top-k=8 → LLM answers</text>
+  <text x="48" y="459" class="lbl">One retrieval. One generation. No structure.</text>
+  <text x="48" y="478" class="lbl">Fails structurally on aggregation/temporal:</text>
+  <text x="48" y="493" class="lbl">no top-k window holds 12 documents to count,</text>
+  <text x="48" y="508" class="lbl">and chronology is stated in no single document.</text>
+
+  <!-- P2 -->
+  <rect x="384" y="394" width="330" height="120" class="box" stroke="#f5a623"/>
+  <text x="400" y="418" class="h" fill="#f5a623">2 · GraphRAG  (fixed sequence)</text>
+  <text x="400" y="440" class="t" font-size="12">compile ONE query → execute → accept</text>
+  <text x="400" y="459" class="lbl">Falls back to entity-link + 1-hop + docs.</text>
+  <text x="400" y="478" class="lbl">Accepts its first result unconditionally —</text>
+  <text x="400" y="493" class="lbl">including results flagged ambiguous. Cannot</text>
+  <text x="400" y="508" class="lbl">feed one query's output into the next.</text>
+
+  <!-- P3 -->
+  <rect x="736" y="394" width="412" height="120" class="box" stroke="#38c793"/>
+  <text x="752" y="418" class="h" fill="#38c793">3 · Agentic GraphRAG  (adaptive)</text>
+  <text x="752" y="440" class="t" font-size="12">triage → VERIFY → repair / decompose → answer</text>
+  <text x="752" y="459" class="lbl">Re-decides its next move after every step.</text>
+  <text x="752" y="478" class="lbl">Spends 0 tokens on questions the free path</text>
+  <text x="752" y="493" class="lbl">already answers verifiably; pays for reasoning</text>
+  <text x="752" y="508" class="lbl">only on questions that actually need it.</text>
+
+  <!-- ============ AGENT LOOP ============ -->
+  <text x="32" y="558" class="sec">PIPELINE 3 — THE LOOP</text>
+  <rect x="32" y="570" width="1116" height="196" class="box" stroke="#38c793" stroke-opacity=".45"/>
+
+  <rect x="52" y="592" width="150" height="62" class="box2"/>
+  <text x="64" y="613" class="t" font-size="12">Triage</text>
+  <text x="64" y="630" class="lbl">compile + run one</text>
+  <text x="64" y="645" class="lbl">graph query — free</text>
+
+  <rect x="226" y="592" width="186" height="62" class="box2" stroke="#38c793"/>
+  <text x="238" y="613" class="t" font-size="12">Verify  ← the gate</text>
+  <text x="238" y="630" class="lbl">is the query GROUNDED</text>
+  <text x="238" y="645" class="lbl">in the question?</text>
+
+  <rect x="436" y="592" width="196" height="62" class="box2"/>
+  <text x="448" y="613" class="t" font-size="12">Deterministic repair</text>
+  <text x="448" y="630" class="lbl">resolve_slot · decompose</text>
+  <text x="448" y="645" class="lbl">repair_literal · relax — free</text>
+
+  <rect x="656" y="592" width="196" height="62" class="box2"/>
+  <text x="668" y="613" class="t" font-size="12">LLM plan → act loop</text>
+  <text x="668" y="630" class="lbl">8 tools, next move chosen</text>
+  <text x="668" y="645" class="lbl">from evidence so far</text>
+
+  <rect x="876" y="592" width="252" height="62" class="box2"/>
+  <text x="888" y="613" class="t" font-size="12">Answer + trace</text>
+  <text x="888" y="630" class="lbl">citations, tokens/op, time/op,</text>
+  <text x="888" y="645" class="lbl">strategy changes, stop reason</text>
+
+  <line x1="202" y1="623" x2="224" y2="623" class="lnag"/>
+  <line x1="412" y1="623" x2="434" y2="623" class="lnag"/>
+  <line x1="632" y1="623" x2="654" y2="623" class="lnag"/>
+  <line x1="852" y1="623" x2="874" y2="623" class="lnag"/>
+
+  <path d="M319,592 L319,578 L1002,578 L1002,590" class="lnag"/>
+  <text x="600" y="573" class="lbl" fill="#38c793" text-anchor="middle">verified → answer
+    immediately, 0 reasoning tokens</text>
+
+  <path d="M534,654 L534,672 L319,672 L319,656" class="lnag"/>
+  <text x="430" y="688" class="lbl" fill="#38c793" text-anchor="middle">re-verify the repair</text>
+
+  <text x="52" y="712" class="lbl">Grounding check (deterministic, domain-general):
+    every literal the query filters on must appear in the question, and the query must cover
+    every edition the question names.</text>
+  <text x="52" y="730" class="lbl">Without it a planner emits
+    <tspan class="mono" fill="#f2647a">aggregation(discipline="Athletics")</tspan> for a question
+    that never says "Athletics" — well-formed, cites real documents, and answers the wrong
+    question.</text>
+  <text x="52" y="752" class="mono">agents/orchestrator.py · agents/query_planner.py ·
+    agents/structured_agent.py · agents/specialized_agents.py · agents/harness.py</text>
+
+  <!-- ============ EVAL ============ -->
+  <text x="32" y="800" class="sec">BENCHMARK</text>
+  <rect x="32" y="810" width="1116" height="38" class="box"/>
+  <text x="48" y="826" class="t" font-size="12">100 public · 50 hidden · 60 generated
+    chained-reasoning (stress) · ablation mode with the regex fast path disabled</text>
+  <text x="48" y="841" class="mono">eval/run_benchmark.py → outputs/*.json → dashboard/index.html
+    · per-qtype verdict: AGENT NEEDED / WORTH IT / NOT WORTH IT</text>
+</svg>

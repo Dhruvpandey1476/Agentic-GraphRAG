@@ -1,0 +1,23 @@
+{
+  "rag": {
+    "n_questions": 50,
+    "avg_tokens": 0.0,
+    "avg_llm_calls": 0.0,
+    "avg_steps": 1.0,
+    "total_tokens": 0
+  },
+  "graphrag": {
+    "n_questions": 50,
+    "avg_tokens": 0.0,
+    "avg_llm_calls": 0.0,
+    "avg_steps": 2.0,
+    "total_tokens": 0
+  },
+  "agentic_graphrag": {
+    "n_questions": 50,
+    "avg_tokens": 0.0,
+    "avg_llm_calls": 0.0,
+    "avg_steps": 1.02,
+    "total_tokens": 0
+  }
+}

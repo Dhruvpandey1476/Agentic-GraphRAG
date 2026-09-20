@@ -1,0 +1,115 @@
+// ============================================================
+// Agentic GraphRAG Hackathon — graph schema
+//
+// Install with:  python -m scripts.setup_tigergraph --schema
+// (or paste into GSQL Shell / Savanna's GSQL editor)
+//
+// Works on TigerGraph Savanna and Community Edition.
+// ============================================================
+
+// Drop first so the script is idempotent — re-running it during
+// development must not fail on "graph already exists".
+DROP GRAPH HackathonGraph
+
+CREATE GRAPH HackathonGraph()
+
+USE GRAPH HackathonGraph
+
+// ---- Generic RAG / free-form entity layer -----------------------------
+
+CREATE VERTEX Document (
+    PRIMARY_ID doc_id STRING,
+    title STRING,
+    source STRING,
+    text STRING
+) WITH primary_id_as_attribute="true"
+
+CREATE VERTEX Chunk (
+    PRIMARY_ID chunk_id STRING,
+    doc_id STRING,
+    text STRING,
+    chunk_index INT,
+    // Dense vector. Requires a dense embedding provider
+    // (EMBEDDING_PROVIDER=ollama or openai) — TF-IDF produces sparse
+    // vectors, which do not fit a LIST<DOUBLE>.
+    embedding LIST<DOUBLE>
+) WITH primary_id_as_attribute="true"
+
+CREATE VERTEX Entity (
+    PRIMARY_ID entity_id STRING,
+    name STRING,
+    entity_type STRING,
+    description STRING,
+    embedding LIST<DOUBLE>
+) WITH primary_id_as_attribute="true"
+
+// ---- Structured Olympic-event layer ------------------------------------
+// Built deterministically (regex, no LLM) from the corpus's "[Infobox
+// Olympic event]" blocks — see src/ingestion/infobox.py. This is the layer
+// that lets the graph answer aggregation, superlative, temporal and lookup
+// questions EXACTLY, instead of hoping an LLM counts correctly over
+// retrieved prose.
+//
+// Note the lowercased mirror attributes (discipline_lc, venue_lc, ...).
+// GSQL's LIKE is case-sensitive, while the Python backend matches
+// case-insensitively. Without these, the same question would return
+// different results depending on which backend was running — so the
+// lowercase forms are written at load time and all matching is done
+// against them, making the two backends agree by construction.
+
+CREATE VERTEX OlympicEvent (
+    PRIMARY_ID doc_id STRING,
+    title STRING,
+    url STRING,
+    discipline STRING,
+    discipline_lc STRING,
+    event_name STRING,
+    event_name_lc STRING,
+    games_id STRING,
+    venue STRING,
+    venues STRING,
+    venue_lc STRING,
+    date STRING,
+    date_lc STRING,
+    competitors INT,
+    nations INT,
+    teams INT,
+    gold_name STRING,
+    gold_noc STRING,
+    silver_name STRING,
+    silver_noc STRING,
+    bronze_name STRING,
+    bronze_noc STRING,
+    win_value STRING
+) WITH primary_id_as_attribute="true"
+
+CREATE VERTEX GamesEdition (
+    PRIMARY_ID games_id STRING,   // e.g. "2016-summer"
+    year INT,
+    season STRING,
+    edition_index INT,            // global chronological order, for
+                                  // "immediately before/after" queries
+    prev_id STRING,
+    next_id STRING
+) WITH primary_id_as_attribute="true"
+
+CREATE VERTEX Discipline (
+    PRIMARY_ID name STRING
+) WITH primary_id_as_attribute="true"
+
+// ---- Edges --------------------------------------------------------------
+
+CREATE UNDIRECTED EDGE HAS_CHUNK (FROM Document, TO Chunk)
+CREATE UNDIRECTED EDGE MENTIONS (FROM Chunk, TO Entity, weight DOUBLE)
+CREATE UNDIRECTED EDGE RELATED_TO (FROM Entity, TO Entity, relation_type STRING, weight DOUBLE, source_doc_id STRING)
+
+CREATE UNDIRECTED EDGE IN_GAMES (FROM OlympicEvent, TO GamesEdition)
+CREATE UNDIRECTED EDGE IN_DISCIPLINE (FROM OlympicEvent, TO Discipline)
+CREATE DIRECTED EDGE GAMES_SEQUENCE (FROM GamesEdition, TO GamesEdition) WITH REVERSE_EDGE="GAMES_SEQUENCE_REVERSE"
+
+// ---- Register everything on the graph -----------------------------------
+
+CREATE GRAPH HackathonGraph (
+    Document, Chunk, Entity, OlympicEvent, GamesEdition, Discipline,
+    HAS_CHUNK, MENTIONS, RELATED_TO, IN_GAMES, IN_DISCIPLINE, GAMES_SEQUENCE
+)

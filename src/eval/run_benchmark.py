@@ -1,0 +1,337 @@
+"""
+Runs all three pipelines over an evaluation set and writes:
+  outputs/results[_suffix].json   per-question, per-pipeline detail + traces
+  outputs/summary[_suffix].json   aggregate table + the agentic-value analysis
+
+The summary is built to answer the hackathon's actual research question,
+not just to report three accuracy numbers. Alongside accuracy and tokens
+it computes, per question type:
+
+  * accuracy delta of agentic over graphrag
+  * the extra tokens agentic spent to get it
+  * tokens-per-accuracy-point ("what did the agent's win cost?")
+  * escalation rate — how often the agent decided it needed to reason at
+    all, versus resolving deterministically for free
+  * a verdict per question type: is agentic WORTH IT, NOT WORTH IT, or
+    NEEDED (graphrag can't do it at all)
+
+Usage:
+  python -m src.eval.run_benchmark                      # 100 public questions
+  python -m src.eval.run_benchmark --stress             # 60 chained questions
+  python -m src.eval.run_benchmark --hidden             # 50 hidden (submission)
+  python -m src.eval.run_benchmark --limit 10           # smoke test
+  python -m src.eval.run_benchmark --ablation           # disable regex fast path
+  python -m src.eval.run_benchmark --judge              # + LLM-as-judge scoring
+  python -m src.eval.run_benchmark --pipelines graphrag,agentic_graphrag
+"""
+import argparse
+import json
+import os
+import sys
+import time
+from collections import defaultdict
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+import config
+from src.pipelines import rag_pipeline, graphrag_pipeline
+from src.agents import orchestrator as agentic_pipeline
+from src.eval.metrics import exact_match, judge_answer, retrieval_recall
+from src.embeddings import Embedder
+from src.llm_client import make_llm
+from src.tigergraph_client import get_graph
+
+STRESS_PATH = os.path.join(config.DATA_DIR, "eval_stress.jsonl")
+
+
+def load_jsonl(path):
+    if not os.path.exists(path):
+        print(f"No questions file at {path}. See data/README.md.")
+        return []
+    with open(path, encoding="utf-8") as f:
+        return [json.loads(l) for l in f if l.strip()]
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--hidden", action="store_true")
+    ap.add_argument("--stress", action="store_true",
+                    help="run the generated chained-reasoning set (src/eval/stress_set.py)")
+    ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--judge", action="store_true", help="also run LLM-as-judge scoring")
+    ap.add_argument("--ablation", action="store_true",
+                    help="disable the regex fast path and deterministic triage, so the "
+                         "measured accuracy is the system's true un-cached generalisation")
+    ap.add_argument("--pipelines", default="rag,graphrag,agentic_graphrag")
+    ap.add_argument("--suffix", default=None)
+    args = ap.parse_args()
+    pipelines = args.pipelines.split(",")
+
+    if args.stress:
+        path, suffix, has_gold = STRESS_PATH, "_stress", True
+    elif args.hidden:
+        path, suffix, has_gold = config.HIDDEN_QUESTIONS_PATH, "_hidden", False
+    else:
+        path, suffix, has_gold = config.EVAL_QUESTIONS_PATH, "", True
+    if args.ablation:
+        suffix += "_ablation"
+    if args.suffix:
+        suffix = args.suffix
+
+    questions = load_jsonl(path)
+    if args.limit:
+        questions = questions[:args.limit]
+    if not questions:
+        return
+
+    llm = make_llm()
+    embedder = Embedder()
+    graph = get_graph()
+
+    run_meta = {
+        "questions_file": os.path.basename(path),
+        "n_questions": len(questions),
+        "graph_backend": graph.backend,
+        "embedder": embedder.describe(),
+        "llm_provider": config.LLM_PROVIDER if llm else None,
+        "llm_model": llm.model if llm else None,
+        "ablation": args.ablation,
+        "started": time.strftime("%Y-%m-%d %H:%M:%S"),
+    }
+    print(json.dumps(run_meta, indent=2))
+    if llm is None:
+        print("\n!! No LLM configured. RAG runs in proxy mode and the agentic loop "
+              "cannot escalate. Token columns will be zero and the comparison is NOT "
+              "publishable. Set a provider key in .env (groq/openrouter/ollama).\n")
+
+    all_results = []
+    t0 = time.time()
+    for i, q in enumerate(questions):
+        qt = q["question"]
+        print(f"[{i+1}/{len(questions)}] ({q.get('qtype','?')}) {qt[:75]}")
+        row = {"qid": q.get("qid", i), "question": qt, "qtype": q.get("qtype"),
+               "hops_required": q.get("hops_required")}
+
+        runners = {
+            "rag": lambda: rag_pipeline.run(qt, graph=graph, embedder=embedder,
+                                            llm=llm, qtype=q.get("qtype")),
+            "graphrag": lambda: graphrag_pipeline.run(qt, graph=graph, llm=llm,
+                                                      force_llm_planner=args.ablation),
+            "agentic_graphrag": lambda: agentic_pipeline.run(
+                qt, graph=graph, llm=llm, embedder=embedder,
+                force_llm_planner=args.ablation, skip_triage=args.ablation),
+        }
+
+        for name in pipelines:
+            fn = runners.get(name)
+            if fn is None:
+                continue
+            try:
+                res = fn()
+            except Exception as e:
+                row[name] = {"error": f"{type(e).__name__}: {e}", "answer": None,
+                             "usage": {"total_tokens": 0, "num_calls": 0}}
+                print(f"    !! {name} raised {type(e).__name__}: {e}")
+                continue
+            entry = dict(res)
+            if has_gold:
+                entry["exact_match"] = exact_match(res.get("answer"), q.get("answer"))
+                if q.get("gold_doc_ids"):
+                    entry["retrieval_recall"] = retrieval_recall(
+                        res.get("matched_doc_ids") or res.get("citations"), q["gold_doc_ids"])
+                if args.judge and llm:
+                    entry["judge"] = judge_answer(qt, res.get("answer", ""),
+                                                  q.get("answer"), llm=llm)
+            row[name] = entry
+        all_results.append(row)
+
+    os.makedirs(config.OUTPUT_DIR, exist_ok=True)
+    with open(os.path.join(config.OUTPUT_DIR, f"results{suffix}.json"), "w",
+              encoding="utf-8") as f:
+        json.dump(all_results, f, indent=2, ensure_ascii=False)
+
+    summary = _summarize(all_results, pipelines, has_gold)
+    summary["_meta"] = {**run_meta, "elapsed_s": round(time.time() - t0, 1)}
+    with open(os.path.join(config.OUTPUT_DIR, f"summary{suffix}.json"), "w",
+              encoding="utf-8") as f:
+        json.dump(summary, f, indent=2, ensure_ascii=False)
+
+    print(f"\nDone in {time.time()-t0:.1f}s -> outputs/summary{suffix}.json")
+    _print_table(summary, has_gold)
+
+
+# ---------------------------------------------------------------- summarising
+
+def _rows_for(all_results, p):
+    return [r[p] for r in all_results if p in r and "error" not in r[p]]
+
+
+def _agg(rows, has_gold):
+    tokens = [r.get("usage", {}).get("total_tokens", 0) for r in rows]
+    entry = {
+        "n_questions": len(rows),
+        "avg_tokens": round(sum(tokens) / max(len(tokens), 1), 1),
+        "total_tokens": sum(tokens),
+        "avg_input_tokens": round(sum(r.get("usage", {}).get("input_tokens", 0)
+                                      for r in rows) / max(len(rows), 1), 1),
+        "avg_output_tokens": round(sum(r.get("usage", {}).get("output_tokens", 0)
+                                       for r in rows) / max(len(rows), 1), 1),
+        "avg_context_tokens": round(sum(r.get("usage", {}).get("context_tokens", 0)
+                                        for r in rows) / max(len(rows), 1), 1),
+        "avg_llm_calls": round(sum(r.get("usage", {}).get("num_calls", 0)
+                                   for r in rows) / max(len(rows), 1), 2),
+        "avg_steps": round(sum(r.get("steps_taken", r.get("steps", 1))
+                               for r in rows) / max(len(rows), 1), 2),
+        "avg_latency_s": round(sum(r.get("usage", {}).get("latency_s", 0)
+                                   for r in rows) / max(len(rows), 1), 3),
+        "answered_rate": round(sum(1 for r in rows
+                                   if r.get("answer") not in (None, "")) / max(len(rows), 1), 3),
+    }
+    if has_gold:
+        m = [bool(r.get("exact_match")) for r in rows]
+        entry["exact_match_accuracy"] = round(sum(m) / max(len(m), 1), 3)
+        rec = [r["retrieval_recall"] for r in rows if r.get("retrieval_recall") is not None]
+        if rec:
+            entry["avg_retrieval_recall"] = round(sum(rec) / len(rec), 3)
+        judged = [r["judge"]["overall"] for r in rows if "judge" in r]
+        if judged:
+            entry["avg_judge_score"] = round(sum(judged) / len(judged), 3)
+    return entry
+
+
+def _summarize(all_results, pipelines, has_gold):
+    summary = {}
+    for p in pipelines:
+        rows = _rows_for(all_results, p)
+        summary[p] = _agg(rows, has_gold) if rows else {"n_questions": 0, "note": "no results"}
+
+    # ---- agentic behaviour ----
+    ag = _rows_for(all_results, "agentic_graphrag")
+    if ag:
+        escalated = [r for r in ag if r.get("escalated")]
+        method_counts, agent_counts = defaultdict(int), defaultdict(int)
+        for r in ag:
+            for m in r.get("retrieval_methods_used", []):
+                method_counts[m] += 1
+            for a in r.get("agents_invoked", []):
+                agent_counts[a] += 1
+        stop_reasons = defaultdict(int)
+        for r in ag:
+            stop_reasons[(r.get("stopped_reason") or "unknown").split(" (")[0]] += 1
+        summary["agentic_behavior"] = {
+            "escalation_rate": round(len(escalated) / len(ag), 3),
+            "n_escalated": len(escalated),
+            "n_resolved_free": len(ag) - len(escalated),
+            "avg_tokens_when_escalated": round(
+                sum(r.get("usage", {}).get("total_tokens", 0) for r in escalated)
+                / max(len(escalated), 1), 1),
+            "avg_tokens_when_not_escalated": round(
+                sum(r.get("usage", {}).get("total_tokens", 0)
+                    for r in ag if not r.get("escalated")) / max(len(ag) - len(escalated), 1), 1),
+            "avg_strategy_changes": round(
+                sum(r.get("num_strategy_changes", 0) for r in ag) / len(ag), 2),
+            "avg_citations": round(sum(r.get("num_citations", 0) for r in ag) / len(ag), 2),
+            "avg_evidence_items": round(
+                sum(r.get("num_evidence_items", 0) for r in ag) / len(ag), 2),
+            "retrieval_methods_used": dict(sorted(method_counts.items(),
+                                                  key=lambda kv: -kv[1])),
+            "specialized_agents_invoked": dict(sorted(agent_counts.items(),
+                                                      key=lambda kv: -kv[1])),
+            "stopping_reasons": dict(sorted(stop_reasons.items(), key=lambda kv: -kv[1])),
+        }
+
+    # ---- planner provenance: how many answers came from templates? ----
+    planners = defaultdict(int)
+    for r in all_results:
+        p = r.get("graphrag", {}).get("planner")
+        if p:
+            planners[p] += 1
+    if planners:
+        summary["planner_provenance"] = dict(planners)
+
+    # ---- the headline analysis: when is agentic worth it? ----
+    if has_gold:
+        summary["agentic_value_by_qtype"] = _value_analysis(all_results)
+    return summary
+
+
+def _value_analysis(all_results):
+    """Per question type: did the agent's extra tokens buy extra accuracy?
+
+    The verdict thresholds are deliberately conservative. A gain under 3
+    points is inside the noise of a 12-20 question bucket, so it is not
+    claimed as a win; any accuracy the fixed pipeline simply cannot reach
+    (it scores 0) is reported as NEEDED rather than as a percentage gain,
+    because a ratio against zero is meaningless."""
+    by_type = defaultdict(list)
+    for r in all_results:
+        by_type[r.get("qtype") or "unknown"].append(r)
+
+    out = {}
+    for qt, rows in sorted(by_type.items()):
+        def acc(p):
+            vals = [bool(r[p].get("exact_match")) for r in rows if p in r and "error" not in r[p]]
+            return round(sum(vals) / len(vals), 3) if vals else None
+
+        def tok(p):
+            vals = [r[p].get("usage", {}).get("total_tokens", 0)
+                    for r in rows if p in r and "error" not in r[p]]
+            return round(sum(vals) / len(vals), 1) if vals else None
+
+        a_rag, a_gr, a_ag = acc("rag"), acc("graphrag"), acc("agentic_graphrag")
+        t_gr, t_ag = tok("graphrag"), tok("agentic_graphrag")
+
+        entry = {"n": len(rows), "accuracy": {"rag": a_rag, "graphrag": a_gr,
+                                              "agentic_graphrag": a_ag},
+                 "avg_tokens": {"graphrag": t_gr, "agentic_graphrag": t_ag}}
+
+        if a_gr is not None and a_ag is not None:
+            delta = round(a_ag - a_gr, 3)
+            extra = round((t_ag or 0) - (t_gr or 0), 1)
+            entry["accuracy_delta"] = delta
+            entry["extra_tokens"] = extra
+            if delta > 0:
+                entry["tokens_per_accuracy_point"] = round(extra / (delta * 100), 1)
+
+            if a_gr == 0 and a_ag > 0:
+                entry["verdict"] = "AGENT NEEDED — fixed pipeline cannot answer these at all"
+            elif delta >= 0.03:
+                entry["verdict"] = f"AGENT WORTH IT — +{delta*100:.1f} pts for {extra:.0f} extra tokens"
+            elif delta <= -0.03:
+                entry["verdict"] = "AGENT HARMFUL — fixed pipeline is more accurate here"
+            else:
+                entry["verdict"] = ("AGENT NOT WORTH IT — no accuracy gain beyond noise; "
+                                    "the extra tokens buy nothing")
+        out[qt] = entry
+    return out
+
+
+def _print_table(summary, has_gold):
+    cols = ["rag", "graphrag", "agentic_graphrag"]
+    print(f"\n{'pipeline':<20}{'acc':>8}{'tokens':>10}{'calls':>8}{'steps':>8}{'answered':>10}")
+    print("-" * 64)
+    for c in cols:
+        s = summary.get(c) or {}
+        if not s.get("n_questions"):
+            continue
+        acc = s.get("exact_match_accuracy")
+        print(f"{c:<20}{(f'{acc:.3f}' if acc is not None else '—'):>8}"
+              f"{s['avg_tokens']:>10.1f}{s['avg_llm_calls']:>8.2f}"
+              f"{s['avg_steps']:>8.2f}{s['answered_rate']:>10.3f}")
+
+    b = summary.get("agentic_behavior")
+    if b:
+        print(f"\nescalation rate: {b['escalation_rate']:.1%} "
+              f"({b['n_escalated']} escalated / {b['n_resolved_free']} resolved free)")
+        print(f"tokens when escalated: {b['avg_tokens_when_escalated']:.0f} | "
+              f"when not: {b['avg_tokens_when_not_escalated']:.0f}")
+
+    va = summary.get("agentic_value_by_qtype")
+    if va:
+        print("\n--- is the agent worth it? ---")
+        for qt, e in va.items():
+            if "verdict" in e:
+                print(f"  {qt:<22} {e['verdict']}")
+
+
+if __name__ == "__main__":
+    main()

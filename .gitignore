@@ -1,0 +1,17 @@
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+
+# Build artifacts — regenerate with: python -m src.ingestion.build_graph
+outputs/graph_store.json
+outputs/tfidf_vectorizer.pkl
+
+# Benchmark outputs ARE committed (they are a deliverable), but the local
+# store above is 160MB+ and must not be.
+
+# Duplicated dataset copies at repo root; data/ is the canonical location.
+/corpus.jsonl
+/eval_public.jsonl
+/eval_hidden.jsonl
