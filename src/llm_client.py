@@ -168,6 +168,36 @@ class LLMClient:
     def model(self) -> str:
         return self._model
 
+    def _retrying_create(self, req, attempts: int = 5):
+        """Retry on rate limits and transient server errors.
+
+        Hosted free tiers throttle, and a benchmark that dies at question
+        140 of 160 costs far more than the wait. Backoff is exponential
+        with a floor from the provider's own Retry-After when it sends
+        one. Only 429/5xx are retried — a 404 for a retired model id
+        should fail immediately and loudly, not be masked by five retries.
+        """
+        import random
+        delay = 2.0
+        for attempt in range(attempts):
+            try:
+                return self._client.chat.completions.create(**req)
+            except Exception as e:
+                status = getattr(e, "status_code", None)
+                retryable = status == 429 or (status is not None and 500 <= status < 600)
+                if not retryable or attempt == attempts - 1:
+                    raise
+                wait = delay
+                hdrs = getattr(getattr(e, "response", None), "headers", None) or {}
+                try:
+                    wait = max(wait, float(hdrs.get("retry-after", 0)))
+                except (TypeError, ValueError):
+                    pass
+                print(f"[llm_client] {status}; retrying in {wait:.1f}s "
+                      f"({attempt + 1}/{attempts - 1})")
+                time.sleep(wait + random.uniform(0, 0.5))
+                delay *= 2
+
     def complete(self, system: str, prompt: str, max_tokens: int = 1000,
                  json_mode: bool = False, context_text: str = "") -> LLMResult:
         start = time.time()
@@ -196,10 +226,10 @@ class LLMClient:
             if json_mode:
                 req["response_format"] = {"type": "json_object"}
             try:
-                resp = self._client.chat.completions.create(**req)
+                resp = self._retrying_create(req)
             except Exception:
                 req.pop("response_format", None)
-                resp = self._client.chat.completions.create(**req)
+                resp = self._retrying_create(req)
 
             text = resp.choices[0].message.content or ""
             usage = getattr(resp, "usage", None)
