@@ -1,0 +1,4 @@
+[graph] connected to TigerGraph at https://tg-fdb2a666-d98f-4292-b8f2-47f463a61d5e.tg-2635877100.i.tgcloud.io (graph=HackathonGraph)
+Loaded 2951 documents from C:\Users\dhruv\Downloads\agentic-graphrag-hackathon\agentic-graphrag-hackathon\data\corpus.jsonl
+Parsed 2187 Olympic events / 20 Games editions deterministically (0 LLM calls)
+Embedding 9065 chunks via ollama:nomic-embed-text...

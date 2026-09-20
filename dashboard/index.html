@@ -98,6 +98,10 @@
 <script>
 // Each tab is one benchmark run written by src/eval/run_benchmark.py.
 const SETS = [
+  {key:"_tg_public", label:"TigerGraph · Public (100)",
+   desc:"provided evaluation set, live TigerGraph Savanna"},
+  {key:"_tg_stress", label:"TigerGraph · Stress (60)",
+   desc:"chained-reasoning set, live TigerGraph Savanna"},
   {key:"",          label:"Public (100)",   desc:"the provided evaluation set"},
   {key:"_stress",   label:"Stress (60)",    desc:"generated chained-reasoning set"},
   {key:"_hidden",   label:"Hidden (50)",    desc:"submission set — no gold answers"},
