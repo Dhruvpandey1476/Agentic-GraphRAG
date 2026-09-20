@@ -258,3 +258,45 @@ def test_backends_expose_the_same_interface():
         for m in required:
             assert callable(getattr(impl, m, None)), f"{impl.__name__} is missing {m}()"
         assert isinstance(getattr(impl, "backend", None), str)
+
+
+# ---------------------------------------------------------------- matching semantics
+
+@pytest.mark.parametrize("haystack,needle,expected", [
+    # The bug that live TigerGraph exposed: GSQL LIKE is plain substring
+    # containment, so a men's event query silently matched women's events
+    # and returned the wrong medallist on 4 of 100 questions.
+    ("Women's 20 kilometres walk", "men's 20 kilometres walk", False),
+    ("Men's 20 kilometres walk", "men's 20 kilometres walk", True),
+    ("Women's pole vault", "women's pole vault", True),
+    ("Men's 10 km sprint", "women's 10 km sprint", False),
+    # Weight classes: '+' is significant, "+80 kg" is not "80 kg".
+    ("+80 kg", "80 kg", False),
+    ("80 kg", "80 kg", True),
+])
+def test_search_key_has_word_boundary_semantics(haystack, needle, expected):
+    """search_key() is the single definition of matching shared by both
+    backends. Padded containment must behave exactly like contains_phrase,
+    or TigerGraph and the in-memory store drift apart again."""
+    from src.ingestion.infobox import search_key
+    padded = search_key(needle) in search_key(haystack)
+    assert padded is expected
+    # and it must agree with the Python-side matcher it mirrors
+    assert padded == contains_phrase(haystack, needle)
+
+
+def test_search_key_is_space_padded():
+    from src.ingestion.infobox import search_key
+    k = search_key("Men's foil")
+    assert k.startswith(" ") and k.endswith(" ")
+
+
+@pytest.mark.parametrize("q,expected_type", [
+    ("how many nations competed in Fencing at the 1988 Summer Olympics – Men's foil?",
+     "lookup_field"),
+])
+def test_regex_planner_survives_endash_titles(q, expected_type):
+    """The corpus uses en-dashes in page titles; the repo previously crashed
+    on Windows reading them at all (no encoding="utf-8" on open())."""
+    spec = qp.compile_regex(q, ["Fencing"])
+    assert spec and spec["type"] == expected_type

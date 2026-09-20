@@ -1,0 +1,146 @@
+{
+  "graphrag": {
+    "n_questions": 100,
+    "avg_tokens": 0.0,
+    "total_tokens": 0,
+    "avg_input_tokens": 0.0,
+    "avg_output_tokens": 0.0,
+    "avg_context_tokens": 0.0,
+    "avg_llm_calls": 0.0,
+    "avg_steps": 2.0,
+    "avg_latency_s": 0.0,
+    "answered_rate": 1.0,
+    "exact_match_accuracy": 1.0,
+    "avg_retrieval_recall": 0.766
+  },
+  "agentic_graphrag": {
+    "n_questions": 100,
+    "avg_tokens": 67.5,
+    "total_tokens": 6752,
+    "avg_input_tokens": 64.8,
+    "avg_output_tokens": 2.7,
+    "avg_context_tokens": 22.3,
+    "avg_llm_calls": 0.07,
+    "avg_steps": 2.04,
+    "avg_latency_s": 0.511,
+    "answered_rate": 1.0,
+    "exact_match_accuracy": 1.0,
+    "avg_retrieval_recall": 0.756
+  },
+  "agentic_behavior": {
+    "escalation_rate": 0.01,
+    "n_escalated": 1,
+    "n_resolved_free": 99,
+    "avg_tokens_when_escalated": 6752.0,
+    "avg_tokens_when_not_escalated": 0.0,
+    "avg_strategy_changes": 1.03,
+    "avg_citations": 3.41,
+    "avg_evidence_items": 3.95,
+    "retrieval_methods_used": {
+      "graph_query": 100,
+      "verify": 100,
+      "entity_linking": 1,
+      "relax_query": 1
+    },
+    "specialized_agents_invoked": {
+      "graph_query": 100,
+      "entity_linking": 1,
+      "relax_query": 1
+    },
+    "stopping_reasons": {
+      "deterministic graph query resolved and passed verification — no agentic reasoning needed": 99,
+      "reached max_steps": 1
+    }
+  },
+  "planner_provenance": {
+    "regex": 100
+  },
+  "agentic_value_by_qtype": {
+    "aggregation": {
+      "n": 21,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 1.0,
+        "agentic_graphrag": 1.0
+      },
+      "avg_tokens": {
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.0
+      },
+      "accuracy_delta": 0.0,
+      "extra_tokens": 0,
+      "verdict": "AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing"
+    },
+    "lookup": {
+      "n": 19,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 1.0,
+        "agentic_graphrag": 1.0
+      },
+      "avg_tokens": {
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.0
+      },
+      "accuracy_delta": 0.0,
+      "extra_tokens": 0,
+      "verdict": "AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing"
+    },
+    "multi_hop": {
+      "n": 28,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 1.0,
+        "agentic_graphrag": 1.0
+      },
+      "avg_tokens": {
+        "graphrag": 0.0,
+        "agentic_graphrag": 241.1
+      },
+      "accuracy_delta": 0.0,
+      "extra_tokens": 241.1,
+      "verdict": "AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing"
+    },
+    "superlative": {
+      "n": 10,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 1.0,
+        "agentic_graphrag": 1.0
+      },
+      "avg_tokens": {
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.0
+      },
+      "accuracy_delta": 0.0,
+      "extra_tokens": 0,
+      "verdict": "AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing"
+    },
+    "temporal": {
+      "n": 22,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 1.0,
+        "agentic_graphrag": 1.0
+      },
+      "avg_tokens": {
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.0
+      },
+      "accuracy_delta": 0.0,
+      "extra_tokens": 0,
+      "verdict": "AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing"
+    }
+  },
+  "_meta": {
+    "questions_file": "eval_public.jsonl",
+    "n_questions": 100,
+    "graph_backend": "tigergraph",
+    "embedder": "tfidf:corpus-fitted",
+    "llm_provider": "ollama",
+    "llm_model": "llama3:latest",
+    "ablation": false,
+    "started": "2026-09-20 22:10:16",
+    "elapsed_s": 123.1
+  }
+}

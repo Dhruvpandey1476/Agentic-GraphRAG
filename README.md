@@ -82,10 +82,20 @@ the live backend and all three pipelines run against it. **Fallback to the
 offline store is always loud** — a benchmark that quietly stopped using
 TigerGraph would be worthless, so it prints exactly why rather than pretending.
 
-For vector search *inside* TigerGraph, set `EMBEDDING_PROVIDER=ollama` (or
-`openai`). The default TF-IDF vectors are sparse and cannot be stored in a
-`LIST<DOUBLE>`; ingestion warns and writes chunks without embeddings rather than
-failing silently.
+**Verified against a live Savanna workspace** (TigerGraph 4.2.5): schema and
+6 GSQL queries installed, 2,187 `OlympicEvent` + 20 `GamesEdition` vertices
+loaded in 16s, and **100/100 on the public set** through the deterministic graph
+path. The two backends agree on 99/100 — the one difference is a genuinely tied
+venue+date question where the orderings differ, which is exactly the ambiguity
+the agent's tie-break exists to catch.
+
+Cosine ranking over `Chunk.embedding` runs **client-side**, not in GSQL. That is
+not a shortcut: GSQL rejects every method call on a `LIST` parameter ("the
+identifier of type list parameter is invalid to call any function"), so a query
+taking the query vector as `LIST<DOUBLE>` cannot index into it to compute a dot
+product. TigerGraph 4.2+ native `VECTOR` attributes would push this into the
+database properly, and that needs dense embeddings — the default TF-IDF vectors
+are sparse, so set `EMBEDDING_PROVIDER=ollama` (or `openai`) if you want them.
 
 ---
 

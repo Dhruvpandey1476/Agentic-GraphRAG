@@ -59,15 +59,32 @@ money, take hours, and be *less* accurate than parsing a field whose format is
 already fixed. The LLM's job is understanding the question, not re-reading data
 we can parse exactly.
 
-### Why the lowercase mirror attributes
+### Why the *_search mirror attributes
 
-`OlympicEvent` carries `discipline_lc`, `venue_lc`, `date_lc`, `event_name_lc`
-alongside the originals. GSQL's `LIKE` is case-sensitive; the Python backend
-matches case-insensitively via `normalize()`. Without the mirrors, **the same
-question would return different answers depending on which backend was
-running** — a silent divergence that would invalidate any comparison between a
-local run and a TigerGraph run. Writing the lowercase forms at load time makes
-the two backends agree by construction rather than by luck.
+`OlympicEvent` carries `discipline_norm`, `venue_search`, `date_search` and
+`event_name_search` alongside the originals. They exist because of a bug that
+only appeared once the system ran against a real instance, and which is worth
+recording in full because it is the exact failure mode this whole project is
+about — a wrong answer that looks completely healthy.
+
+GSQL's `LIKE` is case-sensitive *and* plain substring containment. The Python
+backend matches case-insensitively on **word boundaries**. So for the question
+"who won the men's 20 kilometres walk…", the GSQL filter
+`event_name LIKE '%men''s 20 kilometres walk%'` also matched **"WOmen's 20
+kilometres walk"** — because "wo·men's" contains "men's". The query succeeded,
+returned a real event, cited a real document, and named the wrong medallist.
+Four of the 100 public questions were silently wrong on TigerGraph while the
+in-memory backend got them right: 95/100 backend agreement.
+
+The fix is not a cleverer `LIKE`. It is to make sure matching has exactly **one
+definition**: `infobox.search_key()` normalizes a string and pads it with
+spaces, the loader writes those padded values into the `*_search` columns, and
+the client pads the needle identically before sending it. Padded containment is
+word-boundary matching, so `LIKE` inherits the correct semantics, and the two
+backends now agree by construction rather than by coincidence. Agreement went to
+99/100 and TigerGraph to 100/100. `tests/test_core.py` pins the men's/women's
+and `+80 kg`/`80 kg` cases against `contains_phrase` so they cannot drift apart
+again.
 
 ---
 
@@ -280,11 +297,13 @@ Two details that matter for honesty:
 - The `Entity`/`RELATED_TO` layer is sparsely populated, so the generic
   entity-linking fallback is weaker than the structured path. Questions outside
   the Olympic-event schema rely on vector search.
-- `chunkVectorSearch` computes cosine similarity in GSQL rather than using a
-  native vector index. Native `VECTOR` attributes exist only on recent
-  TigerGraph versions, and a query that fails to install on a judge's Community
-  Edition instance is worse than one that is slightly slower everywhere. The
-  client falls back to scoring in Python if the query is missing entirely.
+- **Vector ranking runs client-side, not in GSQL.** The original plan was a
+  `chunkVectorSearch` query computing cosine over `Chunk.embedding`. It does not
+  compile: GSQL rejects *every* method call on a `LIST` parameter, so a query
+  taking the query vector as `LIST<DOUBLE>` cannot index into it. Rather than
+  ship a draft query with a type error, it was removed and the limitation
+  documented. TigerGraph 4.2+ native `VECTOR` attributes are the real answer and
+  need dense embeddings.
 - TF-IDF embeddings are sparse and cannot be stored in a `LIST<DOUBLE>`.
   Ingestion warns and writes chunks without embeddings rather than failing
   silently; use `EMBEDDING_PROVIDER=ollama` for vector search inside TigerGraph.

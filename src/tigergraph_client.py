@@ -142,33 +142,21 @@ class RealGraph(BaseGraph):
     # ---------------------------------------------------------- retrieval
 
     def vector_search(self, query_emb, k=5):
-        """Native TigerGraph vector search over Chunk.embedding.
+        """Cosine ranking over Chunk.embedding, scored client-side.
 
-        Uses the installed `chunkVectorSearch` GSQL query, which calls
-        TigerGraph's built-in vector index. Falls back to pulling chunk
-        vectors and scoring in Python only if that query isn't installed,
-        so a partially-set-up instance degrades instead of erroring.
+        There is no GSQL vector query to call: GSQL rejects every method
+        call on a LIST parameter, so a query taking the query vector as
+        LIST<DOUBLE> cannot index into it to compute a dot product (see
+        the note in schema/queries.gsql). Chunk vectors are therefore
+        fetched once, cached for the run, and ranked in Python.
+
+        TigerGraph 4.2+ native VECTOR attributes would push this into the
+        database; that needs dense embeddings, since the default TF-IDF
+        vectors are sparse. Kept as a documented limitation rather than a
+        half-working query.
         """
         from src.embeddings import cosine_sim
 
-        vec = query_emb if isinstance(query_emb, list) else (
-            list(query_emb.values()) if isinstance(query_emb, dict) else query_emb.tolist()
-        )
-        if "chunkVectorSearch" in self.query_installed() and not isinstance(query_emb, dict):
-            try:
-                raw = self.conn.runInstalledQuery(
-                    "chunkVectorSearch", {"queryVector": vec, "k": k}, timeout=60000)
-                out = []
-                for v in raw[0]["Result"]:
-                    a = v["attributes"]
-                    out.append((float(a.get("score", 0.0)), v["v_id"],
-                                {"text": a.get("text", ""), "doc_id": a.get("doc_id", "")}))
-                if out:
-                    return out
-            except Exception as e:
-                print(f"[tigergraph] vector query failed, scoring locally: {e}")
-
-        # Fallback: score locally over chunks fetched from the graph.
         chunks = self._fetch_all_chunks()
         scored = [(cosine_sim(query_emb, c["embedding"]), cid, c)
                   for cid, c in chunks.items() if c.get("embedding")]
