@@ -23,7 +23,7 @@ import json
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
-from src.ingestion.infobox import normalize, contains_phrase
+from src.ingestion.infobox import normalize, contains_phrase, search_key
 
 
 class BaseGraph:
@@ -124,8 +124,18 @@ class RealGraph(BaseGraph):
             return self.conn.gsql(f.read())
 
     def query_installed(self) -> list:
+        """Names of installed queries. getInstalledQueries() returns a dict
+        keyed by "GET /query/<graph>/<name>" on 4.x rather than the list of
+        dicts older docs describe, so both shapes are handled — the earlier
+        version silently returned [] on a working instance."""
         try:
-            return [q["queryName"] for q in self.conn.getInstalledQueries()]
+            q = self.conn.getInstalledQueries()
+        except Exception:
+            return []
+        if isinstance(q, dict):
+            return sorted({k.rstrip("/").split("/")[-1] for k in q})
+        try:
+            return sorted(item["queryName"] for item in q)
         except Exception:
             return []
 
@@ -194,11 +204,16 @@ class RealGraph(BaseGraph):
 
     def filter_olympic_events(self, discipline=None, games_id=None, min_competitors=None,
                               venue_substr=None, date_substr=None, event_name_substr=None):
+        # Normalize here, once, using the same helpers the loader used, so
+        # the GSQL query is a pure comparison and cannot define matching
+        # differently from MockGraph.
         params = {
-            "discipline": discipline or "", "gamesId": games_id or "",
+            "discipline": normalize(discipline) if discipline else "",
+            "gamesId": games_id or "",
             "minCompetitors": min_competitors if min_competitors is not None else -1,
-            "venueSubstr": venue_substr or "", "dateSubstr": date_substr or "",
-            "eventNameSubstr": event_name_substr or "",
+            "venueSubstr": search_key(venue_substr) if venue_substr else "",
+            "dateSubstr": search_key(date_substr) if date_substr else "",
+            "eventNameSubstr": search_key(event_name_substr) if event_name_substr else "",
         }
         raw = self.conn.runInstalledQuery("filterOlympicEvents", params, timeout=60000)
         return [self._normalize_event(v) for v in raw[0]["Result"]]
@@ -274,19 +289,21 @@ class RealGraph(BaseGraph):
             g_n, g_c = medal(e, "gold")
             s_n, s_c = medal(e, "silver")
             b_n, b_c = medal(e, "bronze")
-            # The *_lc mirrors exist because GSQL's LIKE is case-sensitive
-            # while the Python backend matches case-insensitively. Writing
-            # them at load time is what makes the two backends return
-            # identical results for the same question (see schema.gsql).
+            # The *_search / discipline_norm mirrors are what make the two
+            # backends agree. GSQL's LIKE is plain substring containment, so
+            # without the space-padded form a query for "men's 20 kilometres
+            # walk" also matches "women's 20 kilometres walk" and returns the
+            # wrong medallist. search_key() is the single definition of that
+            # normalization, shared with the in-memory backend.
             venue_all = f"{e.get('venue', '')} {e.get('venues', '')}".strip()
             rows.append((e["doc_id"], {
                 "title": e["title"], "url": e["url"], "discipline": e["discipline"],
-                "discipline_lc": (e["discipline"] or "").lower(),
+                "discipline_norm": normalize(e["discipline"]),
                 "event_name": e["event_name"],
-                "event_name_lc": (e["event_name"] or "").lower(),
+                "event_name_search": search_key(e["event_name"]),
                 "venue": e.get("venue", ""),
-                "venues": e.get("venues", ""), "venue_lc": venue_all.lower(),
-                "date": e.get("date", ""), "date_lc": (e.get("date", "") or "").lower(),
+                "venues": e.get("venues", ""), "venue_search": search_key(venue_all),
+                "date": e.get("date", ""), "date_search": search_key(e.get("date", "")),
                 "games_id": e.get("games_id", ""),
                 "competitors": e["competitors"] or 0, "nations": e["nations"] or 0,
                 "teams": e["teams"] or 0,

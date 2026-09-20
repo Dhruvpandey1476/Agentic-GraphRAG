@@ -1,0 +1,162 @@
+{
+  "graphrag": {
+    "n_questions": 60,
+    "avg_tokens": 774.2,
+    "total_tokens": 46452,
+    "avg_input_tokens": 726.4,
+    "avg_output_tokens": 47.9,
+    "avg_context_tokens": 1.9,
+    "avg_llm_calls": 1.43,
+    "avg_steps": 2.63,
+    "avg_latency_s": 3.31,
+    "answered_rate": 0.983,
+    "exact_match_accuracy": 0.15,
+    "avg_retrieval_recall": 0.316
+  },
+  "agentic_graphrag": {
+    "n_questions": 55,
+    "avg_tokens": 3309.3,
+    "total_tokens": 182010,
+    "avg_input_tokens": 3169.1,
+    "avg_output_tokens": 140.1,
+    "avg_context_tokens": 894.6,
+    "avg_llm_calls": 3.33,
+    "avg_steps": 5.51,
+    "avg_latency_s": 9.429,
+    "answered_rate": 0.982,
+    "exact_match_accuracy": 0.473,
+    "avg_retrieval_recall": 0.439
+  },
+  "agentic_behavior": {
+    "escalation_rate": 0.982,
+    "n_escalated": 54,
+    "n_resolved_free": 1,
+    "avg_tokens_when_escalated": 3354.4,
+    "avg_tokens_when_not_escalated": 872.0,
+    "avg_strategy_changes": 3.82,
+    "avg_citations": 7.62,
+    "avg_evidence_items": 6.87,
+    "retrieval_methods_used": {
+      "graph_query": 55,
+      "verify": 55,
+      "resolve_slot": 23,
+      "repair_literal": 19,
+      "decompose": 10,
+      "entity_linking": 8,
+      "compare": 6,
+      "relax_query": 2
+    },
+    "specialized_agents_invoked": {
+      "graph_query": 55,
+      "resolve_slot": 23,
+      "repair_literal": 19,
+      "decompose": 10,
+      "entity_linking": 8,
+      "compare": 6,
+      "relax_query": 2
+    },
+    "stopping_reasons": {
+      "escalated": 26,
+      "reached max_steps": 20,
+      "agent judged evidence sufficient after 4 steps": 7,
+      "agent judged evidence sufficient after 5 steps": 1,
+      "deterministic graph query resolved and passed verification — no agentic reasoning needed": 1
+    }
+  },
+  "planner_provenance": {
+    "llm": 48,
+    "regex": 12
+  },
+  "agentic_value_by_qtype": {
+    "chained_chronology": {
+      "n": 12,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.083,
+        "agentic_graphrag": 0.0
+      },
+      "avg_tokens": {
+        "graphrag": 242.0,
+        "agentic_graphrag": 5903.9
+      },
+      "accuracy_delta": -0.083,
+      "extra_tokens": 5661.9,
+      "verdict": "AGENT HARMFUL — fixed pipeline is more accurate here"
+    },
+    "chained_discipline": {
+      "n": 12,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.667
+      },
+      "avg_tokens": {
+        "graphrag": 895.4,
+        "agentic_graphrag": 1612.9
+      },
+      "accuracy_delta": 0.667,
+      "extra_tokens": 717.5,
+      "tokens_per_accuracy_point": 10.8,
+      "verdict": "AGENT NEEDED — fixed pipeline cannot answer these at all"
+    },
+    "chained_venue": {
+      "n": 12,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.083
+      },
+      "avg_tokens": {
+        "graphrag": 947.6,
+        "agentic_graphrag": 3212.1
+      },
+      "accuracy_delta": 0.083,
+      "extra_tokens": 2264.5,
+      "tokens_per_accuracy_point": 272.8,
+      "verdict": "AGENT NEEDED — fixed pipeline cannot answer these at all"
+    },
+    "cross_edition": {
+      "n": 12,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.167,
+        "agentic_graphrag": 0.75
+      },
+      "avg_tokens": {
+        "graphrag": 911.7,
+        "agentic_graphrag": 4038.5
+      },
+      "accuracy_delta": 0.583,
+      "extra_tokens": 3126.8,
+      "tokens_per_accuracy_point": 53.6,
+      "verdict": "AGENT WORTH IT — +58.3 pts for 3127 extra tokens"
+    },
+    "relaxation": {
+      "n": 12,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.5,
+        "agentic_graphrag": 0.667
+      },
+      "avg_tokens": {
+        "graphrag": 874.3,
+        "agentic_graphrag": 2860.1
+      },
+      "accuracy_delta": 0.167,
+      "extra_tokens": 1985.8,
+      "tokens_per_accuracy_point": 118.9,
+      "verdict": "AGENT WORTH IT — +16.7 pts for 1986 extra tokens"
+    }
+  },
+  "_meta": {
+    "questions_file": "eval_stress.jsonl",
+    "n_questions": 60,
+    "graph_backend": "mock",
+    "embedder": "tfidf:corpus-fitted",
+    "llm_provider": "ollama",
+    "llm_model": "llama3:latest",
+    "ablation": false,
+    "started": "2026-09-20 21:35:48",
+    "elapsed_s": 756.2
+  }
+}

@@ -7,13 +7,22 @@
 // Works on TigerGraph Savanna and Community Edition.
 // ============================================================
 
-// Drop first so the script is idempotent — re-running it during
-// development must not fail on "graph already exists".
+// Statement order matters in GSQL: vertex and edge types are created at
+// GLOBAL scope first, and CREATE GRAPH then declares which of them the
+// graph contains. Creating the graph first and adding types to it
+// afterwards requires a SCHEMA_CHANGE JOB and fails as a plain script.
+//
+// The DROP block makes re-running idempotent. On a fresh instance these
+// drops fail because nothing exists yet — scripts/setup_tigergraph.py
+// issues them separately and ignores that failure.
+
+// Drop order matters as much as create order: edge types reference vertex
+// types, so dropping vertices first fails with "used by another object" and
+// leaves the old schema in place — which then makes the CREATEs fail too.
+// Graph, then edges, then vertices.
 DROP GRAPH HackathonGraph
-
-CREATE GRAPH HackathonGraph()
-
-USE GRAPH HackathonGraph
+DROP EDGE HAS_CHUNK, MENTIONS, RELATED_TO, IN_GAMES, IN_DISCIPLINE, GAMES_SEQUENCE
+DROP VERTEX Document, Chunk, Entity, OlympicEvent, GamesEdition, Discipline
 
 // ---- Generic RAG / free-form entity layer -----------------------------
 
@@ -50,27 +59,30 @@ CREATE VERTEX Entity (
 // questions EXACTLY, instead of hoping an LLM counts correctly over
 // retrieved prose.
 //
-// Note the lowercased mirror attributes (discipline_lc, venue_lc, ...).
-// GSQL's LIKE is case-sensitive, while the Python backend matches
-// case-insensitively. Without these, the same question would return
-// different results depending on which backend was running — so the
-// lowercase forms are written at load time and all matching is done
-// against them, making the two backends agree by construction.
+// Note the *_search / discipline_norm mirror attributes. They exist because
+// GSQL's LIKE is both case-sensitive AND plain substring containment, while
+// the Python backend matches case-insensitively on WORD BOUNDARIES. Left
+// alone, the same question returns different answers per backend: a query
+// for "men's 20 kilometres walk" matches "women's 20 kilometres walk" under
+// LIKE and returns the wrong medallist. The *_search columns hold the
+// space-padded normalized form from infobox.search_key(), and the client
+// pads the needle the same way, so LIKE gains word-boundary semantics and
+// both backends agree by construction rather than by coincidence.
 
 CREATE VERTEX OlympicEvent (
     PRIMARY_ID doc_id STRING,
     title STRING,
     url STRING,
     discipline STRING,
-    discipline_lc STRING,
+    discipline_norm STRING,
     event_name STRING,
-    event_name_lc STRING,
+    event_name_search STRING,
     games_id STRING,
     venue STRING,
     venues STRING,
-    venue_lc STRING,
+    venue_search STRING,
     date STRING,
-    date_lc STRING,
+    date_search STRING,
     competitors INT,
     nations INT,
     teams INT,

@@ -78,6 +78,27 @@ def normalize(s: str) -> str:
     return re.sub(r"[^a-z0-9]", "", s.lower())
 
 
+def search_key(s: str) -> str:
+    """The normalized, SPACE-PADDED form used for word-boundary matching.
+
+    Exists so the graph backends cannot drift apart. GSQL only offers
+    LIKE, which is plain substring containment: `event_name LIKE
+    '%men's 20 kilometres walk%'` happily matches "WOmen's 20 kilometres
+    walk", silently returning the wrong medallist. Padding both the stored
+    value and the needle with spaces turns LIKE into word-boundary
+    matching, and doing the normalization here — in Python, once — means
+    TigerGraph and the in-memory store share one definition rather than
+    two implementations that agree only by luck.
+
+    Punctuation becomes a space, but '+' and '-' are preserved: "+80 kg"
+    and "80 kg" are different Olympic weight classes, and the padding makes
+    a search for "80 kg" correctly miss "+80 kg".
+    """
+    t = re.sub(r"[^a-z0-9+\-\s]", " ", (s or "").lower())
+    t = re.sub(r"\s+", " ", t).strip()
+    return f" {t} "
+
+
 def contains_phrase(haystack: str, needle: str) -> bool:
     """Word-boundary substring check. Plain normalize()-based 'in' checks
     are wrong for phrases like "men's sprint" vs "women's sprint" — after

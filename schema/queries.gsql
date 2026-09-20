@@ -16,18 +16,26 @@ CREATE OR REPLACE QUERY entityLookup(STRING nameSubstr) FOR GRAPH HackathonGraph
 }
 
 CREATE OR REPLACE QUERY kHopNeighborhood(VERTEX<Entity> seed, INT hops) FOR GRAPH HackathonGraph {
-    SetAccum<VERTEX<Entity>> @@visited;
+    // A SetAccum<VERTEX> cannot take a vertex set directly (`@@acc += Next`
+    // is a type error). Membership is tracked per-vertex with an OrAccum
+    // and collected in ACCUM, which is the idiomatic form and also avoids
+    // re-walking vertices already seen on an earlier hop.
+    OrAccum @seen;
+    SetAccum<VERTEX> @@reached;
     INT remaining = hops;
+
     Start = {seed};
-    @@visited += seed;
+    Start = SELECT s FROM Start:s ACCUM s.@seen += TRUE;
+
     WHILE remaining > 0 DO
-        Next = SELECT t FROM Start:s -(RELATED_TO:e)- Entity:t
-               WHERE t NOT IN @@visited;
-        @@visited += Next;
-        Start = Next;
+        Start = SELECT t FROM Start:s -(RELATED_TO:e)- Entity:t
+                WHERE t.@seen == FALSE
+                ACCUM t.@seen += TRUE
+                POST-ACCUM @@reached += t;
         remaining = remaining - 1;
     END;
-    Result = {@@visited};
+
+    Result = {@@reached};
     PRINT Result;
 }
 
@@ -37,41 +45,21 @@ CREATE OR REPLACE QUERY entitySupportingChunks(VERTEX<Entity> seed) FOR GRAPH Ha
     PRINT Chunks;
 }
 
-// ---- vector search over chunk embeddings -------------------------------
+// ---- a note on vector search ------------------------------------------
 //
-// Cosine similarity computed in GSQL over the LIST<DOUBLE> embedding,
-// rather than via a native vector index. That is a deliberate portability
-// choice: native VECTOR attributes exist only on recent TigerGraph
-// versions, and a query that fails to install on a judge's Community
-// Edition instance is worse than one that is slightly slower everywhere.
-// src/tigergraph_client.py calls this first and falls back to scoring in
-// Python only if it isn't installed, so either path returns the same
-// ranking.
+// There is deliberately no vector-search query here. GSQL rejects ANY
+// method call on a LIST parameter ("The identifier 'queryVector' of type
+// list parameter is invalid to call any function"), so a query that takes
+// the query vector as LIST<DOUBLE> cannot index into it to compute a dot
+// product. Cosine scoring over Chunk.embedding therefore runs client-side
+// in src/tigergraph_client.py (RealGraph.vector_search), which fetches
+// chunk vectors and ranks them in Python.
 //
-// The query vector must be L2-normalised by the caller (src/embeddings.py
-// normalises on the way in), so only the stored vector's norm is divided
-// out here.
-CREATE OR REPLACE QUERY chunkVectorSearch(LIST<DOUBLE> queryVector, INT k) FOR GRAPH HackathonGraph {
-    SumAccum<DOUBLE> @dot;
-    SumAccum<DOUBLE> @sq;
-    DOUBLE eps = 0.000000001;
-
-    Seed = {Chunk.*};
-    Scored = SELECT c FROM Seed:c
-             WHERE c.embedding.size() == queryVector.size()
-             ACCUM
-                 FOREACH i IN RANGE[0, queryVector.size() - 1] DO
-                     c.@dot += queryVector.get(i) * c.embedding.get(i),
-                     c.@sq  += c.embedding.get(i) * c.embedding.get(i)
-                 END
-             POST-ACCUM
-                 c.@dot = c.@dot / (sqrt(c.@sq) + eps)
-             ORDER BY c.@dot DESC
-             LIMIT k;
-
-    PRINT Scored[Scored.chunk_id AS chunk_id, Scored.doc_id AS doc_id,
-                 Scored.text AS text, Scored.@dot AS score];
-}
+// TigerGraph 4.2+ does support native VECTOR attributes with an indexed
+// vectorSearch(), which would push this into the database properly. That
+// requires dense embeddings (EMBEDDING_PROVIDER=ollama or openai) — the
+// default TF-IDF vectors are sparse and cannot populate one. See
+// ARCHITECTURE.md "Known limitations".
 
 // ---- structured Olympic-event layer (primary path — exact answers) -----
 
@@ -89,12 +77,16 @@ CREATE OR REPLACE QUERY filterOlympicEvents(
 ) FOR GRAPH HackathonGraph {
     Seed = {OlympicEvent.*};
     Result = SELECT e FROM Seed:e
-             WHERE (discipline == "" OR e.discipline_lc == lower(discipline))
+             // Every string parameter arrives ALREADY normalized and
+             // space-padded by RealGraph.filter_olympic_events (see
+             // infobox.search_key). Do not lower() or pad again here — the
+             // point is that exactly one implementation defines matching.
+             WHERE (discipline == "" OR e.discipline_norm == discipline)
                AND (gamesId == "" OR e.games_id == gamesId)
                AND (minCompetitors == -1 OR e.competitors > minCompetitors)
-               AND (venueSubstr == "" OR e.venue_lc LIKE "%" + lower(venueSubstr) + "%")
-               AND (dateSubstr == "" OR e.date_lc LIKE "%" + lower(dateSubstr) + "%")
-               AND (eventNameSubstr == "" OR e.event_name_lc LIKE "%" + lower(eventNameSubstr) + "%");
+               AND (venueSubstr == "" OR e.venue_search LIKE "%" + venueSubstr + "%")
+               AND (dateSubstr == "" OR e.date_search LIKE "%" + dateSubstr + "%")
+               AND (eventNameSubstr == "" OR e.event_name_search LIKE "%" + eventNameSubstr + "%");
     PRINT Result;
 }
 
@@ -105,41 +97,6 @@ CREATE OR REPLACE QUERY filterOlympicEvents(
 CREATE OR REPLACE QUERY gamesChronology() FOR GRAPH HackathonGraph {
     Result = {GamesEdition.*};
     PRINT Result;
-}
-
-// Walks the GAMES_SEQUENCE chain to the adjacent edition of the SAME
-// season — editions of the other season are stepped over, because "the
-// Summer Olympics immediately before 2016" is 2012, not the 2014 Winter
-// Games. Provided as a graph-native alternative to resolving the chain
-// client-side.
-CREATE OR REPLACE QUERY adjacentGamesEdition(
-    STRING gamesId, STRING season, STRING direction
-) FOR GRAPH HackathonGraph {
-    STRING cursor = gamesId;
-    STRING found = "";
-    INT guard = 0;
-
-    WHILE cursor != "" AND found == "" AND guard < 50 DO
-        Cur = {GamesEdition.*};
-        Cur = SELECT g FROM Cur:g WHERE g.games_id == cursor;
-        FOREACH g IN Cur DO
-            IF direction == "before" THEN
-                cursor = g.prev_id;
-            ELSE
-                cursor = g.next_id;
-            END;
-        END;
-        IF cursor != "" THEN
-            Nxt = {GamesEdition.*};
-            Nxt = SELECT g FROM Nxt:g WHERE g.games_id == cursor AND g.season == season;
-            FOREACH g IN Nxt DO
-                found = g.games_id;
-            END;
-        END;
-        guard = guard + 1;
-    END;
-
-    PRINT found AS games_id;
 }
 
 // Counts events per discipline at one Games edition — the "which
@@ -157,5 +114,4 @@ FOR GRAPH HackathonGraph {
 }
 
 INSTALL QUERY entityLookup, kHopNeighborhood, entitySupportingChunks,
-              chunkVectorSearch, filterOlympicEvents, gamesChronology,
-              adjacentGamesEdition, disciplineEventCounts
+              filterOlympicEvents, gamesChronology, disciplineEventCounts

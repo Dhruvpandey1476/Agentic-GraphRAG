@@ -80,21 +80,65 @@ def connect():
         return None
 
 
-def install_schema(graph):
-    print(f"[..] installing schema from {os.path.basename(SCHEMA)}")
-    with open(SCHEMA, encoding="utf-8") as f:
+def _read_gsql(path):
+    """Load a GSQL script, retargeted at whatever TG_GRAPH names.
+
+    The scripts are written against "HackathonGraph", but a Savanna
+    workspace may already have a graph the user wants to use. Substituting
+    here keeps one source of truth instead of a second, drifting copy.
+    """
+    with open(path, encoding="utf-8") as f:
         script = f.read()
-    # DROP GRAPH fails loudly on a fresh instance where nothing exists yet.
-    # That's expected, not an error, so the drop is issued separately and
-    # its failure is ignored rather than aborting the whole install.
-    head, _, body = script.partition("CREATE GRAPH HackathonGraph()")
-    if head.strip():
+    if config.TG_GRAPH and config.TG_GRAPH != "HackathonGraph":
+        script = script.replace("HackathonGraph", config.TG_GRAPH)
+    return script
+
+
+def install_schema(graph):
+    print(f"[..] installing schema from {os.path.basename(SCHEMA)} "
+          f"as graph '{config.TG_GRAPH}'")
+    script = _read_gsql(SCHEMA)
+
+    # Teardown, in dependency order. Each step is attempted separately and
+    # its failure ignored, because on a fresh instance there is nothing to
+    # drop — and GSQL aborts a whole script on the first failed statement,
+    # so leaving the DROPs inline would take the CREATEs down with them.
+    #
+    # The order is forced by TigerGraph's own referential checks:
+    #   queries reference the graph -> graph references edges -> edges
+    #   reference vertices.
+    # Getting it wrong doesn't just skip the drop, it leaves the old schema
+    # in place and every CREATE then fails with "name is used by another
+    # object", which is how this surfaced.
+    g = config.TG_GRAPH
+    teardown = [
+        (f"USE GRAPH {g}{chr(10)}DROP QUERY ALL", "installed queries"),
+        (f"DROP GRAPH {g}", "graph"),
+    ]
+    creates = []
+    for line in script.splitlines():
+        if line.strip().startswith("DROP "):
+            if not line.strip().startswith("DROP GRAPH"):
+                teardown.append((line.strip(), line.strip()[:52]))
+        else:
+            creates.append(line)
+
+    for stmt, label in teardown:
         try:
-            graph.conn.gsql(head)
-        except Exception as e:
-            print(f"     (drop skipped: {e})")
-    out = graph.conn.gsql("CREATE GRAPH HackathonGraph()\n" + body)
-    print(out[-1500:] if isinstance(out, str) else out)
+            out = graph.conn.gsql(stmt)
+            text = out if isinstance(out, str) else str(out)
+            failed = "semantic check fails" in text.lower() or "cannot drop" in text.lower()
+            print(f"     {'!! could not drop' if failed else 'dropped'}: {label}")
+            if failed:
+                print(f"        {text.strip().splitlines()[0][:140]}")
+        except Exception:
+            print(f"     nothing to drop: {label}")
+
+    out = graph.conn.gsql(chr(10).join(creates))
+    text = out if isinstance(out, str) else str(out)
+    print(text[-1800:])
+    if "error" in text.lower() or "failed" in text.lower():
+        raise RuntimeError("schema install reported an error — see output above")
     print("[ok] schema installed")
 
 
@@ -102,8 +146,7 @@ def install_queries(graph):
     print(f"[..] installing + compiling queries from {os.path.basename(QUERIES)}")
     print("     (INSTALL QUERY compiles to C++ — this takes 1-3 minutes)")
     t0 = time.time()
-    with open(QUERIES, encoding="utf-8") as f:
-        out = graph.conn.gsql(f.read())
+    out = graph.conn.gsql(_read_gsql(QUERIES))
     print(out[-2500:] if isinstance(out, str) else out)
     print(f"[ok] queries installed in {time.time()-t0:.0f}s")
     print(f"     installed: {graph.query_installed()}")
