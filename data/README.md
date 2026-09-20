@@ -29,3 +29,26 @@ If you get a fresh copy of the dataset (e.g. from the hackathon's
 Google Drive link) with different filenames, drop it in here as
 `corpus.jsonl` / `eval_public.jsonl` / `eval_hidden.jsonl` (same
 shapes as above) and everything downstream just works.
+
+## Generated stress set
+
+`eval_stress.jsonl` is **not** part of the provided dataset — it is generated
+from the corpus by `python -m src.eval.stress_set --n 60`, and exists because
+the provided 100 questions saturate at ~99% for GraphRAG, leaving no headroom
+to measure whether agentic reasoning adds value.
+
+Each question has the shape *"resolve X, then query using X"*, where X is never
+stated. Gold answers are computed directly from the structured graph at
+generation time — correct by construction, no LLM in the labelling path,
+seeded and reproducible. Ambiguous cases (tied superlatives) are skipped rather
+than labelled, since an ambiguous question cannot be graded.
+
+Extra fields beyond the provided sets' schema:
+
+| Field | Meaning |
+|---|---|
+| `hops_required` | how many sequential resolutions the question needs (2 or 3) |
+| `intermediate` | the value(s) a system must resolve on the way — for debugging, never shown to any pipeline |
+| `answer_verified` | always true; answers come from the graph, not a model |
+
+Fixed GraphRAG scores 0/60 on this set. See `ARCHITECTURE.md` §6.

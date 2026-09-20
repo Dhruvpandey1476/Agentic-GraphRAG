@@ -29,7 +29,7 @@ distinct number from total LLM input tokens.
 import json
 import time
 import sys, os
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

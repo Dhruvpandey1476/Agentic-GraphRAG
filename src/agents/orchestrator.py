@@ -98,26 +98,6 @@ Return ONLY JSON: {{"action": str, "args": {{}}, "reason": str}}
 specific to this question, not a generic justification."""
 
 
-VERIFY_SYSTEM = """You are verifying a candidate answer against the evidence it
-was computed from. Be strict and literal.
-
-Check:
-- Does the evidence actually support this exact answer?
-- Does the answer address what the question asked (right entity, right field,
-  right time period)?
-- Is anything the question asked for still missing?
-
-Return ONLY JSON:
-{"sufficient": bool, "gap": str, "confidence": float}
-Set sufficient=false if the evidence is partial, contradictory, or answers a
-subtly different question than the one asked."""
-
-
-SUFFICIENCY_SYSTEM = """Decide whether the evidence collected is enough to
-answer the question completely. Be strict: partial evidence is NOT enough.
-Return ONLY JSON: {"sufficient": bool, "gap": str, "confidence": float}"""
-
-
 FINAL_ANSWER_SYSTEM = """Using ALL evidence gathered during this investigation,
 give the final answer.
 
@@ -303,7 +283,7 @@ def _verify_deterministically(result, spec, question=""):
 _SUPERLATIVE_MIN = ("fewest", "least", "lowest", "smallest")
 
 
-def _repair_query(state, graph, spec, question, reason):
+def _repair_query(state, graph, spec, question, reason, _fixed=None):
     """Repair a query the grounding check rejected — deterministically,
     for zero tokens, before falling back to the LLM loop.
 
@@ -335,6 +315,11 @@ def _repair_query(state, graph, spec, question, reason):
     """
     if not spec:
         return None
+    # Slots already repaired on this chain. Without it, fixing a threshold
+    # re-checks grounding, sees the (already-substituted) discipline still
+    # absent from the question, and resolves it a second time — correct but
+    # it doubles the trace and hides what actually happened.
+    _fixed = set(_fixed or ())
 
     # ---- coverage failure: decompose over the years the question names ----
     if "distinct years" in reason:
@@ -395,13 +380,14 @@ def _repair_query(state, graph, spec, question, reason):
             return None
         # The threshold is fixed, but the discipline may still be a guess.
         ok, why = _check_query_grounding(fixed, question)
-        if not ok:
-            nested = _repair_query(state, graph, fixed, question, why)
+        if not ok and "discipline" not in _fixed:
+            nested = _repair_query(state, graph, fixed, question, why,
+                                   _fixed | {"literal"})
             return nested if nested else None
         return {**out, "repaired": "literal_threshold"}
 
     # ---- guessed discipline, recoverable from the graph ----
-    if "discipline=" in reason and spec.get("games_id"):
+    if "discipline=" in reason and spec.get("games_id") and "discipline" not in _fixed:
         direction = "min" if any(w in question.lower() for w in _SUPERLATIVE_MIN) else "max"
         resolver = {"type": "discipline_superlative", "games_id": spec["games_id"],
                     "direction": direction}
@@ -430,8 +416,9 @@ def _repair_query(state, graph, spec, question, reason):
         # re-check and chain the next repair rather than trusting it.
         ok, why = _check_query_grounding({k: v for k, v in repaired.items()
                                           if k != "discipline"}, question)
-        if not ok:
-            nested = _repair_query(state, graph, repaired, question, why)
+        if not ok and "literal" not in _fixed:
+            nested = _repair_query(state, graph, repaired, question, why,
+                                   _fixed | {"discipline"})
             if nested:
                 return nested
         out = sa.execute(repaired, graph)
