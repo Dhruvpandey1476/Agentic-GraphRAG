@@ -6,14 +6,51 @@ side-by-side to answer the question the hackathon actually poses:
 
 > **When does agentic reasoning earn its token cost, and when is it overkill?**
 
-Our answer, measured rather than asserted:
+Our answer, measured on a **live TigerGraph Savanna workspace** (4.2.5), not
+asserted:
 
-| | Finding |
-|---|---|
-| **On the provided 100-question set** | Agentic reasoning is **not worth it**. GraphRAG already answers ~99% of these with a single graph query. The agent adds ~1 point for real extra cost. We report this plainly instead of hiding it. |
-| **On chained questions** | Agentic reasoning is **required**. Where the question's subject must be resolved *before* it can be queried, the fixed pipeline scores **0/60** — not "worse", but structurally incapable. |
-| **The crossover** | Adaptivity pays exactly when a question needs the output of one graph query as the input to the next. That is the boundary, and it is measurable. |
-| **The cheap part** | The agent spends **zero** reasoning tokens on questions its free deterministic path answers *verifiably*, so the cost is paid only where it buys something. |
+### On the provided 100 questions — the agent is *not* worth it
+
+| | Accuracy | Avg tokens | Escalated |
+|---|---|---|---|
+| GraphRAG | **100/100** | 0 | — |
+| Agentic GraphRAG | **100/100** | 67.5 | **1 / 100** |
+
+A single graph query answers all of them. The agent adds nothing, and says so:
+99 questions resolve for **zero reasoning tokens**, and the one escalation is a
+genuinely ambiguous venue+date tie. Reporting a fake win here would be the wrong
+answer to the hackathon's actual question.
+
+### On 60 chained questions — the agent is required
+
+| | Accuracy | Avg tokens | Escalated |
+|---|---|---|---|
+| GraphRAG | 0.117 | 769 | — |
+| Agentic GraphRAG | **0.414** | 3,717 | 89.7% |
+
+Per question type, the verdict is genuinely mixed — which is the point:
+
+| Type | GraphRAG | Agentic | Verdict |
+|---|---|---|---|
+| `chained_discipline` | 0.167 | **0.833** | worth it — **+66.6 pts for −19 tokens** |
+| `cross_edition` | 0.000 | **0.455** | agent needed |
+| `relaxation` | 0.333 | **0.500** | worth it — +16.7 pts for 1,938 tokens |
+| `chained_chronology` | 0.083 | **0.182** | worth it — +9.9 pts for 6,610 tokens |
+| `chained_venue` | 0.000 | 0.083 | agent needed, but barely works |
+
+`chained_discipline` is the result worth staring at: **more accurate and
+cheaper**. The deterministic repair resolves the unnamed discipline from the
+graph for zero tokens, while the fixed pipeline burns its LLM fallback guessing.
+
+### The crossover
+
+Adaptivity pays exactly when a question needs **the output of one graph query as
+the input to the next**. Above that line the agent is essential; below it, it is
+pure overhead. That boundary is the finding.
+
+All numbers above are with a local **llama3:8b** — deliberately weak, to show
+how little rides on model strength. The grounding check and all three repair
+classes are deterministic; a stronger model lifts only the LLM-loop path.
 
 ![Architecture](docs/architecture.svg)
 
@@ -234,8 +271,11 @@ by construction, no LLM in the labelling path, seeded and reproducible.
 | `cross_edition` | the same aggregation on two editions, then compare | 2 |
 | `relaxation` | over-specified constraints returning zero rows until relaxed | 2 |
 
-Fixed GraphRAG scores **0/60** on this set — not a tuning gap, an expressiveness
-gap.
+Fixed GraphRAG scores **7/60 (0.117)** on this set with its LLM planner, and
+**0/60** with the regex planner alone. The handful it gets are cases where the
+planner's guess at the unstated value happened to be right — which is luck, not
+capability. Either way the gap is one of expressiveness, not tuning: one
+compiled query cannot consume the result of another.
 
 ---
 

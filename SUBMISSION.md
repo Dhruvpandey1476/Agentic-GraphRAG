@@ -13,31 +13,40 @@ Round 1 deadline: **Wed 24 Sep**. Round 2 (top 15): **Wed 1 Oct**.
 | Orchestrator + specialised agents + harness | done |
 | Metrics dashboard (tokens, accuracy, completeness) | done — `dashboard/index.html` |
 | Architecture diagram | done — `docs/architecture.svg` |
+| TigerGraph connection | **done** — live Savanna 4.2.5, schema + 6 GSQL queries installed, 2,187 events loaded, 100/100 verified |
+| Benchmarks on live TigerGraph | done — `outputs/summary_tg_public.json`, `outputs/summary_tg_stress.json` |
 | GitHub repository | **needs pushing** (see below) |
-| TigerGraph connection | **needs your Savanna credentials** (see below) |
 | Demo video | **needs recording** (script below) |
+| RAG on TigerGraph | **partial** — needs dense chunk embeddings (see below) |
 | Social post tagging @TigerGraph | optional, counts in your favour |
 
 ---
 
-## Two things only you can do
+## What is left
 
-### 1. Provision Savanna and connect (~15 min)
+### 1. Finish RAG on TigerGraph (~2 min with a key, ~95 min locally)
+
+The structured layer is fully loaded and benchmarked on Savanna. The
+`Document`/`Chunk` layer is not, because RAG needs **dense** vectors and the
+default TF-IDF vectors are sparse — they cannot go into a `LIST<DOUBLE>`.
+
+Local `nomic-embed-text` measured at 1.6 chunks/s, so 9,065 chunks is ~95
+minutes. Either let it run:
 
 ```bash
-python -m scripts.setup_tigergraph --check    # prints exact steps if unconfigured
+EMBEDDING_PROVIDER=ollama python -m src.ingestion.build_graph
 ```
 
-Then follow README → *Connecting TigerGraph*. Once `.env` has `TG_HOST` and
-`TG_SECRET`:
+or, far faster, point it at an API key:
 
-```bash
-python -m scripts.setup_tigergraph            # schema, queries, load, verify
+```ini
+EMBEDDING_PROVIDER=openai
+OPENAI_API_KEY=...
 ```
 
-Re-run the benchmarks afterwards so the dashboard shows
-`graph backend: tigergraph` instead of `mock`. **Judges will look at this
-field.** The dashboard prints a warning banner while it says `mock`.
+Until then the three-way benchmark on TigerGraph covers GraphRAG and Agentic;
+the RAG baseline numbers in this repo come from the offline store. **Say that
+plainly in the writeup** rather than letting a judge discover it.
 
 ### 2. Add a fast LLM key and re-run the full benchmark
 
@@ -75,11 +84,11 @@ regenerates in ~80 seconds.
 The thing that wins here is the **finding**, not the feature tour. Lead with it.
 
 **0:00–0:25 — The claim**
-> "We benchmarked RAG, GraphRAG and Agentic GraphRAG on the provided corpus.
-> Our headline result is that on the provided question set, **agentic reasoning
-> is not worth its cost** — GraphRAG already answers 99% of it with a single
-> query. So we built a harder benchmark to find where it *does* pay. Here's the
-> boundary we found."
+> "We benchmarked RAG, GraphRAG and Agentic GraphRAG on a live TigerGraph
+> Savanna workspace. Our headline result is that on the provided question set,
+> **agentic reasoning is not worth its cost** — GraphRAG answers 100 out of 100
+> with a single graph query. So we built a harder benchmark to find where it
+> *does* pay, and found the boundary."
 
 Starting with a negative result signals you measured rather than assumed. It
 also sets up the rest.
@@ -107,13 +116,19 @@ Then show the fix:
 > guessed, the repair is deterministic too: resolve the discipline from the
 > graph, substitute, re-run, re-verify. Correct answer, 872 tokens."
 
+Then land the number that sells it:
+
+> "On that whole question family we go from 0.167 to 0.833 — and we spend
+> *nineteen fewer* tokens than the fixed pipeline, because it burns its LLM
+> fallback guessing while we resolve the value from the graph for free."
+
 Show the live trace with the `resolve_slot` → `repair_literal` → `graph_query`
 → `verify` steps.
 
 **2:20–3:10 — The benchmark** (show the dashboard)
 Flip between the Public and Stress tabs. Point at the verdict column:
 *AGENT NOT WORTH IT* on the public set, *AGENT NEEDED* on the stress set where
-fixed GraphRAG scores 0/60. Then the escalation-rate card: the agent spends zero
+fixed GraphRAG scores 7/60. Then the escalation-rate card: the agent spends zero
 reasoning tokens on questions the free path answers verifiably.
 
 **3:10–3:40 — Honesty about the fast path**
@@ -146,8 +161,14 @@ system's real accuracy.
 
 **"You generated your own benchmark. Isn't that self-serving?"**
 The gold answers are computed from the graph, not from our system's output —
-there is no LLM in the labelling path, and our own fixed pipeline scores 0/60 on
-it. It is reproducible from a seed and the generator is ~250 readable lines.
+there is no LLM in the labelling path, and our own fixed pipeline scores 7/60 on
+it (0/60 without its LLM planner). It is reproducible from a seed and the generator is ~250 readable lines.
+
+**"Did you actually run this on TigerGraph, or just locally?"**
+Live Savanna, TigerGraph 4.2.5 — and running there found three defects local
+testing could not, including GSQL `LIKE` matching "women's 20 kilometres walk"
+for a men's query and silently returning the wrong medallist on 4 of 100
+questions. That is written up in ARCHITECTURE.md §2.
 
 **"Why is your agent only ~1 point better on the provided set?"**
 Because on that set it shouldn't be. Those questions are single-hop over a

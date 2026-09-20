@@ -1,0 +1,164 @@
+{
+  "graphrag": {
+    "n_questions": 60,
+    "avg_tokens": 768.5,
+    "total_tokens": 46112,
+    "avg_input_tokens": 722.0,
+    "avg_output_tokens": 46.6,
+    "avg_context_tokens": 2.5,
+    "avg_llm_calls": 1.37,
+    "avg_steps": 2.57,
+    "avg_latency_s": 3.195,
+    "answered_rate": 1.0,
+    "exact_match_accuracy": 0.117,
+    "avg_retrieval_recall": 0.246
+  },
+  "agentic_graphrag": {
+    "n_questions": 58,
+    "avg_tokens": 3717.2,
+    "total_tokens": 215598,
+    "avg_input_tokens": 3539.8,
+    "avg_output_tokens": 177.4,
+    "avg_context_tokens": 887.4,
+    "avg_llm_calls": 3.97,
+    "avg_steps": 5.03,
+    "avg_latency_s": 12.648,
+    "answered_rate": 0.983,
+    "exact_match_accuracy": 0.414,
+    "avg_retrieval_recall": 0.446
+  },
+  "agentic_behavior": {
+    "escalation_rate": 0.897,
+    "n_escalated": 52,
+    "n_resolved_free": 6,
+    "avg_tokens_when_escalated": 4044.9,
+    "avg_tokens_when_not_escalated": 877.2,
+    "avg_strategy_changes": 3.33,
+    "avg_citations": 6.12,
+    "avg_evidence_items": 7.22,
+    "retrieval_methods_used": {
+      "graph_query": 58,
+      "verify": 58,
+      "resolve_slot": 21,
+      "repair_literal": 18,
+      "entity_linking": 12,
+      "decompose": 5,
+      "relax_query": 4,
+      "compare": 3,
+      "similarity_search": 1
+    },
+    "specialized_agents_invoked": {
+      "graph_query": 58,
+      "resolve_slot": 21,
+      "repair_literal": 18,
+      "entity_linking": 12,
+      "decompose": 5,
+      "relax_query": 4,
+      "compare": 3,
+      "similarity_search": 1
+    },
+    "stopping_reasons": {
+      "reached max_steps": 27,
+      "escalated": 21,
+      "deterministic graph query resolved and passed verification — no agentic reasoning needed": 6,
+      "agent judged evidence sufficient after 4 steps": 4
+    }
+  },
+  "planner_provenance": {
+    "llm": 48,
+    "regex": 12
+  },
+  "agentic_value_by_qtype": {
+    "chained_chronology": {
+      "n": 12,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.083,
+        "agentic_graphrag": 0.182
+      },
+      "avg_tokens": {
+        "graphrag": 245.2,
+        "agentic_graphrag": 6855.2
+      },
+      "accuracy_delta": 0.099,
+      "extra_tokens": 6610.0,
+      "tokens_per_accuracy_point": 667.7,
+      "verdict": "AGENT WORTH IT — +9.9 pts for 6610 extra tokens"
+    },
+    "chained_discipline": {
+      "n": 12,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.167,
+        "agentic_graphrag": 0.833
+      },
+      "avg_tokens": {
+        "graphrag": 892.4,
+        "agentic_graphrag": 873.3
+      },
+      "accuracy_delta": 0.666,
+      "extra_tokens": -19.1,
+      "tokens_per_accuracy_point": -0.3,
+      "verdict": "AGENT WORTH IT — +66.6 pts for -19 extra tokens"
+    },
+    "chained_venue": {
+      "n": 12,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.083
+      },
+      "avg_tokens": {
+        "graphrag": 871.3,
+        "agentic_graphrag": 4735.3
+      },
+      "accuracy_delta": 0.083,
+      "extra_tokens": 3864.0,
+      "tokens_per_accuracy_point": 465.5,
+      "verdict": "AGENT NEEDED — fixed pipeline cannot answer these at all"
+    },
+    "cross_edition": {
+      "n": 12,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.455
+      },
+      "avg_tokens": {
+        "graphrag": 954.9,
+        "agentic_graphrag": 3552.7
+      },
+      "accuracy_delta": 0.455,
+      "extra_tokens": 2597.8,
+      "tokens_per_accuracy_point": 57.1,
+      "verdict": "AGENT NEEDED — fixed pipeline cannot answer these at all"
+    },
+    "relaxation": {
+      "n": 12,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.333,
+        "agentic_graphrag": 0.5
+      },
+      "avg_tokens": {
+        "graphrag": 878.8,
+        "agentic_graphrag": 2817.2
+      },
+      "accuracy_delta": 0.167,
+      "extra_tokens": 1938.4,
+      "tokens_per_accuracy_point": 116.1,
+      "verdict": "AGENT WORTH IT — +16.7 pts for 1938 extra tokens"
+    }
+  },
+  "_meta": {
+    "questions_file": "eval_stress.jsonl",
+    "n_questions": 60,
+    "graph_backend": "tigergraph",
+    "embedder": "tfidf:corpus-fitted",
+    "llm_provider": "ollama",
+    "llm_model": "llama3:latest",
+    "ablation": false,
+    "started": "2026-09-20 22:13:05",
+    "elapsed_s": 1088.3
+  }
+}

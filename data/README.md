@@ -51,4 +51,5 @@ Extra fields beyond the provided sets' schema:
 | `intermediate` | the value(s) a system must resolve on the way — for debugging, never shown to any pipeline |
 | `answer_verified` | always true; answers come from the graph, not a model |
 
-Fixed GraphRAG scores 0/60 on this set. See `ARCHITECTURE.md` §6.
+Fixed GraphRAG scores 7/60 (0.117) on this set with its LLM planner, 0/60 with
+the regex planner alone. See `ARCHITECTURE.md` §6.

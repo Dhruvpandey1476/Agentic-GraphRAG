@@ -266,8 +266,12 @@ Gold answers are computed directly from the structured graph at generation time
 disagree with, seeded and reproducible. Ambiguous cases (tied superlatives) are
 skipped rather than labelled, because an ambiguous question cannot be graded.
 
-Fixed GraphRAG scores **0/60**. That is not a tuning gap to be closed with a
-better prompt; it is an expressiveness gap.
+Fixed GraphRAG scores **7/60 (0.117)** with its LLM planner, and **0/60** with
+the regex planner alone. The few it gets come from the planner guessing the
+unstated value correctly — luck, not capability, and the grounding check flags
+exactly those queries as ungrounded. Either way this is not a tuning gap to be
+closed with a better prompt; it is an expressiveness gap, because one compiled
+query has nowhere to put the result of another.
 
 ---
 
