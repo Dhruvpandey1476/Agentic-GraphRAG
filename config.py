@@ -92,6 +92,16 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
 # or "tigergraph" (native TigerGraph vector index).
 VECTOR_BACKEND = os.getenv("VECTOR_BACKEND", "local").lower()
 
+# ---------------------------------------------------------------- RAG
+# Context budget for the RAG baseline, in tokens. Chunks are packed by
+# descending similarity until the budget is reached, rather than always
+# sending a fixed k. This is both better RAG practice (production RAG
+# always has a budget) and a hard requirement on hosted free tiers: Groq's
+# on-demand tier rejects any single request over 8,000 tokens outright with
+# a 413, so a fixed k=8 (~8.5k tokens) could not run there at all.
+RAG_TOP_K = _int("RAG_TOP_K", 8)
+RAG_MAX_CONTEXT_TOKENS = _int("RAG_MAX_CONTEXT_TOKENS", 4000)
+
 # ---------------------------------------------------------------- Agent limits
 MAX_AGENT_STEPS = _int("MAX_AGENT_STEPS", 8)
 MAX_TOKENS_PER_RUN = _int("MAX_TOKENS_PER_RUN", 20000)

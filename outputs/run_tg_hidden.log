@@ -1,0 +1,71 @@
+[graph] connected to TigerGraph at https://tg-fdb2a666-d98f-4292-b8f2-47f463a61d5e.tg-2635877100.i.tgcloud.io (graph=HackathonGraph)
+{
+  "questions_file": "eval_hidden.jsonl",
+  "n_questions": 50,
+  "graph_backend": "tigergraph",
+  "embedder": "ollama:nomic-embed-text",
+  "llm_provider": "groq",
+  "llm_model": "openai/gpt-oss-120b",
+  "ablation": false,
+  "started": "2026-09-21 19:24:40"
+}
+[1/50] (multi_hop) Who won the gold medal in the event held at Olympic Tennis Centre on 15 to 
+[2/50] (lookup) How many nations competed in Fencing at the 1988 Summer Olympics – Men's fo
+[3/50] (aggregation) According to the provided corpus, how many cycling events at the 2008 Summe
+[4/50] (multi_hop) Who won the gold medal in the event held at Sydney International Shooting C
+[5/50] (superlative) According to the provided corpus, which sailing event at the 2016 Summer Ol
+[6/50] (aggregation) According to the provided corpus, how many cross-country skiing events at t
+[7/50] (temporal) Who won the gold medal in the men's heavyweight boxing event at the Summer 
+[8/50] (aggregation) According to the provided corpus, how many sailing events at the 1996 Summe
+[9/50] (superlative) According to the provided corpus, which sailing event at the 2004 Summer Ol
+[10/50] (lookup) How many nations competed in Boxing at the 1996 Summer Olympics – Flyweight
+[11/50] (aggregation) According to the provided corpus, how many weightlifting events at the 1992
+[12/50] (lookup) How many nations competed in Swimming at the 2016 Summer Olympics – Men's 1
+[13/50] (aggregation) According to the provided corpus, how many cycling events at the 2016 Summe
+[14/50] (multi_hop) Who won the gold medal in the event held at San Sicario on February 15, 200
+[15/50] (lookup) How many nations competed in Athletics at the 2016 Summer Olympics – Men's 
+[16/50] (lookup) How many nations competed in Athletics at the 2008 Summer Olympics – Women'
+[17/50] (multi_hop) Who won the gold medal in the event held at Eton Dorney on 28 July – 4 Augu
+[18/50] (multi_hop) Who won the gold medal in the event held at Olympic Stadium on 16–18 August
+[19/50] (aggregation) According to the provided corpus, how many alpine skiing events at the 1998
+[20/50] (multi_hop) Who won the gold medal in the event held at Royal Artillery Barracks on 5 A
+[21/50] (temporal) Who won the gold medal in the men's 200 metre backstroke swimming event at 
+[22/50] (lookup) How many nations competed in Cross-country skiing at the 2014 Winter Olympi
+[23/50] (aggregation) According to the provided corpus, how many shooting events at the 2000 Summ
+[24/50] (superlative) According to the provided corpus, which cross-country skiing event at the 1
+[25/50] (superlative) According to the provided corpus, which rowing event at the 2016 Summer Oly
+[26/50] (lookup) How many nations competed in Fencing at the 2000 Summer Olympics – Men's fo
+[27/50] (superlative) According to the provided corpus, which cycling event at the 2012 Summer Ol
+[28/50] (aggregation) According to the provided corpus, how many wrestling events at the 2012 Sum
+[29/50] (aggregation) According to the provided corpus, how many boxing events at the 2012 Summer
+[30/50] (superlative) According to the provided corpus, which alpine skiing event at the 1994 Win
+[31/50] (temporal) Who won the gold medal in the men's 62 kg weightlifting event at the Summer
+[32/50] (multi_hop) Who won the gold medal in the event held at Pacific Coliseum on February 20
+[33/50] (aggregation) According to the provided corpus, how many alpine skiing events at the 1988
+[34/50] (temporal) Who won the gold medal in the men's freestyle 120 kg wrestling event at the
+[35/50] (superlative) According to the provided corpus, which rowing event at the 2012 Summer Oly
+[36/50] (aggregation) According to the provided corpus, how many short-track speed skating events
+[37/50] (superlative) According to the provided corpus, which sailing event at the 1996 Summer Ol
+[38/50] (aggregation) According to the provided corpus, how many athletics events at the 2008 Sum
+[39/50] (aggregation) According to the provided corpus, how many boxing events at the 1992 Summer
+[40/50] (multi_hop) Who won the gold medal in the event held at Stadium Australia on 27 Septemb
+[41/50] (aggregation) According to the provided corpus, how many alpine skiing events at the 2006
+[42/50] (temporal) Who won the gold medal in the mixed trap shooting event at the Summer Olymp
+[43/50] (multi_hop) Who won the gold medal in the event held at Carioca Arena 3 on 11 August 20
+[44/50] (temporal) Who won the gold medal in the women's 75 kg weightlifting event at the Summ
+[45/50] (temporal) Who won the gold medal in the women's moguls freestyle skiing event at the 
+[46/50] (temporal) Who won the gold medal in the light flyweight boxing event at the Summer Ol
+[47/50] (superlative) According to the provided corpus, which cycling event at the 2004 Summer Ol
+[48/50] (aggregation) According to the provided corpus, how many cycling events at the 2012 Summe
+[49/50] (superlative) According to the provided corpus, which shooting event at the 1988 Summer O
+[50/50] (multi_hop) Who won the gold medal in the event held at Olympic Stadium on 6–9 August a
+
+Done in 33.0s -> outputs/summary_tg_hidden.json
+
+pipeline                 acc    tokens   calls   steps  answered
+----------------------------------------------------------------
+graphrag                   —       0.0    0.00    2.00     1.000
+agentic_graphrag           —      44.6    0.04    2.02     1.000
+
+escalation rate: 2.0% (1 escalated / 49 resolved free)
+tokens when escalated: 2232 | when not: 0

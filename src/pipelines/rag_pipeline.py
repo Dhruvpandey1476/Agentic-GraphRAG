@@ -6,7 +6,8 @@ This is the baseline the other two are measured against, so it is built
 to be a FAIR opponent, not a strawman:
   - same embedder and same chunk store as the other pipelines
   - a real LLM reads the retrieved context and answers
-  - top-k is generous (k=8) rather than crippled
+  - retrieval is generous (k=8) and context is packed to a real token
+    budget rather than crippled
   - the prompt is a good RAG prompt, not a deliberately bad one
 
 It is still expected to lose on aggregation/superlative/temporal
@@ -29,7 +30,7 @@ import os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 import config
-from src.llm_client import UsageTracker, parse_json_safely
+from src.llm_client import UsageTracker, parse_json_safely, estimate_tokens
 from src.embeddings import Embedder
 from src.tigergraph_client import get_graph
 
@@ -73,18 +74,47 @@ def _proxy_extract(question: str, chunk_texts: list):
     return None
 
 
-def run(question: str, graph=None, embedder=None, llm=None, qtype=None, k=8) -> dict:
+def _pack_context(top, budget_tokens):
+    """Pack retrieved chunks by descending similarity until the token budget
+    is spent, and report what was dropped.
+
+    A fixed top-k is the naive form and is not what production RAG does:
+    the real constraint is the context budget, and chunks vary in length.
+    It is also a hard limit here — Groq's on-demand tier rejects any single
+    request above 8,000 tokens with a 413, so a fixed k=8 (~8.5k) simply
+    cannot run. Packing to a budget keeps the baseline as strong as the
+    budget allows instead of failing outright, and `chunks_dropped` records
+    the truncation so the number is never quietly overstated.
+    """
+    parts, used, kept = [], 0, 0
+    for score, cid, c in top:
+        piece = f"[{cid}] {c.get('text', '')}"
+        cost = estimate_tokens(piece)
+        if used + cost > budget_tokens and kept:
+            break
+        parts.append(piece)
+        used += cost
+        kept += 1
+    sep = chr(10) * 2
+    return sep.join(parts), kept, used
+
+
+def run(question: str, graph=None, embedder=None, llm=None, qtype=None,
+        k=None, max_context_tokens=None) -> dict:
     graph = graph or get_graph()
     embedder = embedder or Embedder()
     usage = UsageTracker()
+    k = k or config.RAG_TOP_K
+    budget = max_context_tokens or config.RAG_MAX_CONTEXT_TOKENS
 
     q_emb = embedder.embed(question)
     top = graph.vector_search(q_emb, k=k)
     retrieved_doc_ids = list({c.get("doc_id") for _, _, c in top if c.get("doc_id")})
     chunk_ids = [cid for _, cid, _ in top]
 
+    context, kept, ctx_tokens = _pack_context(top, budget)
+
     if llm is not None:
-        context = "\n\n".join(f"[{cid}] {c.get('text','')}" for _, cid, c in top)
         result = llm.complete(
             ANSWER_SYSTEM, f"Question: {question}\n\nContext passages:\n{context}",
             max_tokens=400, json_mode=True, context_text=context,
@@ -110,6 +140,9 @@ def run(question: str, graph=None, embedder=None, llm=None, qtype=None, k=8) -> 
         "confidence": confidence,
         "gap": gap,
         "retrieved_chunks": chunk_ids,
+        "chunks_in_context": kept,
+        "chunks_dropped": len(top) - kept,
+        "context_budget_tokens": budget,
         "matched_doc_ids": retrieved_doc_ids,
         "usage": usage.summary(),
         "steps": 1,

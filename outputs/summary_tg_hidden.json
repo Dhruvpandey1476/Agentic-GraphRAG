@@ -1,0 +1,62 @@
+{
+  "graphrag": {
+    "n_questions": 50,
+    "avg_tokens": 0.0,
+    "total_tokens": 0,
+    "avg_input_tokens": 0.0,
+    "avg_output_tokens": 0.0,
+    "avg_context_tokens": 0.0,
+    "avg_llm_calls": 0.0,
+    "avg_steps": 2.0,
+    "avg_latency_s": 0.0,
+    "answered_rate": 1.0
+  },
+  "agentic_graphrag": {
+    "n_questions": 50,
+    "avg_tokens": 44.6,
+    "total_tokens": 2232,
+    "avg_input_tokens": 29.9,
+    "avg_output_tokens": 14.7,
+    "avg_context_tokens": 12.2,
+    "avg_llm_calls": 0.04,
+    "avg_steps": 2.02,
+    "avg_latency_s": 0.084,
+    "answered_rate": 1.0
+  },
+  "agentic_behavior": {
+    "escalation_rate": 0.02,
+    "n_escalated": 1,
+    "n_resolved_free": 49,
+    "avg_tokens_when_escalated": 2232.0,
+    "avg_tokens_when_not_escalated": 0.0,
+    "avg_strategy_changes": 1.02,
+    "avg_citations": 4.52,
+    "avg_evidence_items": 5.16,
+    "retrieval_methods_used": {
+      "graph_query": 50,
+      "verify": 50,
+      "answer": 1
+    },
+    "specialized_agents_invoked": {
+      "graph_query": 50
+    },
+    "stopping_reasons": {
+      "deterministic graph query resolved and passed verification — no agentic reasoning needed": 49,
+      "orchestrator judged the evidence sufficient to answer": 1
+    }
+  },
+  "planner_provenance": {
+    "regex": 50
+  },
+  "_meta": {
+    "questions_file": "eval_hidden.jsonl",
+    "n_questions": 50,
+    "graph_backend": "tigergraph",
+    "embedder": "ollama:nomic-embed-text",
+    "llm_provider": "groq",
+    "llm_model": "openai/gpt-oss-120b",
+    "ablation": false,
+    "started": "2026-09-21 19:24:40",
+    "elapsed_s": 33.0
+  }
+}

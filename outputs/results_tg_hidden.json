@@ -1,0 +1,6243 @@
+[
+  {
+    "qid": "eval-001",
+    "question": "Who won the gold medal in the event held at Olympic Tennis Centre on 15 to 22 August 2004?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at Olympic Tennis Centre on 15 to 22 August 2004?",
+      "answer": "Li TingSun Tiantian",
+      "confidence": 0.95,
+      "citations": [
+        "Q942805"
+      ],
+      "matched_doc_ids": [
+        "Q942805"
+      ],
+      "query_spec": {
+        "type": "venue_date",
+        "venue": "Olympic Tennis Centre",
+        "date": "15 to 22 August 2004",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at Olympic Tennis Centre on 15 to 22 August 2004?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'venue_date' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Olympic Tennis Centre on 15 to 22 August 2004?",
+            "spec": {
+              "type": "venue_date",
+              "venue": "Olympic Tennis Centre",
+              "date": "15 to 22 August 2004",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Li TingSun Tiantian' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.30680060386657715
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Li TingSun Tiantian",
+      "citations": [
+        "Q942805"
+      ],
+      "matched_doc_ids": [
+        "Q942805"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.307
+    }
+  },
+  {
+    "qid": "eval-002",
+    "question": "How many nations competed in Fencing at the 1988 Summer Olympics – Men's foil?",
+    "qtype": "lookup",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "How many nations competed in Fencing at the 1988 Summer Olympics – Men's foil?",
+      "answer": "29",
+      "confidence": 0.95,
+      "citations": [
+        "Q5443136"
+      ],
+      "matched_doc_ids": [
+        "Q5443136"
+      ],
+      "query_spec": {
+        "type": "lookup_field",
+        "field": "nations",
+        "title": "Fencing at the 1988 Summer Olympics – Men's foil",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "How many nations competed in Fencing at the 1988 Summer Olympics – Men's foil?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "How many nations competed in Fencing at the 1988 Summer Olympics – Men's foil?",
+            "spec": {
+              "type": "lookup_field",
+              "field": "nations",
+              "title": "Fencing at the 1988 Summer Olympics – Men's foil"
+            }
+          },
+          "output_summary": "resolved exactly: '29' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.24715375900268555
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "29",
+      "citations": [
+        "Q5443136"
+      ],
+      "matched_doc_ids": [
+        "Q5443136"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.248
+    }
+  },
+  {
+    "qid": "eval-003",
+    "question": "According to the provided corpus, how many cycling events at the 2008 Summer Olympics had more than 30 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many cycling events at the 2008 Summer Olympics had more than 30 competitors?",
+      "answer": "8",
+      "confidence": 0.95,
+      "citations": [
+        "Q635304",
+        "Q1005614",
+        "Q938833",
+        "Q727488",
+        "Q1005322",
+        "Q1064728",
+        "Q628945",
+        "Q1063589"
+      ],
+      "matched_doc_ids": [
+        "Q635304",
+        "Q1005614",
+        "Q938833",
+        "Q727488",
+        "Q1005322",
+        "Q1064728",
+        "Q628945",
+        "Q1063589"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "cycling",
+        "games_id": "2008-summer",
+        "min_competitors": 30,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many cycling events at the 2008 Summer Olympics had more than 30 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 9,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many cycling events at the 2008 Summer Olympics had more than 30 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "cycling",
+              "games_id": "2008-summer",
+              "min_competitors": 30
+            }
+          },
+          "output_summary": "resolved exactly: '8' from 8 graph record(s)",
+          "new_evidence_count": 8,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.30839109420776367
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "8",
+      "citations": [
+        "Q635304",
+        "Q1063589",
+        "Q1005614",
+        "Q727488",
+        "Q1005322",
+        "Q1064728",
+        "Q628945",
+        "Q938833"
+      ],
+      "matched_doc_ids": [
+        "Q635304",
+        "Q1063589",
+        "Q1005614",
+        "Q727488",
+        "Q1005322",
+        "Q1064728",
+        "Q628945",
+        "Q938833"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 8,
+      "wall_time_s": 0.308
+    }
+  },
+  {
+    "qid": "eval-004",
+    "question": "Who won the gold medal in the event held at Sydney International Shooting Centre on 22 September 2000?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at Sydney International Shooting Centre on 22 September 2000?",
+      "answer": "Mariya Grozdeva",
+      "confidence": 0.95,
+      "citations": [
+        "Q7500817"
+      ],
+      "matched_doc_ids": [
+        "Q7500817"
+      ],
+      "query_spec": {
+        "type": "venue_date",
+        "venue": "Sydney International Shooting Centre",
+        "date": "22 September 2000",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at Sydney International Shooting Centre on 22 September 2000?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'venue_date' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Sydney International Shooting Centre on 22 September 2000?",
+            "spec": {
+              "type": "venue_date",
+              "venue": "Sydney International Shooting Centre",
+              "date": "22 September 2000",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Mariya Grozdeva' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.26360559463500977
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Mariya Grozdeva",
+      "citations": [
+        "Q7500817"
+      ],
+      "matched_doc_ids": [
+        "Q7500817"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.264
+    }
+  },
+  {
+    "qid": "eval-005",
+    "question": "According to the provided corpus, which sailing event at the 2016 Summer Olympics had the highest number of competitors?",
+    "qtype": "superlative",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, which sailing event at the 2016 Summer Olympics had the highest number of competitors?",
+      "answer": "Sailing at the 2016 Summer Olympics – Men's 470",
+      "confidence": 0.95,
+      "citations": [
+        "Q26250761",
+        "Q26262259",
+        "Q26262261",
+        "Q26242954",
+        "Q26262295",
+        "Q26254891",
+        "Q26265754",
+        "Q26262262",
+        "Q26263261",
+        "Q26241858"
+      ],
+      "matched_doc_ids": [
+        "Q26250761",
+        "Q26262259",
+        "Q26262261",
+        "Q26242954",
+        "Q26262295",
+        "Q26254891",
+        "Q26265754",
+        "Q26262262",
+        "Q26263261",
+        "Q26241858"
+      ],
+      "query_spec": {
+        "type": "superlative",
+        "discipline": "sailing",
+        "games_id": "2016-summer",
+        "metric": "competitors",
+        "direction": "max",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, which sailing event at the 2016 Summer Olympics had the highest number of competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 11,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'superlative' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, which sailing event at the 2016 Summer Olympics had the highest number of competitors?",
+            "spec": {
+              "type": "superlative",
+              "discipline": "sailing",
+              "games_id": "2016-summer",
+              "metric": "competitors",
+              "direction": "max"
+            }
+          },
+          "output_summary": "resolved exactly: \"Sailing at the 2016 Summer Olympics – Men's 470\" from 10 graph record(s)",
+          "new_evidence_count": 10,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.30587339401245117
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Sailing at the 2016 Summer Olympics – Men's 470",
+      "citations": [
+        "Q26250761",
+        "Q26262259",
+        "Q26241858",
+        "Q26242954",
+        "Q26262295",
+        "Q26254891",
+        "Q26265754",
+        "Q26262262",
+        "Q26263261",
+        "Q26262261"
+      ],
+      "matched_doc_ids": [
+        "Q26250761",
+        "Q26262259",
+        "Q26241858",
+        "Q26242954",
+        "Q26262295",
+        "Q26254891",
+        "Q26265754",
+        "Q26262262",
+        "Q26263261",
+        "Q26262261"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 10,
+      "wall_time_s": 0.306
+    }
+  },
+  {
+    "qid": "eval-006",
+    "question": "According to the provided corpus, how many cross-country skiing events at the 2010 Winter Olympics had more than 62 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many cross-country skiing events at the 2010 Winter Olympics had more than 62 competitors?",
+      "answer": "4",
+      "confidence": 0.95,
+      "citations": [
+        "Q384953",
+        "Q220386",
+        "Q595962",
+        "Q848689"
+      ],
+      "matched_doc_ids": [
+        "Q384953",
+        "Q220386",
+        "Q595962",
+        "Q848689"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "cross-country skiing",
+        "games_id": "2010-winter",
+        "min_competitors": 62,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many cross-country skiing events at the 2010 Winter Olympics had more than 62 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 5,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many cross-country skiing events at the 2010 Winter Olympics had more than 62 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "cross-country skiing",
+              "games_id": "2010-winter",
+              "min_competitors": 62
+            }
+          },
+          "output_summary": "resolved exactly: '4' from 4 graph record(s)",
+          "new_evidence_count": 4,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.26937150955200195
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "4",
+      "citations": [
+        "Q384953",
+        "Q220386",
+        "Q595962",
+        "Q848689"
+      ],
+      "matched_doc_ids": [
+        "Q384953",
+        "Q220386",
+        "Q595962",
+        "Q848689"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 4,
+      "wall_time_s": 0.269
+    }
+  },
+  {
+    "qid": "eval-007",
+    "question": "Who won the gold medal in the men's heavyweight boxing event at the Summer Olympics held immediately before 2016?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the men's heavyweight boxing event at the Summer Olympics held immediately before 2016?",
+      "answer": "Oleksandr Usyk",
+      "confidence": 0.95,
+      "citations": [
+        "Q326384"
+      ],
+      "matched_doc_ids": [
+        "Q326384"
+      ],
+      "query_spec": {
+        "type": "temporal",
+        "discipline": "Boxing",
+        "event_name_substr": "men's heavyweight",
+        "season": "Summer",
+        "target_year": 2016,
+        "direction": "before",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the men's heavyweight boxing event at the Summer Olympics held immediately before 2016?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'temporal' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the men's heavyweight boxing event at the Summer Olympics held immediately before 2016?",
+            "spec": {
+              "type": "temporal",
+              "discipline": "Boxing",
+              "event_name_substr": "men's heavyweight",
+              "season": "Summer",
+              "target_year": 2016,
+              "direction": "before",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Oleksandr Usyk' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.24446916580200195
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Oleksandr Usyk",
+      "citations": [
+        "Q326384"
+      ],
+      "matched_doc_ids": [
+        "Q326384"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.245
+    }
+  },
+  {
+    "qid": "eval-008",
+    "question": "According to the provided corpus, how many sailing events at the 1996 Summer Olympics had more than 46 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many sailing events at the 1996 Summer Olympics had more than 46 competitors?",
+      "answer": "4",
+      "confidence": 0.95,
+      "citations": [
+        "Q7400322",
+        "Q7400318",
+        "Q7400319",
+        "Q7400323"
+      ],
+      "matched_doc_ids": [
+        "Q7400322",
+        "Q7400318",
+        "Q7400319",
+        "Q7400323"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "sailing",
+        "games_id": "1996-summer",
+        "min_competitors": 46,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many sailing events at the 1996 Summer Olympics had more than 46 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 5,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many sailing events at the 1996 Summer Olympics had more than 46 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "sailing",
+              "games_id": "1996-summer",
+              "min_competitors": 46
+            }
+          },
+          "output_summary": "resolved exactly: '4' from 4 graph record(s)",
+          "new_evidence_count": 4,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.30758094787597656
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "4",
+      "citations": [
+        "Q7400322",
+        "Q7400318",
+        "Q7400323",
+        "Q7400319"
+      ],
+      "matched_doc_ids": [
+        "Q7400322",
+        "Q7400318",
+        "Q7400323",
+        "Q7400319"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 4,
+      "wall_time_s": 0.309
+    }
+  },
+  {
+    "qid": "eval-009",
+    "question": "According to the provided corpus, which sailing event at the 2004 Summer Olympics had the highest number of competitors?",
+    "qtype": "superlative",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, which sailing event at the 2004 Summer Olympics had the highest number of competitors?",
+      "answer": "Sailing at the 2004 Summer Olympics – Men's 470",
+      "confidence": 0.95,
+      "citations": [
+        "Q7400339",
+        "Q7400346",
+        "Q10609400",
+        "Q7400347",
+        "Q7400349",
+        "Q7400345",
+        "Q7400344",
+        "Q7400350",
+        "Q7400340",
+        "Q7400342",
+        "Q7400341"
+      ],
+      "matched_doc_ids": [
+        "Q7400339",
+        "Q7400346",
+        "Q10609400",
+        "Q7400347",
+        "Q7400349",
+        "Q7400345",
+        "Q7400344",
+        "Q7400350",
+        "Q7400340",
+        "Q7400342",
+        "Q7400341"
+      ],
+      "query_spec": {
+        "type": "superlative",
+        "discipline": "sailing",
+        "games_id": "2004-summer",
+        "metric": "competitors",
+        "direction": "max",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, which sailing event at the 2004 Summer Olympics had the highest number of competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 12,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'superlative' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, which sailing event at the 2004 Summer Olympics had the highest number of competitors?",
+            "spec": {
+              "type": "superlative",
+              "discipline": "sailing",
+              "games_id": "2004-summer",
+              "metric": "competitors",
+              "direction": "max"
+            }
+          },
+          "output_summary": "resolved exactly: \"Sailing at the 2004 Summer Olympics – Men's 470\" from 11 graph record(s)",
+          "new_evidence_count": 11,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.26236581802368164
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Sailing at the 2004 Summer Olympics – Men's 470",
+      "citations": [
+        "Q7400339",
+        "Q7400346",
+        "Q10609400",
+        "Q7400347",
+        "Q7400345",
+        "Q7400350",
+        "Q7400344",
+        "Q7400341",
+        "Q7400340",
+        "Q7400349",
+        "Q7400342"
+      ],
+      "matched_doc_ids": [
+        "Q7400339",
+        "Q7400346",
+        "Q10609400",
+        "Q7400347",
+        "Q7400345",
+        "Q7400350",
+        "Q7400344",
+        "Q7400341",
+        "Q7400340",
+        "Q7400349",
+        "Q7400342"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 11,
+      "wall_time_s": 0.262
+    }
+  },
+  {
+    "qid": "eval-010",
+    "question": "How many nations competed in Boxing at the 1996 Summer Olympics – Flyweight?",
+    "qtype": "lookup",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "How many nations competed in Boxing at the 1996 Summer Olympics – Flyweight?",
+      "answer": "32",
+      "confidence": 0.95,
+      "citations": [
+        "Q10497009"
+      ],
+      "matched_doc_ids": [
+        "Q10497009"
+      ],
+      "query_spec": {
+        "type": "lookup_field",
+        "field": "nations",
+        "title": "Boxing at the 1996 Summer Olympics – Flyweight",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "How many nations competed in Boxing at the 1996 Summer Olympics – Flyweight?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "How many nations competed in Boxing at the 1996 Summer Olympics – Flyweight?",
+            "spec": {
+              "type": "lookup_field",
+              "field": "nations",
+              "title": "Boxing at the 1996 Summer Olympics – Flyweight"
+            }
+          },
+          "output_summary": "resolved exactly: '32' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.24683880805969238
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "32",
+      "citations": [
+        "Q10497009"
+      ],
+      "matched_doc_ids": [
+        "Q10497009"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.247
+    }
+  },
+  {
+    "qid": "eval-011",
+    "question": "According to the provided corpus, how many weightlifting events at the 1992 Summer Olympics had more than 24 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many weightlifting events at the 1992 Summer Olympics had more than 24 competitors?",
+      "answer": "4",
+      "confidence": 0.95,
+      "citations": [
+        "Q7979973",
+        "Q7979977",
+        "Q7979975",
+        "Q7979968"
+      ],
+      "matched_doc_ids": [
+        "Q7979973",
+        "Q7979977",
+        "Q7979975",
+        "Q7979968"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "weightlifting",
+        "games_id": "1992-summer",
+        "min_competitors": 24,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many weightlifting events at the 1992 Summer Olympics had more than 24 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 5,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many weightlifting events at the 1992 Summer Olympics had more than 24 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "weightlifting",
+              "games_id": "1992-summer",
+              "min_competitors": 24
+            }
+          },
+          "output_summary": "resolved exactly: '4' from 4 graph record(s)",
+          "new_evidence_count": 4,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.27451038360595703
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "4",
+      "citations": [
+        "Q7979973",
+        "Q7979968",
+        "Q7979975",
+        "Q7979977"
+      ],
+      "matched_doc_ids": [
+        "Q7979973",
+        "Q7979968",
+        "Q7979975",
+        "Q7979977"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 4,
+      "wall_time_s": 0.275
+    }
+  },
+  {
+    "qid": "eval-012",
+    "question": "How many nations competed in Swimming at the 2016 Summer Olympics – Men's 100 metre butterfly?",
+    "qtype": "lookup",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "How many nations competed in Swimming at the 2016 Summer Olympics – Men's 100 metre butterfly?",
+      "answer": "32",
+      "confidence": 0.95,
+      "citations": [
+        "Q25991452"
+      ],
+      "matched_doc_ids": [
+        "Q25991452"
+      ],
+      "query_spec": {
+        "type": "lookup_field",
+        "field": "nations",
+        "title": "Swimming at the 2016 Summer Olympics – Men's 100 metre butterfly",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "How many nations competed in Swimming at the 2016 Summer Olympics – Men's 100 metre butterfly?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "How many nations competed in Swimming at the 2016 Summer Olympics – Men's 100 metre butterfly?",
+            "spec": {
+              "type": "lookup_field",
+              "field": "nations",
+              "title": "Swimming at the 2016 Summer Olympics – Men's 100 metre butterfly"
+            }
+          },
+          "output_summary": "resolved exactly: '32' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.30752110481262207
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "32",
+      "citations": [
+        "Q25991452"
+      ],
+      "matched_doc_ids": [
+        "Q25991452"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.308
+    }
+  },
+  {
+    "qid": "eval-013",
+    "question": "According to the provided corpus, how many cycling events at the 2016 Summer Olympics had more than 27 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many cycling events at the 2016 Summer Olympics had more than 27 competitors?",
+      "answer": "6",
+      "confidence": 0.95,
+      "citations": [
+        "Q25476835",
+        "Q24760634",
+        "Q25476845",
+        "Q26260960",
+        "Q24761058",
+        "Q26260943"
+      ],
+      "matched_doc_ids": [
+        "Q25476835",
+        "Q24760634",
+        "Q25476845",
+        "Q26260960",
+        "Q24761058",
+        "Q26260943"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "cycling",
+        "games_id": "2016-summer",
+        "min_competitors": 27,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many cycling events at the 2016 Summer Olympics had more than 27 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 7,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many cycling events at the 2016 Summer Olympics had more than 27 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "cycling",
+              "games_id": "2016-summer",
+              "min_competitors": 27
+            }
+          },
+          "output_summary": "resolved exactly: '6' from 6 graph record(s)",
+          "new_evidence_count": 6,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2597029209136963
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "6",
+      "citations": [
+        "Q25476835",
+        "Q24760634",
+        "Q25476845",
+        "Q26260943",
+        "Q26260960",
+        "Q24761058"
+      ],
+      "matched_doc_ids": [
+        "Q25476835",
+        "Q24760634",
+        "Q25476845",
+        "Q26260943",
+        "Q26260960",
+        "Q24761058"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 6,
+      "wall_time_s": 0.26
+    }
+  },
+  {
+    "qid": "eval-014",
+    "question": "Who won the gold medal in the event held at San Sicario on February 15, 2006?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at San Sicario on February 15, 2006?",
+      "answer": "Michaela Dorfmeister",
+      "confidence": 0.95,
+      "citations": [
+        "Q771123"
+      ],
+      "matched_doc_ids": [
+        "Q771123"
+      ],
+      "query_spec": {
+        "type": "venue_date",
+        "venue": "San Sicario",
+        "date": "February 15, 2006",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at San Sicario on February 15, 2006?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'venue_date' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at San Sicario on February 15, 2006?",
+            "spec": {
+              "type": "venue_date",
+              "venue": "San Sicario",
+              "date": "February 15, 2006",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Michaela Dorfmeister' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.26940441131591797
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Michaela Dorfmeister",
+      "citations": [
+        "Q771123"
+      ],
+      "matched_doc_ids": [
+        "Q771123"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.269
+    }
+  },
+  {
+    "qid": "eval-015",
+    "question": "How many nations competed in Athletics at the 2016 Summer Olympics – Men's 400 metres?",
+    "qtype": "lookup",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "How many nations competed in Athletics at the 2016 Summer Olympics – Men's 400 metres?",
+      "answer": "35",
+      "confidence": 0.95,
+      "citations": [
+        "Q26219858"
+      ],
+      "matched_doc_ids": [
+        "Q26219858"
+      ],
+      "query_spec": {
+        "type": "lookup_field",
+        "field": "nations",
+        "title": "Athletics at the 2016 Summer Olympics – Men's 400 metres",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "How many nations competed in Athletics at the 2016 Summer Olympics – Men's 400 metres?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "How many nations competed in Athletics at the 2016 Summer Olympics – Men's 400 metres?",
+            "spec": {
+              "type": "lookup_field",
+              "field": "nations",
+              "title": "Athletics at the 2016 Summer Olympics – Men's 400 metres"
+            }
+          },
+          "output_summary": "resolved exactly: '35' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.26877284049987793
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "35",
+      "citations": [
+        "Q26219858"
+      ],
+      "matched_doc_ids": [
+        "Q26219858"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.269
+    }
+  },
+  {
+    "qid": "eval-016",
+    "question": "How many nations competed in Athletics at the 2008 Summer Olympics – Women's shot put?",
+    "qtype": "lookup",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "How many nations competed in Athletics at the 2008 Summer Olympics – Women's shot put?",
+      "answer": "22",
+      "confidence": 0.95,
+      "citations": [
+        "Q848278"
+      ],
+      "matched_doc_ids": [
+        "Q848278"
+      ],
+      "query_spec": {
+        "type": "lookup_field",
+        "field": "nations",
+        "title": "Athletics at the 2008 Summer Olympics – Women's shot put",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "How many nations competed in Athletics at the 2008 Summer Olympics – Women's shot put?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "How many nations competed in Athletics at the 2008 Summer Olympics – Women's shot put?",
+            "spec": {
+              "type": "lookup_field",
+              "field": "nations",
+              "title": "Athletics at the 2008 Summer Olympics – Women's shot put"
+            }
+          },
+          "output_summary": "resolved exactly: '22' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.24695897102355957
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "22",
+      "citations": [
+        "Q848278"
+      ],
+      "matched_doc_ids": [
+        "Q848278"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.247
+    }
+  },
+  {
+    "qid": "eval-017",
+    "question": "Who won the gold medal in the event held at Eton Dorney on 28 July – 4 August 2012?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at Eton Dorney on 28 July – 4 August 2012?",
+      "answer": "Miroslava Knapková",
+      "confidence": 0.95,
+      "citations": [
+        "Q1222270"
+      ],
+      "matched_doc_ids": [
+        "Q1222270"
+      ],
+      "query_spec": {
+        "type": "venue_date",
+        "venue": "Eton Dorney",
+        "date": "28 July – 4 August 2012",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at Eton Dorney on 28 July – 4 August 2012?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'venue_date' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Eton Dorney on 28 July – 4 August 2012?",
+            "spec": {
+              "type": "venue_date",
+              "venue": "Eton Dorney",
+              "date": "28 July – 4 August 2012",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Miroslava Knapková' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.3290214538574219
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Miroslava Knapková",
+      "citations": [
+        "Q1222270"
+      ],
+      "matched_doc_ids": [
+        "Q1222270"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.329
+    }
+  },
+  {
+    "qid": "eval-018",
+    "question": "Who won the gold medal in the event held at Olympic Stadium on 16–18 August 2016?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at Olympic Stadium on 16–18 August 2016?",
+      "answer": "Sara Kolak",
+      "confidence": 0.95,
+      "citations": [
+        "Q26234144"
+      ],
+      "matched_doc_ids": [
+        "Q26234144"
+      ],
+      "query_spec": {
+        "type": "venue_date",
+        "venue": "Olympic Stadium",
+        "date": "16–18 August 2016",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at Olympic Stadium on 16–18 August 2016?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'venue_date' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Olympic Stadium on 16–18 August 2016?",
+            "spec": {
+              "type": "venue_date",
+              "venue": "Olympic Stadium",
+              "date": "16–18 August 2016",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Sara Kolak' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.24577832221984863
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Sara Kolak",
+      "citations": [
+        "Q26234144"
+      ],
+      "matched_doc_ids": [
+        "Q26234144"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.247
+    }
+  },
+  {
+    "qid": "eval-019",
+    "question": "According to the provided corpus, how many alpine skiing events at the 1998 Winter Olympics had more than 45 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many alpine skiing events at the 1998 Winter Olympics had more than 45 competitors?",
+      "answer": "4",
+      "confidence": 0.95,
+      "citations": [
+        "Q1222717",
+        "Q1222533",
+        "Q1005810",
+        "Q1005643"
+      ],
+      "matched_doc_ids": [
+        "Q1222717",
+        "Q1222533",
+        "Q1005810",
+        "Q1005643"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "alpine skiing",
+        "games_id": "1998-winter",
+        "min_competitors": 45,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many alpine skiing events at the 1998 Winter Olympics had more than 45 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 5,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many alpine skiing events at the 1998 Winter Olympics had more than 45 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "alpine skiing",
+              "games_id": "1998-winter",
+              "min_competitors": 45
+            }
+          },
+          "output_summary": "resolved exactly: '4' from 4 graph record(s)",
+          "new_evidence_count": 4,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2445065975189209
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "4",
+      "citations": [
+        "Q1222717",
+        "Q1222533",
+        "Q1005810",
+        "Q1005643"
+      ],
+      "matched_doc_ids": [
+        "Q1222717",
+        "Q1222533",
+        "Q1005810",
+        "Q1005643"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 4,
+      "wall_time_s": 0.245
+    }
+  },
+  {
+    "qid": "eval-020",
+    "question": "Who won the gold medal in the event held at Royal Artillery Barracks on 5 August 2012?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at Royal Artillery Barracks on 5 August 2012?",
+      "answer": "Jin Jong-oh",
+      "confidence": 0.95,
+      "citations": [
+        "Q2353475"
+      ],
+      "matched_doc_ids": [
+        "Q2353475"
+      ],
+      "query_spec": {
+        "type": "venue_date",
+        "venue": "Royal Artillery Barracks",
+        "date": "5 August 2012",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at Royal Artillery Barracks on 5 August 2012?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'venue_date' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Royal Artillery Barracks on 5 August 2012?",
+            "spec": {
+              "type": "venue_date",
+              "venue": "Royal Artillery Barracks",
+              "date": "5 August 2012",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Jin Jong-oh' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2426741123199463
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Jin Jong-oh",
+      "citations": [
+        "Q2353475"
+      ],
+      "matched_doc_ids": [
+        "Q2353475"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.243
+    }
+  },
+  {
+    "qid": "eval-021",
+    "question": "Who won the gold medal in the men's 200 metre backstroke swimming event at the Summer Olympics held immediately before 2016?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the men's 200 metre backstroke swimming event at the Summer Olympics held immediately before 2016?",
+      "answer": "Tyler Clary",
+      "confidence": 0.95,
+      "citations": [
+        "Q2071160"
+      ],
+      "matched_doc_ids": [
+        "Q2071160"
+      ],
+      "query_spec": {
+        "type": "temporal",
+        "discipline": "Swimming",
+        "event_name_substr": "men's 200 metre backstroke",
+        "season": "Summer",
+        "target_year": 2016,
+        "direction": "before",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the men's 200 metre backstroke swimming event at the Summer Olympics held immediately before 2016?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'temporal' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the men's 200 metre backstroke swimming event at the Summer Olympics held immediately before 2016?",
+            "spec": {
+              "type": "temporal",
+              "discipline": "Swimming",
+              "event_name_substr": "men's 200 metre backstroke",
+              "season": "Summer",
+              "target_year": 2016,
+              "direction": "before",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Tyler Clary' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2679932117462158
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Tyler Clary",
+      "citations": [
+        "Q2071160"
+      ],
+      "matched_doc_ids": [
+        "Q2071160"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.268
+    }
+  },
+  {
+    "qid": "eval-022",
+    "question": "How many nations competed in Cross-country skiing at the 2014 Winter Olympics – Men's sprint?",
+    "qtype": "lookup",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "How many nations competed in Cross-country skiing at the 2014 Winter Olympics – Men's sprint?",
+      "answer": "40",
+      "confidence": 0.95,
+      "citations": [
+        "Q15055036"
+      ],
+      "matched_doc_ids": [
+        "Q15055036"
+      ],
+      "query_spec": {
+        "type": "lookup_field",
+        "field": "nations",
+        "title": "Cross-country skiing at the 2014 Winter Olympics – Men's sprint",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "How many nations competed in Cross-country skiing at the 2014 Winter Olympics – Men's sprint?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "How many nations competed in Cross-country skiing at the 2014 Winter Olympics – Men's sprint?",
+            "spec": {
+              "type": "lookup_field",
+              "field": "nations",
+              "title": "Cross-country skiing at the 2014 Winter Olympics – Men's sprint"
+            }
+          },
+          "output_summary": "resolved exactly: '40' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.26721692085266113
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "40",
+      "citations": [
+        "Q15055036"
+      ],
+      "matched_doc_ids": [
+        "Q15055036"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.267
+    }
+  },
+  {
+    "qid": "eval-023",
+    "question": "According to the provided corpus, how many shooting events at the 2000 Summer Olympics had more than 42 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many shooting events at the 2000 Summer Olympics had more than 42 competitors?",
+      "answer": "7",
+      "confidence": 0.95,
+      "citations": [
+        "Q4354069",
+        "Q7500813",
+        "Q4443764",
+        "Q7500812",
+        "Q7500816",
+        "Q4443763",
+        "Q4443765"
+      ],
+      "matched_doc_ids": [
+        "Q4354069",
+        "Q7500813",
+        "Q4443764",
+        "Q7500812",
+        "Q7500816",
+        "Q4443763",
+        "Q4443765"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "shooting",
+        "games_id": "2000-summer",
+        "min_competitors": 42,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many shooting events at the 2000 Summer Olympics had more than 42 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 8,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many shooting events at the 2000 Summer Olympics had more than 42 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "shooting",
+              "games_id": "2000-summer",
+              "min_competitors": 42
+            }
+          },
+          "output_summary": "resolved exactly: '7' from 7 graph record(s)",
+          "new_evidence_count": 7,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.24333882331848145
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "7",
+      "citations": [
+        "Q4354069",
+        "Q7500813",
+        "Q4443764",
+        "Q4443765",
+        "Q7500816",
+        "Q4443763",
+        "Q7500812"
+      ],
+      "matched_doc_ids": [
+        "Q4354069",
+        "Q7500813",
+        "Q4443764",
+        "Q4443765",
+        "Q7500816",
+        "Q4443763",
+        "Q7500812"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 7,
+      "wall_time_s": 0.243
+    }
+  },
+  {
+    "qid": "eval-024",
+    "question": "According to the provided corpus, which cross-country skiing event at the 1998 Winter Olympics had the highest number of competitors?",
+    "qtype": "superlative",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, which cross-country skiing event at the 1998 Winter Olympics had the highest number of competitors?",
+      "answer": "Cross-country skiing at the 1998 Winter Olympics – Men's 10 kilometre classical",
+      "confidence": 0.95,
+      "citations": [
+        "Q1004937",
+        "Q1005214",
+        "Q1222171",
+        "Q1221939",
+        "Q1005069",
+        "Q1221875",
+        "Q1222025",
+        "Q1004991",
+        "Q1005103"
+      ],
+      "matched_doc_ids": [
+        "Q1004937",
+        "Q1005214",
+        "Q1222171",
+        "Q1221939",
+        "Q1005069",
+        "Q1221875",
+        "Q1222025",
+        "Q1004991",
+        "Q1005103"
+      ],
+      "query_spec": {
+        "type": "superlative",
+        "discipline": "cross-country skiing",
+        "games_id": "1998-winter",
+        "metric": "competitors",
+        "direction": "max",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, which cross-country skiing event at the 1998 Winter Olympics had the highest number of competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 10,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'superlative' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, which cross-country skiing event at the 1998 Winter Olympics had the highest number of competitors?",
+            "spec": {
+              "type": "superlative",
+              "discipline": "cross-country skiing",
+              "games_id": "1998-winter",
+              "metric": "competitors",
+              "direction": "max"
+            }
+          },
+          "output_summary": "resolved exactly: \"Cross-country skiing at the 1998 Winter Olympics – Men's 10 kilometre classical\" from 9 graph record(s)",
+          "new_evidence_count": 9,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.24370908737182617
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Cross-country skiing at the 1998 Winter Olympics – Men's 10 kilometre classical",
+      "citations": [
+        "Q1004937",
+        "Q1222025",
+        "Q1004991",
+        "Q1005103",
+        "Q1222171",
+        "Q1221939",
+        "Q1005069",
+        "Q1221875",
+        "Q1005214"
+      ],
+      "matched_doc_ids": [
+        "Q1004937",
+        "Q1222025",
+        "Q1004991",
+        "Q1005103",
+        "Q1222171",
+        "Q1221939",
+        "Q1005069",
+        "Q1221875",
+        "Q1005214"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 9,
+      "wall_time_s": 0.245
+    }
+  },
+  {
+    "qid": "eval-025",
+    "question": "According to the provided corpus, which rowing event at the 2016 Summer Olympics had the highest number of competitors?",
+    "qtype": "superlative",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, which rowing event at the 2016 Summer Olympics had the highest number of competitors?",
+      "answer": "Rowing at the 2016 Summer Olympics – Women's eight",
+      "confidence": 0.95,
+      "citations": [
+        "Q22968976",
+        "Q22968986",
+        "Q22968983",
+        "Q22968972",
+        "Q22968982",
+        "Q22968977",
+        "Q22968981",
+        "Q22968974",
+        "Q22968985",
+        "Q22968973",
+        "Q22968984",
+        "Q22968979",
+        "Q22968980"
+      ],
+      "matched_doc_ids": [
+        "Q22968976",
+        "Q22968986",
+        "Q22968983",
+        "Q22968972",
+        "Q22968982",
+        "Q22968977",
+        "Q22968981",
+        "Q22968974",
+        "Q22968985",
+        "Q22968973",
+        "Q22968984",
+        "Q22968979",
+        "Q22968980"
+      ],
+      "query_spec": {
+        "type": "superlative",
+        "discipline": "rowing",
+        "games_id": "2016-summer",
+        "metric": "competitors",
+        "direction": "max",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, which rowing event at the 2016 Summer Olympics had the highest number of competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 13,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'superlative' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, which rowing event at the 2016 Summer Olympics had the highest number of competitors?",
+            "spec": {
+              "type": "superlative",
+              "discipline": "rowing",
+              "games_id": "2016-summer",
+              "metric": "competitors",
+              "direction": "max"
+            }
+          },
+          "output_summary": "resolved exactly: \"Rowing at the 2016 Summer Olympics – Women's eight\" from 13 graph record(s)",
+          "new_evidence_count": 13,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.30983829498291016
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Rowing at the 2016 Summer Olympics – Women's eight",
+      "citations": [
+        "Q22968976",
+        "Q22968986",
+        "Q22968983",
+        "Q22968972",
+        "Q22968982",
+        "Q22968977",
+        "Q22968973",
+        "Q22968984",
+        "Q22968974",
+        "Q22968985",
+        "Q22968979",
+        "Q22968980",
+        "Q22968981"
+      ],
+      "matched_doc_ids": [
+        "Q22968976",
+        "Q22968986",
+        "Q22968983",
+        "Q22968972",
+        "Q22968982",
+        "Q22968977",
+        "Q22968973",
+        "Q22968984",
+        "Q22968974",
+        "Q22968985",
+        "Q22968979",
+        "Q22968980",
+        "Q22968981"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 13,
+      "wall_time_s": 0.31
+    }
+  },
+  {
+    "qid": "eval-026",
+    "question": "How many nations competed in Fencing at the 2000 Summer Olympics – Men's foil?",
+    "qtype": "lookup",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "How many nations competed in Fencing at the 2000 Summer Olympics – Men's foil?",
+      "answer": "22",
+      "confidence": 0.95,
+      "citations": [
+        "Q632472"
+      ],
+      "matched_doc_ids": [
+        "Q632472"
+      ],
+      "query_spec": {
+        "type": "lookup_field",
+        "field": "nations",
+        "title": "Fencing at the 2000 Summer Olympics – Men's foil",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "How many nations competed in Fencing at the 2000 Summer Olympics – Men's foil?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "How many nations competed in Fencing at the 2000 Summer Olympics – Men's foil?",
+            "spec": {
+              "type": "lookup_field",
+              "field": "nations",
+              "title": "Fencing at the 2000 Summer Olympics – Men's foil"
+            }
+          },
+          "output_summary": "resolved exactly: '22' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.24365639686584473
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "22",
+      "citations": [
+        "Q632472"
+      ],
+      "matched_doc_ids": [
+        "Q632472"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.244
+    }
+  },
+  {
+    "qid": "eval-027",
+    "question": "According to the provided corpus, which cycling event at the 2012 Summer Olympics had the highest number of competitors?",
+    "qtype": "superlative",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, which cycling event at the 2012 Summer Olympics had the highest number of competitors?",
+      "answer": "Cycling at the 2012 Summer Olympics – Men's individual road race",
+      "confidence": 0.95,
+      "citations": [
+        "Q2718019",
+        "Q2070832",
+        "Q843287",
+        "Q939000",
+        "Q2194130",
+        "Q2437166",
+        "Q2269155",
+        "Q754412",
+        "Q2297621",
+        "Q2036655",
+        "Q916174",
+        "Q1005298",
+        "Q2269694",
+        "Q2297633",
+        "Q2362858",
+        "Q2329168",
+        "Q580474",
+        "Q2718015"
+      ],
+      "matched_doc_ids": [
+        "Q2718019",
+        "Q2070832",
+        "Q843287",
+        "Q939000",
+        "Q2194130",
+        "Q2437166",
+        "Q2269155",
+        "Q754412",
+        "Q2297621",
+        "Q2036655",
+        "Q916174",
+        "Q1005298",
+        "Q2269694",
+        "Q2297633",
+        "Q2362858",
+        "Q2329168",
+        "Q580474",
+        "Q2718015"
+      ],
+      "query_spec": {
+        "type": "superlative",
+        "discipline": "cycling",
+        "games_id": "2012-summer",
+        "metric": "competitors",
+        "direction": "max",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, which cycling event at the 2012 Summer Olympics had the highest number of competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 13,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'superlative' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, which cycling event at the 2012 Summer Olympics had the highest number of competitors?",
+            "spec": {
+              "type": "superlative",
+              "discipline": "cycling",
+              "games_id": "2012-summer",
+              "metric": "competitors",
+              "direction": "max"
+            }
+          },
+          "output_summary": "resolved exactly: \"Cycling at the 2012 Summer Olympics – Men's individual road race\" from 18 graph record(s)",
+          "new_evidence_count": 18,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.3085973262786865
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Cycling at the 2012 Summer Olympics – Men's individual road race",
+      "citations": [
+        "Q2718019",
+        "Q2036655",
+        "Q843287",
+        "Q939000",
+        "Q2194130",
+        "Q2437166",
+        "Q2269155",
+        "Q2070832",
+        "Q916174",
+        "Q1005298",
+        "Q2718015",
+        "Q2269694",
+        "Q2297633",
+        "Q2362858",
+        "Q754412",
+        "Q2297621",
+        "Q580474",
+        "Q2329168"
+      ],
+      "matched_doc_ids": [
+        "Q2718019",
+        "Q2036655",
+        "Q843287",
+        "Q939000",
+        "Q2194130",
+        "Q2437166",
+        "Q2269155",
+        "Q2070832",
+        "Q916174",
+        "Q1005298",
+        "Q2718015",
+        "Q2269694",
+        "Q2297633",
+        "Q2362858",
+        "Q754412",
+        "Q2297621",
+        "Q580474",
+        "Q2329168"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 18,
+      "wall_time_s": 0.309
+    }
+  },
+  {
+    "qid": "eval-028",
+    "question": "According to the provided corpus, how many wrestling events at the 2012 Summer Olympics had more than 19 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many wrestling events at the 2012 Summer Olympics had more than 19 competitors?",
+      "answer": "3",
+      "confidence": 0.95,
+      "citations": [
+        "Q2550697",
+        "Q2521962",
+        "Q305439"
+      ],
+      "matched_doc_ids": [
+        "Q2550697",
+        "Q2521962",
+        "Q305439"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "wrestling",
+        "games_id": "2012-summer",
+        "min_competitors": 19,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many wrestling events at the 2012 Summer Olympics had more than 19 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 4,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many wrestling events at the 2012 Summer Olympics had more than 19 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "wrestling",
+              "games_id": "2012-summer",
+              "min_competitors": 19
+            }
+          },
+          "output_summary": "resolved exactly: '3' from 3 graph record(s)",
+          "new_evidence_count": 3,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2617208957672119
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "3",
+      "citations": [
+        "Q2550697",
+        "Q2521962",
+        "Q305439"
+      ],
+      "matched_doc_ids": [
+        "Q2550697",
+        "Q2521962",
+        "Q305439"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 3,
+      "wall_time_s": 0.262
+    }
+  },
+  {
+    "qid": "eval-029",
+    "question": "According to the provided corpus, how many boxing events at the 2012 Summer Olympics had more than 26 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many boxing events at the 2012 Summer Olympics had more than 26 competitors?",
+      "answer": "3",
+      "confidence": 0.95,
+      "citations": [
+        "Q31844",
+        "Q348714",
+        "Q31850"
+      ],
+      "matched_doc_ids": [
+        "Q31844",
+        "Q348714",
+        "Q31850"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "boxing",
+        "games_id": "2012-summer",
+        "min_competitors": 26,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many boxing events at the 2012 Summer Olympics had more than 26 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 4,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many boxing events at the 2012 Summer Olympics had more than 26 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "boxing",
+              "games_id": "2012-summer",
+              "min_competitors": 26
+            }
+          },
+          "output_summary": "resolved exactly: '3' from 3 graph record(s)",
+          "new_evidence_count": 3,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.24202418327331543
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "3",
+      "citations": [
+        "Q31844",
+        "Q31850",
+        "Q348714"
+      ],
+      "matched_doc_ids": [
+        "Q31844",
+        "Q31850",
+        "Q348714"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 3,
+      "wall_time_s": 0.242
+    }
+  },
+  {
+    "qid": "eval-030",
+    "question": "According to the provided corpus, which alpine skiing event at the 1994 Winter Olympics had the highest number of competitors?",
+    "qtype": "superlative",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, which alpine skiing event at the 1994 Winter Olympics had the highest number of competitors?",
+      "answer": "Alpine skiing at the 1994 Winter Olympics – Men's super-G",
+      "confidence": 0.95,
+      "citations": [
+        "Q1222529",
+        "Q1005292",
+        "Q1005575",
+        "Q1005746",
+        "Q1222644",
+        "Q1005808",
+        "Q1222212",
+        "Q1005640",
+        "Q1222715",
+        "Q1222469"
+      ],
+      "matched_doc_ids": [
+        "Q1222529",
+        "Q1005292",
+        "Q1005575",
+        "Q1005746",
+        "Q1222644",
+        "Q1005808",
+        "Q1222212",
+        "Q1005640",
+        "Q1222715",
+        "Q1222469"
+      ],
+      "query_spec": {
+        "type": "superlative",
+        "discipline": "alpine skiing",
+        "games_id": "1994-winter",
+        "metric": "competitors",
+        "direction": "max",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, which alpine skiing event at the 1994 Winter Olympics had the highest number of competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 11,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'superlative' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, which alpine skiing event at the 1994 Winter Olympics had the highest number of competitors?",
+            "spec": {
+              "type": "superlative",
+              "discipline": "alpine skiing",
+              "games_id": "1994-winter",
+              "metric": "competitors",
+              "direction": "max"
+            }
+          },
+          "output_summary": "resolved exactly: \"Alpine skiing at the 1994 Winter Olympics – Men's super-G\" from 10 graph record(s)",
+          "new_evidence_count": 10,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.3461439609527588
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Alpine skiing at the 1994 Winter Olympics – Men's super-G",
+      "citations": [
+        "Q1222529",
+        "Q1222469",
+        "Q1005575",
+        "Q1005746",
+        "Q1222644",
+        "Q1005808",
+        "Q1222212",
+        "Q1005640",
+        "Q1005292",
+        "Q1222715"
+      ],
+      "matched_doc_ids": [
+        "Q1222529",
+        "Q1222469",
+        "Q1005575",
+        "Q1005746",
+        "Q1222644",
+        "Q1005808",
+        "Q1222212",
+        "Q1005640",
+        "Q1005292",
+        "Q1222715"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 10,
+      "wall_time_s": 0.346
+    }
+  },
+  {
+    "qid": "eval-031",
+    "question": "Who won the gold medal in the men's 62 kg weightlifting event at the Summer Olympics held immediately before 2016?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the men's 62 kg weightlifting event at the Summer Olympics held immediately before 2016?",
+      "answer": "Kim Un-guk",
+      "confidence": 0.95,
+      "citations": [
+        "Q1139399"
+      ],
+      "matched_doc_ids": [
+        "Q1139399"
+      ],
+      "query_spec": {
+        "type": "temporal",
+        "discipline": "Weightlifting",
+        "event_name_substr": "men's 62 kg",
+        "season": "Summer",
+        "target_year": 2016,
+        "direction": "before",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the men's 62 kg weightlifting event at the Summer Olympics held immediately before 2016?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'temporal' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the men's 62 kg weightlifting event at the Summer Olympics held immediately before 2016?",
+            "spec": {
+              "type": "temporal",
+              "discipline": "Weightlifting",
+              "event_name_substr": "men's 62 kg",
+              "season": "Summer",
+              "target_year": 2016,
+              "direction": "before",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Kim Un-guk' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2434077262878418
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Kim Un-guk",
+      "citations": [
+        "Q1139399"
+      ],
+      "matched_doc_ids": [
+        "Q1139399"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.243
+    }
+  },
+  {
+    "qid": "eval-032",
+    "question": "Who won the gold medal in the event held at Pacific Coliseum on February 20, 2010?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at Pacific Coliseum on February 20, 2010?",
+      "answer": "Zhou Yang",
+      "confidence": 0.5,
+      "citations": [
+        "Q916747"
+      ],
+      "matched_doc_ids": [
+        "Q916747"
+      ],
+      "query_spec": {
+        "type": "venue_date",
+        "venue": "Pacific Coliseum",
+        "date": "February 20, 2010",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": true,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at Pacific Coliseum on February 20, 2010?",
+      "steps_taken": 3,
+      "total_tokens": 1216,
+      "stopped_reason": "orchestrator judged the evidence sufficient to answer",
+      "num_evidence_items": 3,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'venue_date' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Pacific Coliseum on February 20, 2010?",
+            "spec": {
+              "type": "venue_date",
+              "venue": "Pacific Coliseum",
+              "date": "February 20, 2010",
+              "field": "gold"
+            }
+          },
+          "output_summary": "answered 'Zhou Yang' but 2 candidates tied — result is NOT unambiguous",
+          "new_evidence_count": 2,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2690598964691162
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "executor flagged 2 tied candidates — answer is not uniquely determined",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "answer",
+          "reason": "planner output unparseable",
+          "input_args": {},
+          "output_summary": "chose to stop and answer",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 1216,
+          "latency_s": 2.7564761638641357
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Zhou Yang",
+      "citations": [
+        "result:q1",
+        "fact:Q916747"
+      ],
+      "matched_doc_ids": [
+        "result:q1",
+        "fact:Q916747"
+      ],
+      "confidence": 0.92,
+      "usage": {
+        "num_calls": 2,
+        "input_tokens": 1497,
+        "output_tokens": 735,
+        "context_tokens": 610,
+        "total_tokens": 2232,
+        "latency_s": 4.199,
+        "calls": [
+          {
+            "tag": "orchestrator_plan",
+            "model": "openai/gpt-oss-120b",
+            "input_tokens": 966,
+            "output_tokens": 250,
+            "context_tokens": 305,
+            "total_tokens": 1216,
+            "latency_s": 2.756,
+            "estimated": false
+          },
+          {
+            "tag": "final_answer",
+            "model": "openai/gpt-oss-120b",
+            "input_tokens": 531,
+            "output_tokens": 485,
+            "context_tokens": 305,
+            "total_tokens": 1016,
+            "latency_s": 1.443,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "executor flagged 2 tied candidates — answer is not uniquely determined",
+      "repair": null,
+      "retrieval_methods_used": [
+        "answer",
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 2,
+      "num_citations": 2,
+      "wall_time_s": 4.855
+    }
+  },
+  {
+    "qid": "eval-033",
+    "question": "According to the provided corpus, how many alpine skiing events at the 1988 Winter Olympics had more than 57 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many alpine skiing events at the 1988 Winter Olympics had more than 57 competitors?",
+      "answer": "4",
+      "confidence": 0.95,
+      "citations": [
+        "Q1005639",
+        "Q1005804",
+        "Q1005744",
+        "Q1222713"
+      ],
+      "matched_doc_ids": [
+        "Q1005639",
+        "Q1005804",
+        "Q1005744",
+        "Q1222713"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "alpine skiing",
+        "games_id": "1988-winter",
+        "min_competitors": 57,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many alpine skiing events at the 1988 Winter Olympics had more than 57 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 5,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many alpine skiing events at the 1988 Winter Olympics had more than 57 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "alpine skiing",
+              "games_id": "1988-winter",
+              "min_competitors": 57
+            }
+          },
+          "output_summary": "resolved exactly: '4' from 4 graph record(s)",
+          "new_evidence_count": 4,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2913784980773926
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "4",
+      "citations": [
+        "Q1005639",
+        "Q1005804",
+        "Q1005744",
+        "Q1222713"
+      ],
+      "matched_doc_ids": [
+        "Q1005639",
+        "Q1005804",
+        "Q1005744",
+        "Q1222713"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 4,
+      "wall_time_s": 0.291
+    }
+  },
+  {
+    "qid": "eval-034",
+    "question": "Who won the gold medal in the men's freestyle 120 kg wrestling event at the Summer Olympics held immediately before 2012?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the men's freestyle 120 kg wrestling event at the Summer Olympics held immediately before 2012?",
+      "answer": "Bakhtiyar Akhmedov",
+      "confidence": 0.95,
+      "citations": [
+        "Q581364"
+      ],
+      "matched_doc_ids": [
+        "Q581364"
+      ],
+      "query_spec": {
+        "type": "temporal",
+        "discipline": "Wrestling",
+        "event_name_substr": "men's freestyle 120 kg",
+        "season": "Summer",
+        "target_year": 2012,
+        "direction": "before",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the men's freestyle 120 kg wrestling event at the Summer Olympics held immediately before 2012?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'temporal' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the men's freestyle 120 kg wrestling event at the Summer Olympics held immediately before 2012?",
+            "spec": {
+              "type": "temporal",
+              "discipline": "Wrestling",
+              "event_name_substr": "men's freestyle 120 kg",
+              "season": "Summer",
+              "target_year": 2012,
+              "direction": "before",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Bakhtiyar Akhmedov' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2427513599395752
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Bakhtiyar Akhmedov",
+      "citations": [
+        "Q581364"
+      ],
+      "matched_doc_ids": [
+        "Q581364"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.243
+    }
+  },
+  {
+    "qid": "eval-035",
+    "question": "According to the provided corpus, which rowing event at the 2012 Summer Olympics had the highest number of competitors?",
+    "qtype": "superlative",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, which rowing event at the 2012 Summer Olympics had the highest number of competitors?",
+      "answer": "Rowing at the 2012 Summer Olympics – Women's eight",
+      "confidence": 0.95,
+      "citations": [
+        "Q1222270",
+        "Q370500",
+        "Q1005506",
+        "Q1005508",
+        "Q1188476",
+        "Q427022",
+        "Q1222420",
+        "Q536380",
+        "Q767351",
+        "Q945090",
+        "Q1068773",
+        "Q1005337",
+        "Q1005683"
+      ],
+      "matched_doc_ids": [
+        "Q1222270",
+        "Q370500",
+        "Q1005506",
+        "Q1005508",
+        "Q1188476",
+        "Q427022",
+        "Q1222420",
+        "Q536380",
+        "Q767351",
+        "Q945090",
+        "Q1068773",
+        "Q1005337",
+        "Q1005683"
+      ],
+      "query_spec": {
+        "type": "superlative",
+        "discipline": "rowing",
+        "games_id": "2012-summer",
+        "metric": "competitors",
+        "direction": "max",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, which rowing event at the 2012 Summer Olympics had the highest number of competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 13,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'superlative' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, which rowing event at the 2012 Summer Olympics had the highest number of competitors?",
+            "spec": {
+              "type": "superlative",
+              "discipline": "rowing",
+              "games_id": "2012-summer",
+              "metric": "competitors",
+              "direction": "max"
+            }
+          },
+          "output_summary": "resolved exactly: \"Rowing at the 2012 Summer Olympics – Women's eight\" from 13 graph record(s)",
+          "new_evidence_count": 13,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.4285471439361572
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Rowing at the 2012 Summer Olympics – Women's eight",
+      "citations": [
+        "Q1222270",
+        "Q370500",
+        "Q1005506",
+        "Q1188476",
+        "Q1005683",
+        "Q427022",
+        "Q1222420",
+        "Q536380",
+        "Q767351",
+        "Q945090",
+        "Q1005508",
+        "Q1068773",
+        "Q1005337"
+      ],
+      "matched_doc_ids": [
+        "Q1222270",
+        "Q370500",
+        "Q1005506",
+        "Q1188476",
+        "Q1005683",
+        "Q427022",
+        "Q1222420",
+        "Q536380",
+        "Q767351",
+        "Q945090",
+        "Q1005508",
+        "Q1068773",
+        "Q1005337"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 13,
+      "wall_time_s": 0.429
+    }
+  },
+  {
+    "qid": "eval-036",
+    "question": "According to the provided corpus, how many short-track speed skating events at the 2018 Winter Olympics had more than 34 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many short-track speed skating events at the 2018 Winter Olympics had more than 34 competitors?",
+      "answer": "3",
+      "confidence": 0.95,
+      "citations": [
+        "Q47309929",
+        "Q47309958",
+        "Q47309900"
+      ],
+      "matched_doc_ids": [
+        "Q47309929",
+        "Q47309958",
+        "Q47309900"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "short-track speed skating",
+        "games_id": "2018-winter",
+        "min_competitors": 34,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many short-track speed skating events at the 2018 Winter Olympics had more than 34 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 4,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many short-track speed skating events at the 2018 Winter Olympics had more than 34 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "short-track speed skating",
+              "games_id": "2018-winter",
+              "min_competitors": 34
+            }
+          },
+          "output_summary": "resolved exactly: '3' from 3 graph record(s)",
+          "new_evidence_count": 3,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.24376511573791504
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "3",
+      "citations": [
+        "Q47309929",
+        "Q47309958",
+        "Q47309900"
+      ],
+      "matched_doc_ids": [
+        "Q47309929",
+        "Q47309958",
+        "Q47309900"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 3,
+      "wall_time_s": 0.244
+    }
+  },
+  {
+    "qid": "eval-037",
+    "question": "According to the provided corpus, which sailing event at the 1996 Summer Olympics had the highest number of competitors?",
+    "qtype": "superlative",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, which sailing event at the 1996 Summer Olympics had the highest number of competitors?",
+      "answer": "Sailing at the 1996 Summer Olympics – Men's 470",
+      "confidence": 0.95,
+      "citations": [
+        "Q7400316",
+        "Q7400320",
+        "Q7400317",
+        "Q7400318",
+        "Q7400325",
+        "Q7400323",
+        "Q7400321",
+        "Q7400319",
+        "Q7400322",
+        "Q7400324"
+      ],
+      "matched_doc_ids": [
+        "Q7400316",
+        "Q7400320",
+        "Q7400317",
+        "Q7400318",
+        "Q7400325",
+        "Q7400323",
+        "Q7400321",
+        "Q7400319",
+        "Q7400322",
+        "Q7400324"
+      ],
+      "query_spec": {
+        "type": "superlative",
+        "discipline": "sailing",
+        "games_id": "1996-summer",
+        "metric": "competitors",
+        "direction": "max",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, which sailing event at the 1996 Summer Olympics had the highest number of competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 11,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'superlative' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, which sailing event at the 1996 Summer Olympics had the highest number of competitors?",
+            "spec": {
+              "type": "superlative",
+              "discipline": "sailing",
+              "games_id": "1996-summer",
+              "metric": "competitors",
+              "direction": "max"
+            }
+          },
+          "output_summary": "resolved exactly: \"Sailing at the 1996 Summer Olympics – Men's 470\" from 10 graph record(s)",
+          "new_evidence_count": 10,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2507588863372803
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Sailing at the 1996 Summer Olympics – Men's 470",
+      "citations": [
+        "Q7400316",
+        "Q7400320",
+        "Q7400322",
+        "Q7400324",
+        "Q7400317",
+        "Q7400325",
+        "Q7400318",
+        "Q7400323",
+        "Q7400319",
+        "Q7400321"
+      ],
+      "matched_doc_ids": [
+        "Q7400316",
+        "Q7400320",
+        "Q7400322",
+        "Q7400324",
+        "Q7400317",
+        "Q7400325",
+        "Q7400318",
+        "Q7400323",
+        "Q7400319",
+        "Q7400321"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 10,
+      "wall_time_s": 0.252
+    }
+  },
+  {
+    "qid": "eval-038",
+    "question": "According to the provided corpus, how many athletics events at the 2008 Summer Olympics had more than 40 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many athletics events at the 2008 Summer Olympics had more than 40 competitors?",
+      "answer": "21",
+      "confidence": 0.95,
+      "citations": [
+        "Q917348",
+        "Q947678",
+        "Q754844",
+        "Q917328",
+        "Q247070",
+        "Q257545",
+        "Q932865",
+        "Q922361",
+        "Q288549",
+        "Q853003",
+        "Q1066390",
+        "Q848291",
+        "Q743905",
+        "Q947750",
+        "Q693595",
+        "Q947691",
+        "Q917333",
+        "Q853023",
+        "Q853040",
+        "Q853072",
+        "Q677027"
+      ],
+      "matched_doc_ids": [
+        "Q917348",
+        "Q947678",
+        "Q754844",
+        "Q917328",
+        "Q247070",
+        "Q257545",
+        "Q932865",
+        "Q922361",
+        "Q288549",
+        "Q853003",
+        "Q1066390",
+        "Q848291",
+        "Q743905",
+        "Q947750",
+        "Q693595",
+        "Q947691",
+        "Q917333",
+        "Q853023",
+        "Q853040",
+        "Q853072",
+        "Q677027"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "athletics",
+        "games_id": "2008-summer",
+        "min_competitors": 40,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many athletics events at the 2008 Summer Olympics had more than 40 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 13,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many athletics events at the 2008 Summer Olympics had more than 40 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "athletics",
+              "games_id": "2008-summer",
+              "min_competitors": 40
+            }
+          },
+          "output_summary": "resolved exactly: '21' from 21 graph record(s)",
+          "new_evidence_count": 21,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2799842357635498
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "21",
+      "citations": [
+        "Q917348",
+        "Q947678",
+        "Q917328",
+        "Q848291",
+        "Q247070",
+        "Q257545",
+        "Q932865",
+        "Q922361",
+        "Q288549",
+        "Q853003",
+        "Q1066390",
+        "Q677027",
+        "Q754844",
+        "Q947750",
+        "Q693595",
+        "Q947691",
+        "Q917333",
+        "Q853023",
+        "Q853040",
+        "Q853072",
+        "Q743905"
+      ],
+      "matched_doc_ids": [
+        "Q917348",
+        "Q947678",
+        "Q917328",
+        "Q848291",
+        "Q247070",
+        "Q257545",
+        "Q932865",
+        "Q922361",
+        "Q288549",
+        "Q853003",
+        "Q1066390",
+        "Q677027",
+        "Q754844",
+        "Q947750",
+        "Q693595",
+        "Q947691",
+        "Q917333",
+        "Q853023",
+        "Q853040",
+        "Q853072",
+        "Q743905"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 21,
+      "wall_time_s": 0.28
+    }
+  },
+  {
+    "qid": "eval-039",
+    "question": "According to the provided corpus, how many boxing events at the 1992 Summer Olympics had more than 30 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many boxing events at the 1992 Summer Olympics had more than 30 competitors?",
+      "answer": "3",
+      "confidence": 0.95,
+      "citations": [
+        "Q10426127",
+        "Q10497008",
+        "Q10495989"
+      ],
+      "matched_doc_ids": [
+        "Q10426127",
+        "Q10497008",
+        "Q10495989"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "boxing",
+        "games_id": "1992-summer",
+        "min_competitors": 30,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many boxing events at the 1992 Summer Olympics had more than 30 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 4,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many boxing events at the 1992 Summer Olympics had more than 30 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "boxing",
+              "games_id": "1992-summer",
+              "min_competitors": 30
+            }
+          },
+          "output_summary": "resolved exactly: '3' from 3 graph record(s)",
+          "new_evidence_count": 3,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.303375244140625
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "3",
+      "citations": [
+        "Q10426127",
+        "Q10495989",
+        "Q10497008"
+      ],
+      "matched_doc_ids": [
+        "Q10426127",
+        "Q10495989",
+        "Q10497008"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 3,
+      "wall_time_s": 0.303
+    }
+  },
+  {
+    "qid": "eval-040",
+    "question": "Who won the gold medal in the event held at Stadium Australia on 27 September 2000 (heats)29 September 2000 (semi-finals)30 September 2000 (final)?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at Stadium Australia on 27 September 2000 (heats)29 September 2000 (semi-finals)30 September 2000 (final)?",
+      "answer": "Nouria Mérah-Benida",
+      "confidence": 0.95,
+      "citations": [
+        "Q3628760"
+      ],
+      "matched_doc_ids": [
+        "Q3628760"
+      ],
+      "query_spec": {
+        "type": "venue_date",
+        "venue": "Stadium Australia",
+        "date": "27 September 2000 (heats)29 September 2000 (semi-finals)30 September 2000 (final)",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at Stadium Australia on 27 September 2000 (heats)29 September 2000 (semi-finals)30 September 2000 (final)?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'venue_date' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Stadium Australia on 27 September 2000 (heats)29 September 2000 (semi-finals)30 September 2000 (final)?",
+            "spec": {
+              "type": "venue_date",
+              "venue": "Stadium Australia",
+              "date": "27 September 2000 (heats)29 September 2000 (semi-finals)30 September 2000 (final)",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Nouria Mérah-Benida' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.27370333671569824
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Nouria Mérah-Benida",
+      "citations": [
+        "Q3628760"
+      ],
+      "matched_doc_ids": [
+        "Q3628760"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.274
+    }
+  },
+  {
+    "qid": "eval-041",
+    "question": "According to the provided corpus, how many alpine skiing events at the 2006 Winter Olympics had more than 63 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many alpine skiing events at the 2006 Winter Olympics had more than 63 competitors?",
+      "answer": "4",
+      "confidence": 0.95,
+      "citations": [
+        "Q1042644",
+        "Q917743",
+        "Q1005801",
+        "Q2574045"
+      ],
+      "matched_doc_ids": [
+        "Q1042644",
+        "Q917743",
+        "Q1005801",
+        "Q2574045"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "alpine skiing",
+        "games_id": "2006-winter",
+        "min_competitors": 63,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many alpine skiing events at the 2006 Winter Olympics had more than 63 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 5,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many alpine skiing events at the 2006 Winter Olympics had more than 63 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "alpine skiing",
+              "games_id": "2006-winter",
+              "min_competitors": 63
+            }
+          },
+          "output_summary": "resolved exactly: '4' from 4 graph record(s)",
+          "new_evidence_count": 4,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2645554542541504
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "4",
+      "citations": [
+        "Q1042644",
+        "Q2574045",
+        "Q1005801",
+        "Q917743"
+      ],
+      "matched_doc_ids": [
+        "Q1042644",
+        "Q2574045",
+        "Q1005801",
+        "Q917743"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 4,
+      "wall_time_s": 0.266
+    }
+  },
+  {
+    "qid": "eval-042",
+    "question": "Who won the gold medal in the mixed trap shooting event at the Summer Olympics held immediately before 1992?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the mixed trap shooting event at the Summer Olympics held immediately before 1992?",
+      "answer": "Dmitry Monakov",
+      "confidence": 0.95,
+      "citations": [
+        "Q7500750"
+      ],
+      "matched_doc_ids": [
+        "Q7500750"
+      ],
+      "query_spec": {
+        "type": "temporal",
+        "discipline": "Shooting",
+        "event_name_substr": "mixed trap",
+        "season": "Summer",
+        "target_year": 1992,
+        "direction": "before",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the mixed trap shooting event at the Summer Olympics held immediately before 1992?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'temporal' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the mixed trap shooting event at the Summer Olympics held immediately before 1992?",
+            "spec": {
+              "type": "temporal",
+              "discipline": "Shooting",
+              "event_name_substr": "mixed trap",
+              "season": "Summer",
+              "target_year": 1992,
+              "direction": "before",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Dmitry Monakov' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.3053295612335205
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Dmitry Monakov",
+      "citations": [
+        "Q7500750"
+      ],
+      "matched_doc_ids": [
+        "Q7500750"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.306
+    }
+  },
+  {
+    "qid": "eval-043",
+    "question": "Who won the gold medal in the event held at Carioca Arena 3 on 11 August 2016?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at Carioca Arena 3 on 11 August 2016?",
+      "answer": "Loredana DinuSimona GhermanSimona PopAna Maria Popescu",
+      "confidence": 0.95,
+      "citations": [
+        "Q25384917"
+      ],
+      "matched_doc_ids": [
+        "Q25384917"
+      ],
+      "query_spec": {
+        "type": "venue_date",
+        "venue": "Carioca Arena 3",
+        "date": "11 August 2016",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at Carioca Arena 3 on 11 August 2016?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'venue_date' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Carioca Arena 3 on 11 August 2016?",
+            "spec": {
+              "type": "venue_date",
+              "venue": "Carioca Arena 3",
+              "date": "11 August 2016",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Loredana DinuSimona GhermanSimona PopAna Maria Popescu' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2778904438018799
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Loredana DinuSimona GhermanSimona PopAna Maria Popescu",
+      "citations": [
+        "Q25384917"
+      ],
+      "matched_doc_ids": [
+        "Q25384917"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.279
+    }
+  },
+  {
+    "qid": "eval-044",
+    "question": "Who won the gold medal in the women's 75 kg weightlifting event at the Summer Olympics held immediately before 2016?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the women's 75 kg weightlifting event at the Summer Olympics held immediately before 2016?",
+      "answer": "Lydia Valentín",
+      "confidence": 0.95,
+      "citations": [
+        "Q1997032"
+      ],
+      "matched_doc_ids": [
+        "Q1997032"
+      ],
+      "query_spec": {
+        "type": "temporal",
+        "discipline": "Weightlifting",
+        "event_name_substr": "women's 75 kg",
+        "season": "Summer",
+        "target_year": 2016,
+        "direction": "before",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the women's 75 kg weightlifting event at the Summer Olympics held immediately before 2016?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'temporal' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the women's 75 kg weightlifting event at the Summer Olympics held immediately before 2016?",
+            "spec": {
+              "type": "temporal",
+              "discipline": "Weightlifting",
+              "event_name_substr": "women's 75 kg",
+              "season": "Summer",
+              "target_year": 2016,
+              "direction": "before",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Lydia Valentín' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.3792545795440674
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Lydia Valentín",
+      "citations": [
+        "Q1997032"
+      ],
+      "matched_doc_ids": [
+        "Q1997032"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.379
+    }
+  },
+  {
+    "qid": "eval-045",
+    "question": "Who won the gold medal in the women's moguls freestyle skiing event at the Winter Olympics held immediately before 2014?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the women's moguls freestyle skiing event at the Winter Olympics held immediately before 2014?",
+      "answer": "Hannah Kearney",
+      "confidence": 0.95,
+      "citations": [
+        "Q905561"
+      ],
+      "matched_doc_ids": [
+        "Q905561"
+      ],
+      "query_spec": {
+        "type": "temporal",
+        "discipline": "Freestyle skiing",
+        "event_name_substr": "women's moguls",
+        "season": "Winter",
+        "target_year": 2014,
+        "direction": "before",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the women's moguls freestyle skiing event at the Winter Olympics held immediately before 2014?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'temporal' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the women's moguls freestyle skiing event at the Winter Olympics held immediately before 2014?",
+            "spec": {
+              "type": "temporal",
+              "discipline": "Freestyle skiing",
+              "event_name_substr": "women's moguls",
+              "season": "Winter",
+              "target_year": 2014,
+              "direction": "before",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Hannah Kearney' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.3612198829650879
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Hannah Kearney",
+      "citations": [
+        "Q905561"
+      ],
+      "matched_doc_ids": [
+        "Q905561"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.361
+    }
+  },
+  {
+    "qid": "eval-046",
+    "question": "Who won the gold medal in the light flyweight boxing event at the Summer Olympics held immediately before 2004?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the light flyweight boxing event at the Summer Olympics held immediately before 2004?",
+      "answer": "Brahim Asloum",
+      "confidence": 0.95,
+      "citations": [
+        "Q4951841"
+      ],
+      "matched_doc_ids": [
+        "Q4951841"
+      ],
+      "query_spec": {
+        "type": "temporal",
+        "discipline": "Boxing",
+        "event_name_substr": "light flyweight",
+        "season": "Summer",
+        "target_year": 2004,
+        "direction": "before",
+        "field": "gold",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the light flyweight boxing event at the Summer Olympics held immediately before 2004?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'temporal' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the light flyweight boxing event at the Summer Olympics held immediately before 2004?",
+            "spec": {
+              "type": "temporal",
+              "discipline": "Boxing",
+              "event_name_substr": "light flyweight",
+              "season": "Summer",
+              "target_year": 2004,
+              "direction": "before",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Brahim Asloum' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2640063762664795
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Brahim Asloum",
+      "citations": [
+        "Q4951841"
+      ],
+      "matched_doc_ids": [
+        "Q4951841"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.264
+    }
+  },
+  {
+    "qid": "eval-047",
+    "question": "According to the provided corpus, which cycling event at the 2004 Summer Olympics had the highest number of competitors?",
+    "qtype": "superlative",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, which cycling event at the 2004 Summer Olympics had the highest number of competitors?",
+      "answer": "Cycling at the 2004 Summer Olympics – Men's individual road race",
+      "confidence": 0.95,
+      "citations": [
+        "Q1415848",
+        "Q1421749",
+        "Q2212666",
+        "Q2310230",
+        "Q2445057",
+        "Q1421581",
+        "Q1421727",
+        "Q2065523"
+      ],
+      "matched_doc_ids": [
+        "Q1415848",
+        "Q1421749",
+        "Q2212666",
+        "Q2310230",
+        "Q2445057",
+        "Q1421581",
+        "Q1421727",
+        "Q2065523"
+      ],
+      "query_spec": {
+        "type": "superlative",
+        "discipline": "cycling",
+        "games_id": "2004-summer",
+        "metric": "competitors",
+        "direction": "max",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, which cycling event at the 2004 Summer Olympics had the highest number of competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 9,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'superlative' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, which cycling event at the 2004 Summer Olympics had the highest number of competitors?",
+            "spec": {
+              "type": "superlative",
+              "discipline": "cycling",
+              "games_id": "2004-summer",
+              "metric": "competitors",
+              "direction": "max"
+            }
+          },
+          "output_summary": "resolved exactly: \"Cycling at the 2004 Summer Olympics – Men's individual road race\" from 8 graph record(s)",
+          "new_evidence_count": 8,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.31484556198120117
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Cycling at the 2004 Summer Olympics – Men's individual road race",
+      "citations": [
+        "Q1415848",
+        "Q1421749",
+        "Q2212666",
+        "Q2310230",
+        "Q1421581",
+        "Q1421727",
+        "Q2065523",
+        "Q2445057"
+      ],
+      "matched_doc_ids": [
+        "Q1415848",
+        "Q1421749",
+        "Q2212666",
+        "Q2310230",
+        "Q1421581",
+        "Q1421727",
+        "Q2065523",
+        "Q2445057"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 8,
+      "wall_time_s": 0.315
+    }
+  },
+  {
+    "qid": "eval-048",
+    "question": "According to the provided corpus, how many cycling events at the 2012 Summer Olympics had more than 30 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many cycling events at the 2012 Summer Olympics had more than 30 competitors?",
+      "answer": "7",
+      "confidence": 0.95,
+      "citations": [
+        "Q2036655",
+        "Q843287",
+        "Q916174",
+        "Q1005298",
+        "Q2297633",
+        "Q754412",
+        "Q2297621"
+      ],
+      "matched_doc_ids": [
+        "Q2036655",
+        "Q843287",
+        "Q916174",
+        "Q1005298",
+        "Q2297633",
+        "Q754412",
+        "Q2297621"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "cycling",
+        "games_id": "2012-summer",
+        "min_competitors": 30,
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many cycling events at the 2012 Summer Olympics had more than 30 competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 8,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many cycling events at the 2012 Summer Olympics had more than 30 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "cycling",
+              "games_id": "2012-summer",
+              "min_competitors": 30
+            }
+          },
+          "output_summary": "resolved exactly: '7' from 7 graph record(s)",
+          "new_evidence_count": 7,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.2534956932067871
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "7",
+      "citations": [
+        "Q2036655",
+        "Q754412",
+        "Q2297621",
+        "Q916174",
+        "Q1005298",
+        "Q2297633",
+        "Q843287"
+      ],
+      "matched_doc_ids": [
+        "Q2036655",
+        "Q754412",
+        "Q2297621",
+        "Q916174",
+        "Q1005298",
+        "Q2297633",
+        "Q843287"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 7,
+      "wall_time_s": 0.253
+    }
+  },
+  {
+    "qid": "eval-049",
+    "question": "According to the provided corpus, which shooting event at the 1988 Summer Olympics had the highest number of competitors?",
+    "qtype": "superlative",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, which shooting event at the 1988 Summer Olympics had the highest number of competitors?",
+      "answer": "Shooting at the 1988 Summer Olympics – Men's 50 metre rifle prone",
+      "confidence": 0.95,
+      "citations": [
+        "Q7500745",
+        "Q11883936",
+        "Q7500747",
+        "Q7500739",
+        "Q7500748",
+        "Q7500760",
+        "Q7500750",
+        "Q7500741",
+        "Q5403447",
+        "Q7500751",
+        "Q7500753",
+        "Q7500737",
+        "Q7500743"
+      ],
+      "matched_doc_ids": [
+        "Q7500745",
+        "Q11883936",
+        "Q7500747",
+        "Q7500739",
+        "Q7500748",
+        "Q7500760",
+        "Q7500750",
+        "Q7500741",
+        "Q5403447",
+        "Q7500751",
+        "Q7500753",
+        "Q7500737",
+        "Q7500743"
+      ],
+      "query_spec": {
+        "type": "superlative",
+        "discipline": "shooting",
+        "games_id": "1988-summer",
+        "metric": "competitors",
+        "direction": "max",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, which shooting event at the 1988 Summer Olympics had the highest number of competitors?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 13,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'superlative' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, which shooting event at the 1988 Summer Olympics had the highest number of competitors?",
+            "spec": {
+              "type": "superlative",
+              "discipline": "shooting",
+              "games_id": "1988-summer",
+              "metric": "competitors",
+              "direction": "max"
+            }
+          },
+          "output_summary": "resolved exactly: \"Shooting at the 1988 Summer Olympics – Men's 50 metre rifle prone\" from 13 graph record(s)",
+          "new_evidence_count": 13,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.3050856590270996
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Shooting at the 1988 Summer Olympics – Men's 50 metre rifle prone",
+      "citations": [
+        "Q7500745",
+        "Q11883936",
+        "Q7500743",
+        "Q7500747",
+        "Q7500739",
+        "Q7500748",
+        "Q7500760",
+        "Q7500750",
+        "Q5403447",
+        "Q7500751",
+        "Q7500753",
+        "Q7500737",
+        "Q7500741"
+      ],
+      "matched_doc_ids": [
+        "Q7500745",
+        "Q11883936",
+        "Q7500743",
+        "Q7500747",
+        "Q7500739",
+        "Q7500748",
+        "Q7500760",
+        "Q7500750",
+        "Q5403447",
+        "Q7500751",
+        "Q7500753",
+        "Q7500737",
+        "Q7500741"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 13,
+      "wall_time_s": 0.305
+    }
+  },
+  {
+    "qid": "eval-050",
+    "question": "Who won the gold medal in the event held at Olympic Stadium on 6–9 August at the 2012 Summer Olympics?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at Olympic Stadium on 6–9 August at the 2012 Summer Olympics?",
+      "answer": "David Rudisha",
+      "confidence": 0.95,
+      "citations": [
+        "Q1049551"
+      ],
+      "matched_doc_ids": [
+        "Q1049551"
+      ],
+      "query_spec": {
+        "type": "venue_date",
+        "venue": "Olympic Stadium",
+        "date": "6–9 August",
+        "field": "gold",
+        "games_id": "2012-summer",
+        "_planner": "regex"
+      },
+      "planner": "regex",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph"
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at Olympic Stadium on 6–9 August at the 2012 Summer Olympics?",
+      "steps_taken": 2,
+      "total_tokens": 0,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'venue_date' graph query via the regex planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Olympic Stadium on 6–9 August at the 2012 Summer Olympics?",
+            "spec": {
+              "type": "venue_date",
+              "venue": "Olympic Stadium",
+              "date": "6–9 August",
+              "field": "gold",
+              "games_id": "2012-summer"
+            }
+          },
+          "output_summary": "resolved exactly: 'David Rudisha' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 0,
+          "latency_s": 0.244828462600708
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "David Rudisha",
+      "citations": [
+        "Q1049551"
+      ],
+      "matched_doc_ids": [
+        "Q1049551"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "context_tokens": 0,
+        "total_tokens": 0,
+        "latency_s": 0,
+        "calls": []
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 0.245
+    }
+  }
+]
