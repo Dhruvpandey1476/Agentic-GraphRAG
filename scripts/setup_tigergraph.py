@@ -76,6 +76,7 @@ def connect():
         print("  * TG_HOST missing the https:// prefix, or including a port")
         print("  * the solution is still provisioning, or is paused/stopped")
         print("  * TG_SECRET copied with surrounding whitespace or quotes")
+        print("  * the workspace is STOPPED — Savanna idles them out; start it and retry")
         print("  * Community Edition: TG_GS_PORT/TG_RESTPP_PORT not set (14240/9000)")
         return None
 

@@ -100,6 +100,14 @@ class RealGraph(BaseGraph):
 
         self.conn = tg.TigerGraphConnection(**kwargs)
 
+        # A stopped Savanna workspace answers every endpoint with a 500
+        # whose body says "Auto start is not enabled for this workspace".
+        # Without this check that surfaces as an opaque 500 on getToken and
+        # then again on echo, which reads like a broken secret or a network
+        # problem and sends you debugging the wrong thing. Savanna stops
+        # idle workspaces on the starter tier, so this is routine, not rare.
+        self._raise_if_workspace_stopped()
+
         # Token auth is preferred (and required on Savanna for RESTPP).
         try:
             if config.TG_SECRET:
@@ -116,6 +124,21 @@ class RealGraph(BaseGraph):
 
         self._chrono_cache = None
         self._disciplines_cache = None
+        self._warned_dim = False
+
+    def _raise_if_workspace_stopped(self):
+        import requests
+        try:
+            r = requests.get(config.TG_HOST.rstrip("/") + "/api/ping", timeout=15)
+        except Exception:
+            return          # network problems are reported by echo() instead
+        if r.status_code == 500 and "auto start is not enabled" in r.text.lower():
+            raise RuntimeError(
+                "the TigerGraph workspace is STOPPED (Savanna idles workspaces out on "
+                "the starter tier). Start it at https://savanna.tgcloud.io -> your "
+                "workgroup -> Workspace -> Connect, wait for status Active, then re-run. "
+                "Nothing is lost: the graph and its data survive a stop."
+            )
 
     # ---------------------------------------------------------- admin
 
@@ -158,15 +181,62 @@ class RealGraph(BaseGraph):
         from src.embeddings import cosine_sim
 
         chunks = self._fetch_all_chunks()
+        if chunks and not self._warned_dim:
+            self._warned_dim = True
+            sample = next((c["embedding"] for c in chunks.values() if c.get("embedding")), None)
+            q_is_sparse = isinstance(query_emb, dict)
+            if sample is not None and q_is_sparse:
+                print("[tigergraph] !! the question was embedded with a SPARSE (tfidf) "
+                      "vectorizer but stored chunks are DENSE. Cosine over mismatched "
+                      "vector spaces is meaningless — set EMBEDDING_PROVIDER to the same "
+                      "provider used at ingestion.")
+            elif sample is not None and not q_is_sparse and len(sample) != len(query_emb):
+                print(f"[tigergraph] !! query vector dim {len(query_emb)} != stored chunk dim "
+                      f"{len(sample)}; re-ingest or switch EMBEDDING_PROVIDER.")
         scored = [(cosine_sim(query_emb, c["embedding"]), cid, c)
                   for cid, c in chunks.items() if c.get("embedding")]
         scored.sort(key=lambda x: -x[0])
         return scored[:k]
 
-    def _fetch_all_chunks(self):
-        if getattr(self, "_chunk_cache", None) is None:
-            verts = self.conn.getVertices("Chunk")
-            self._chunk_cache = {v["v_id"]: v["attributes"] for v in verts}
+    def _fetch_all_chunks(self, page=2000):
+        """Fetch every Chunk, paginated, and cache it for the run.
+
+        Paginated rather than one call because the payload is large — 9k
+        chunks x 768 doubles is tens of megabytes — and because
+        getVertices() applies a server-side cap. A truncated fetch would
+        not raise; RAG would simply search part of the corpus and report a
+        confidently lower score, which is the kind of silent wrong answer
+        this project exists to avoid. So the result is checked against the
+        vertex count and a shortfall is reported loudly.
+        """
+        if getattr(self, "_chunk_cache", None) is not None:
+            return self._chunk_cache
+
+        cache, skip = {}, 0
+        while True:
+            try:
+                verts = self.conn.getVertices("Chunk", limit=page, skip=skip)
+            except TypeError:
+                # older pyTigerGraph signatures don't accept skip/limit
+                verts = self.conn.getVertices("Chunk")
+                cache.update({v["v_id"]: v["attributes"] for v in verts})
+                break
+            if not verts:
+                break
+            cache.update({v["v_id"]: v["attributes"] for v in verts})
+            if len(verts) < page:
+                break
+            skip += page
+
+        try:
+            expected = self.conn.getVertexCount("Chunk")
+            if expected and len(cache) < expected:
+                print(f"[tigergraph] !! fetched {len(cache)} of {expected} chunks — "
+                      f"vector search is running on a PARTIAL corpus")
+        except Exception:
+            pass
+
+        self._chunk_cache = cache
         return self._chunk_cache
 
     def all_chunk_count(self) -> int:
@@ -182,11 +252,18 @@ class RealGraph(BaseGraph):
     def entity_lookup(self, name_substr):
         return self.conn.runInstalledQuery("entityLookup", {"nameSubstr": name_substr})
 
+    # VERTEX<T> query parameters must be passed as a 1-tuple. A plain value
+    # is deprecated and, on 4.2.5, first fails with
+    # "REST-30000: 'id' is not found in the VERTEX parameter" before falling
+    # back to a GET retry — so it worked, but paid two round trips and
+    # printed a warning on every single call.
     def k_hop_neighborhood(self, seed_id, hops=2):
-        return self.conn.runInstalledQuery("kHopNeighborhood", {"seed": seed_id, "hops": hops})
+        return self.conn.runInstalledQuery(
+            "kHopNeighborhood", {"seed": (seed_id,), "hops": hops})
 
     def entity_supporting_chunks(self, seed_id):
-        return self.conn.runInstalledQuery("entitySupportingChunks", {"seed": seed_id})
+        return self.conn.runInstalledQuery(
+            "entitySupportingChunks", {"seed": (seed_id,)})
 
     # ---------------------------------------------------------- structured
 

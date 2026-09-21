@@ -2,3 +2,14 @@
 Loaded 2951 documents from C:\Users\dhruv\Downloads\agentic-graphrag-hackathon\agentic-graphrag-hackathon\data\corpus.jsonl
 Parsed 2187 Olympic events / 20 Games editions deterministically (0 LLM calls)
 Embedding 9065 chunks via ollama:nomic-embed-text...
+  embedded 512/9065 (34s)
+  embedded 2560/9065 (147s)
+  embedded 4608/9065 (254s)
+  embedded 6656/9065 (366s)
+  embedded 8704/9065 (473s)
+Writing 2951 documents / 9065 chunks to TigerGraph...
+Writing 2187 OlympicEvent vertices...
+
+Done in 615.3s. Backend: tigergraph
+  2951 documents, 9065 chunks
+  2187 Olympic events, 20 Games editions
