@@ -1,12 +1,17 @@
-[graph] connected to TigerGraph at https://tg-fdb2a666-d98f-4292-b8f2-47f463a61d5e.tg-2635877100.i.tgcloud.io (graph=HackathonGraph)
+[graph] !! TigerGraph connection FAILED, falling back to MockGraph: the TigerGraph workspace is STOPPED (Savanna idles workspaces out on the starter tier). Start it at https://savanna.tgcloud.io -> your workgroup -> Workspace -> Connect, wait for status Active, then re-run. Nothing is lost: the graph and its data survive a stop.
 {
   "questions_file": "eval_public.jsonl",
   "n_questions": 100,
-  "graph_backend": "tigergraph",
+  "graph_backend": "mock",
   "embedder": "ollama:nomic-embed-text",
   "llm_provider": "groq",
   "llm_model": "openai/gpt-oss-120b",
   "ablation": false,
-  "started": "2026-09-21 19:29:07"
+  "started": "2026-09-21 21:08:06"
 }
 [1/100] (aggregation) According to the provided corpus, how many biathlon events at the 2018 Wint
+[2/100] (temporal) Who won the gold medal in the men's 20 kilometres walk athletics event at t
+[3/100] (aggregation) According to the provided corpus, how many shooting events at the 2004 Summ
+[llm_client] 429; retrying in 1116.0s (1/4)
+[4/100] (superlative) According to the provided corpus, which athletics event at the 2008 Summer 
+[llm_client] 429; retrying in 1829.0s (1/4)

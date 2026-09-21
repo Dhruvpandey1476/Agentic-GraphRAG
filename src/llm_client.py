@@ -46,6 +46,43 @@ OPENAI_COMPATIBLE = {
 _ENCODER = None
 
 
+class _TokenBucket:
+    """Client-side tokens-per-minute pacer, shared across all clients.
+
+    Reactive backoff alone is not enough on a hosted free tier: Groq
+    answers a burst with Retry-After values of 20-30 minutes, so a single
+    overrun costs more than an hour of careful pacing would have. This
+    sleeps *before* a request when sending it would exceed the budget, so
+    the limit is never breached in the first place.
+
+    The window is a simple 60-second sliding log, which is what these
+    providers actually meter against.
+    """
+
+    def __init__(self, tokens_per_minute: int):
+        self.tpm = tokens_per_minute
+        self._events = []          # (timestamp, tokens)
+
+    def consume(self, tokens: int):
+        if not self.tpm:
+            return
+        while True:
+            now = time.time()
+            self._events = [(t, n) for t, n in self._events if now - t < 60]
+            used = sum(n for _, n in self._events)
+            if used + tokens <= self.tpm or not self._events:
+                self._events.append((now, tokens))
+                return
+            # wait until the oldest event leaves the window
+            sleep_for = 60 - (now - self._events[0][0]) + 0.25
+            print(f"[llm_client] pacing: {used}/{self.tpm} tokens used this minute, "
+                  f"waiting {sleep_for:.0f}s before a {tokens}-token request")
+            time.sleep(max(sleep_for, 0.5))
+
+
+_BUCKET = _TokenBucket(config.LLM_TOKENS_PER_MINUTE)
+
+
 def estimate_tokens(text: str) -> int:
     """Only used when a provider fails to report usage. tiktoken's
     cl100k_base is a reasonable cross-model approximation; if tiktoken
@@ -178,6 +215,11 @@ class LLMClient:
         should fail immediately and loudly, not be masked by five retries.
         """
         import random
+        # Reserve budget before sending. Output tokens are unknown up front,
+        # so max_tokens is the conservative assumption.
+        _BUCKET.consume(
+            estimate_tokens("".join(m["content"] for m in req["messages"]))
+            + int(req.get("max_tokens") or 0))
         delay = 2.0
         for attempt in range(attempts):
             try:

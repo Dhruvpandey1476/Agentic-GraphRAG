@@ -100,6 +100,11 @@ VECTOR_BACKEND = os.getenv("VECTOR_BACKEND", "local").lower()
 # on-demand tier rejects any single request over 8,000 tokens outright with
 # a 413, so a fixed k=8 (~8.5k tokens) could not run there at all.
 RAG_TOP_K = _int("RAG_TOP_K", 8)
+# Client-side pacing for hosted free tiers, in tokens per minute. 0 = off.
+# Groq's on-demand tier allows 8,000 TPM and penalises bursts with
+# Retry-After values of 20-30 MINUTES, so waiting for a 429 is far more
+# expensive than never causing one. Set slightly under the real limit.
+LLM_TOKENS_PER_MINUTE = _int("LLM_TOKENS_PER_MINUTE", 0)
 RAG_MAX_CONTEXT_TOKENS = _int("RAG_MAX_CONTEXT_TOKENS", 4000)
 
 # ---------------------------------------------------------------- Agent limits
