@@ -5,9 +5,24 @@ Savanna or Community Edition, and against Anthropic, OpenAI, Groq,
 OpenRouter or a local Ollama, without touching source.
 """
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 
+# load_dotenv() does NOT override variables already present in the
+# environment — correct precedence for CI, but a real footgun locally: a
+# shell variable left over from an earlier command silently beats .env.
+# That is how a run ended up embedding questions with TF-IDF while the
+# stored chunks were dense, which produces meaningless cosine scores rather
+# than an error. Shadowing is legitimate, so it is reported, not overridden.
 load_dotenv()
+
+_SHADOWED = {
+    k: (v, os.environ[k])
+    for k, v in (dotenv_values() or {}).items()
+    if k in os.environ and v is not None and os.environ[k] != v
+}
+if _SHADOWED:
+    print("[config] shell environment overrides .env for: " + ", ".join(
+        f"{k} (.env={dot!r} -> using {env!r})" for k, (dot, env) in _SHADOWED.items()))
 
 
 def _int(name, default):

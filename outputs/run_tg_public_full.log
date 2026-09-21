@@ -1,0 +1,12 @@
+[graph] connected to TigerGraph at https://tg-fdb2a666-d98f-4292-b8f2-47f463a61d5e.tg-2635877100.i.tgcloud.io (graph=HackathonGraph)
+{
+  "questions_file": "eval_public.jsonl",
+  "n_questions": 100,
+  "graph_backend": "tigergraph",
+  "embedder": "ollama:nomic-embed-text",
+  "llm_provider": "groq",
+  "llm_model": "openai/gpt-oss-120b",
+  "ablation": false,
+  "started": "2026-09-21 19:08:16"
+}
+[1/100] (aggregation) According to the provided corpus, how many biathlon events at the 2018 Wint
