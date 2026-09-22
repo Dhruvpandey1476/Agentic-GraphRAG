@@ -436,6 +436,7 @@ class MockGraph(BaseGraph):
         for k in ("relations", "mentions"):
             self.store.setdefault(k, [])
         self._disciplines_cache = None
+        self._warned_dim = False
 
     def save(self):
         os.makedirs(os.path.dirname(self.store_path), exist_ok=True)
@@ -458,8 +459,21 @@ class MockGraph(BaseGraph):
 
     def vector_search(self, query_emb, k=5):
         from src.embeddings import cosine_sim
+        chunks = self.store["chunks"]
+        if chunks and not self._warned_dim:
+            self._warned_dim = True
+            sample = next((c["embedding"] for c in chunks.values() if c.get("embedding")), None)
+            # Same guard RealGraph carries. It was missing here, and that cost
+            # a full benchmark run: a fallback to this backend left dense
+            # question vectors scored against sparse TF-IDF chunk vectors,
+            # which silently returned unrelated chunks and a 0/47 RAG score
+            # rather than failing.
+            if sample is not None and isinstance(sample, dict) != isinstance(query_emb, dict):
+                print("[mockgraph] !! question and stored chunks are in DIFFERENT vector "
+                      "spaces (one sparse, one dense). Cosine between them is meaningless — "
+                      "re-run ingestion with the same EMBEDDING_PROVIDER you are querying with.")
         scored = [(cosine_sim(query_emb, c["embedding"]), cid, c)
-                  for cid, c in self.store["chunks"].items() if c.get("embedding")]
+                  for cid, c in chunks.items() if c.get("embedding")]
         scored.sort(key=lambda x: -x[0])
         return scored[:k]
 

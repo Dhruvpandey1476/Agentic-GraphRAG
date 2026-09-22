@@ -7,11 +7,96 @@
   "llm_provider": "groq",
   "llm_model": "openai/gpt-oss-120b",
   "ablation": false,
-  "started": "2026-09-21 21:08:06"
+  "started": "2026-09-22 22:53:19"
 }
 [1/100] (aggregation) According to the provided corpus, how many biathlon events at the 2018 Wint
 [2/100] (temporal) Who won the gold medal in the men's 20 kilometres walk athletics event at t
 [3/100] (aggregation) According to the provided corpus, how many shooting events at the 2004 Summ
-[llm_client] 429; retrying in 1116.0s (1/4)
+[llm_client] pacing: 5957/7000 tokens used this minute, waiting 53s before a 2992-token request
 [4/100] (superlative) According to the provided corpus, which athletics event at the 2008 Summer 
-[llm_client] 429; retrying in 1829.0s (1/4)
+[5/100] (multi_hop) Who won the gold medal in the event held at Olympic Weightlifting Gymnasium
+[llm_client] pacing: 6039/7000 tokens used this minute, waiting 51s before a 3404-token request
+[6/100] (temporal) Who won the gold medal in the women's 57 kg judo event at the Summer Olympi
+[7/100] (temporal) Who won the gold medal in the men's pole vault athletics event at the Summe
+[llm_client] pacing: 6929/7000 tokens used this minute, waiting 51s before a 2585-token request
+[8/100] (superlative) According to the provided corpus, which sailing event at the 2000 Summer Ol
+[llm_client] pacing: 5058/7000 tokens used this minute, waiting 53s before a 2473-token request
+[9/100] (lookup) How many nations competed in Sailing at the 2016 Summer Olympics – Women's 
+[10/100] (aggregation) According to the provided corpus, how many cycling events at the 2000 Summe
+[llm_client] pacing: 5483/7000 tokens used this minute, waiting 51s before a 2833-token request
+[11/100] (multi_hop) Who won the gold medal in the event held at Richmond Olympic Oval on 14 Feb
+[12/100] (aggregation) According to the provided corpus, how many rowing events at the 2020 Summer
+[llm_client] pacing: 6182/7000 tokens used this minute, waiting 51s before a 3537-token request
+[13/100] (temporal) Who won the gold medal in the women's 200 metre freestyle swimming event at
+[14/100] (multi_hop) Who won the gold medal in the event held at Riocentro – Pavilion 4 on 11–19
+[llm_client] pacing: 5949/7000 tokens used this minute, waiting 51s before a 3260-token request
+[15/100] (multi_hop) Who won the gold medal in the event held at London Velopark on 3 to 4 Augus
+[16/100] (temporal) Who won the gold medal in the men's sprint biathlon event at the Winter Oly
+[llm_client] pacing: 6454/7000 tokens used this minute, waiting 52s before a 3498-token request
+[17/100] (multi_hop) Who won the gold medal in the event held at Royal Artillery Barracks on 28 
+[18/100] (temporal) Who won the gold medal in the men's freestyle 82 kg wrestling event at the 
+[llm_client] pacing: 6951/7000 tokens used this minute, waiting 51s before a 3407-token request
+[19/100] (aggregation) According to the provided corpus, how many fencing events at the 1988 Summe
+[llm_client] pacing: 5462/7000 tokens used this minute, waiting 54s before a 2055-token request
+[20/100] (aggregation) According to the provided corpus, how many alpine skiing events at the 2014
+[21/100] (superlative) According to the provided corpus, which alpine skiing event at the 1988 Win
+[llm_client] pacing: 5321/7000 tokens used this minute, waiting 42s before a 2980-token request
+[22/100] (multi_hop) Who won the gold medal in the event held at Beijing Science and TechnologyU
+[llm_client] pacing: 6246/7000 tokens used this minute, waiting 5s before a 3301-token request
+[23/100] (multi_hop) Who won the gold medal in the event held at Estadi Olímpic Lluís Companys, 
+[llm_client] pacing: 6281/7000 tokens used this minute, waiting 44s before a 3082-token request
+[24/100] (aggregation) According to the provided corpus, how many biathlon events at the 2002 Wint
+[llm_client] pacing: 6383/7000 tokens used this minute, waiting 5s before a 3378-token request
+[25/100] (lookup) How many nations competed in Judo at the 2016 Summer Olympics – Women's 57 
+[llm_client] pacing: 6460/7000 tokens used this minute, waiting 43s before a 3164-token request
+[26/100] (temporal) Who won the gold medal in the men's cross-country cycling event at the Summ
+[llm_client] pacing: 6542/7000 tokens used this minute, waiting 5s before a 3144-token request
+[27/100] (aggregation) According to the provided corpus, how many fencing events at the 2008 Summe
+[llm_client] pacing: 6308/7000 tokens used this minute, waiting 43s before a 3043-token request
+[28/100] (multi_hop) Who won the gold medal in the event held at Olympic Aquatic Centre on Augus
+[llm_client] pacing: 6187/7000 tokens used this minute, waiting 5s before a 3069-token request
+[llm_client] pacing: 6112/7000 tokens used this minute, waiting 48s before a 1297-token request
+[29/100] (lookup) How many nations competed in Shooting at the 2012 Summer Olympics – Men's 5
+[30/100] (multi_hop) Who won the gold medal in the event held at Carioca Arena 3 on 6 August 201
+[llm_client] pacing: 6856/7000 tokens used this minute, waiting 39s before a 2543-token request
+[llm_client] pacing: 5559/7000 tokens used this minute, waiting 1s before a 2543-token request
+[31/100] (multi_hop) Who won the gold medal in the event held at Nikaia Olympic Weightlifting Ha
+[llm_client] pacing: 5720/7000 tokens used this minute, waiting 7s before a 2817-token request
+[32/100] (lookup) How many nations competed in Gymnastics at the 2016 Summer Olympics – Men's
+[llm_client] pacing: 5360/7000 tokens used this minute, waiting 42s before a 2813-token request
+[33/100] (aggregation) According to the provided corpus, how many judo events at the 2004 Summer O
+[llm_client] pacing: 5630/7000 tokens used this minute, waiting 6s before a 2931-token request
+[34/100] (lookup) How many nations competed in Figure skating at the 2010 Winter Olympics – W
+[llm_client] pacing: 5744/7000 tokens used this minute, waiting 39s before a 3119-token request
+[35/100] (lookup) How many nations competed in Shooting at the 1996 Summer Olympics – Men's 5
+[llm_client] pacing: 6050/7000 tokens used this minute, waiting 5s before a 2744-token request
+[36/100] (temporal) Who won the gold medal in the men's light flyweight boxing event at the Sum
+[llm_client] pacing: 5863/7000 tokens used this minute, waiting 42s before a 3373-token request
+[37/100] (superlative) According to the provided corpus, which shooting event at the 2008 Summer O
+[llm_client] pacing: 6117/7000 tokens used this minute, waiting 4s before a 2978-token request
+[38/100] (multi_hop) Who won the gold medal in the event held at Sydney Convention and Exhibitio
+[llm_client] pacing: 6351/7000 tokens used this minute, waiting 42s before a 3176-token request
+[39/100] (temporal) Who won the gold medal in the women's discus throw athletics event at the S
+[llm_client] pacing: 6154/7000 tokens used this minute, waiting 2s before a 3300-token request
+[40/100] (temporal) Who won the gold medal in the individual normal hill/10 km nordic combined 
+[llm_client] pacing: 6476/7000 tokens used this minute, waiting 38s before a 3411-token request
+[41/100] (multi_hop) Who won the gold medal in the event held at Mountain Bike Centre on 21 Augu
+[llm_client] pacing: 6711/7000 tokens used this minute, waiting 4s before a 3277-token request
+[42/100] (lookup) How many nations competed in Alpine skiing at the 1992 Winter Olympics – Me
+[llm_client] pacing: 6688/7000 tokens used this minute, waiting 42s before a 3007-token request
+[43/100] (multi_hop) Who won the gold medal in the event held at Val-d'Isère on 16 February 1992
+[llm_client] pacing: 6284/7000 tokens used this minute, waiting 7s before a 2436-token request
+[44/100] (superlative) According to the provided corpus, which fencing event at the 2008 Summer Ol
+[llm_client] pacing: 5443/7000 tokens used this minute, waiting 42s before a 3069-token request
+[45/100] (aggregation) According to the provided corpus, how many athletics events at the 2004 Sum
+[llm_client] pacing: 5505/7000 tokens used this minute, waiting 5s before a 3031-token request
+[46/100] (lookup) How many nations competed in Cross-country skiing at the 2010 Winter Olympi
+[llm_client] pacing: 6100/7000 tokens used this minute, waiting 36s before a 2893-token request
+[47/100] (lookup) How many nations competed in Athletics at the 1992 Summer Olympics – Men's 
+[llm_client] pacing: 5924/7000 tokens used this minute, waiting 8s before a 3212-token request
+[48/100] (temporal) Who won the gold medal in the men's 68 kg taekwondo event at the Summer Oly
+[llm_client] pacing: 6105/7000 tokens used this minute, waiting 42s before a 3075-token request
+[49/100] (temporal) Who won the gold medal in the men's pursuit biathlon event at the Winter Ol
+[llm_client] pacing: 6287/7000 tokens used this minute, waiting 8s before a 3435-token request
+[50/100] (multi_hop) Who won the gold medal in the event held at Adler Arena Skating Center on 1
+[llm_client] pacing: 6510/7000 tokens used this minute, waiting 42s before a 3310-token request

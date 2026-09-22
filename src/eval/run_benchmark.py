@@ -51,8 +51,14 @@ from src.tigergraph_client import get_graph
 STRESS_PATH = os.path.join(config.DATA_DIR, "eval_stress.jsonl")
 
 
-def _load_checkpoint(path):
-    """Completed rows from a previous attempt, keyed by qid."""
+def _load_checkpoint(path, fingerprint):
+    """Completed rows from a previous attempt, keyed by qid.
+
+    Rows are only reused when they were produced by the same backend,
+    embedder and model. Resuming across a config change would silently
+    splice two different experiments into one results file — exactly the
+    kind of quietly-wrong output this project is built to avoid.
+    """
     if not os.path.exists(path):
         return {}
     done = {}
@@ -65,6 +71,10 @@ def _load_checkpoint(path):
                 row = json.loads(line)
             except json.JSONDecodeError:
                 continue     # a partial last line from a hard kill
+            if row.get("_fingerprint") and row["_fingerprint"] != fingerprint:
+                print(f"[resume] discarding checkpoint: it was produced with "
+                      f"{row['_fingerprint']}, this run is {fingerprint}")
+                return {}
             done[str(row.get("qid"))] = row
     return done
 
@@ -91,6 +101,9 @@ def main():
     ap.add_argument("--suffix", default=None)
     ap.add_argument("--no-resume", action="store_true",
                     help="ignore any checkpoint and re-run every question")
+    ap.add_argument("--allow-fallback", action="store_true",
+                    help="permit running on the offline store even though TigerGraph "
+                         "is configured (by default that is treated as a failed run)")
     args = ap.parse_args()
     pipelines = args.pipelines.split(",")
 
@@ -115,6 +128,21 @@ def main():
     embedder = Embedder()
     graph = get_graph()
 
+    # If TigerGraph is configured but unreachable, get_graph() falls back to
+    # the offline store. That fallback is right for development and wrong
+    # for a benchmark: the run completes, the numbers look plausible, and
+    # only a small "backend" field in the output says they did not come from
+    # TigerGraph at all. That happened — a workspace idled out mid-sweep and
+    # produced a full set of results labelled "mock". Fail loudly instead.
+    if (config.TG_HOST and not config.FORCE_MOCK_GRAPH
+            and graph.backend != "tigergraph" and not args.allow_fallback):
+        print(f"\n!! TigerGraph is configured in .env but the run fell back to "
+              f"'{graph.backend}'. Refusing to produce results that would be "
+              f"mistaken for TigerGraph numbers.\n"
+              f"   Start the workspace and re-run, or pass --allow-fallback if "
+              f"you genuinely want offline numbers.")
+        sys.exit(2)
+
     run_meta = {
         "questions_file": os.path.basename(path),
         "n_questions": len(questions),
@@ -134,7 +162,8 @@ def main():
     ckpt_path = os.path.join(config.OUTPUT_DIR, f"results{suffix}.partial.jsonl")
     if args.no_resume and os.path.exists(ckpt_path):
         os.remove(ckpt_path)
-    done = _load_checkpoint(ckpt_path)
+    fingerprint = f"{graph.backend}/{embedder.describe()}/{run_meta['llm_model']}"
+    done = _load_checkpoint(ckpt_path, fingerprint)
     if done:
         print(f"[resume] {len(done)} question(s) already completed in "
               f"{os.path.basename(ckpt_path)}; skipping those")
@@ -150,7 +179,7 @@ def main():
             continue
         print(f"[{i+1}/{len(questions)}] ({q.get('qtype','?')}) {qt[:75]}")
         row = {"qid": q.get("qid", i), "question": qt, "qtype": q.get("qtype"),
-               "hops_required": q.get("hops_required")}
+               "hops_required": q.get("hops_required"), "_fingerprint": fingerprint}
 
         runners = {
             "rag": lambda: rag_pipeline.run(qt, graph=graph, embedder=embedder,
