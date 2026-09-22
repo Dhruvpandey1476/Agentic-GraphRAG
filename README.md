@@ -6,51 +6,69 @@ side-by-side to answer the question the hackathon actually poses:
 
 > **When does agentic reasoning earn its token cost, and when is it overkill?**
 
-Our answer, measured on a **live TigerGraph Savanna workspace** (4.2.5), not
-asserted:
+Our answer, measured on a **live TigerGraph Savanna workspace** (4.2.5), with
+**every pipeline using the same LLM** so all three spend real tokens:
 
-### On the provided 100 questions — the agent is *not* worth it
+### The fair comparison — 100 provided questions, `llama3`, LLM planner throughout
 
-| | Accuracy | Avg tokens | Escalated |
-|---|---|---|---|
-| GraphRAG | **100/100** | 0 | — |
-| Agentic GraphRAG | **100/100** | 67.5 | **1 / 100** |
+| Pipeline | Accuracy | Avg tokens | **Tokens / correct answer** | LLM calls |
+|---|---|---|---|---|
+| RAG | 0.200 | 2,764 | 13,820 | 1.0 |
+| GraphRAG | 0.290 | 985 | **3,396** | 2.0 |
+| **Agentic GraphRAG** | **0.414** | 3,795 | 9,163 | 4.8 |
 
-A single graph query answers all of them. The agent adds nothing, and says so:
-99 questions resolve for **zero reasoning tokens**, and the one escalation is a
-genuinely ambiguous venue+date tie. Reporting a fake win here would be the wrong
-answer to the hackathon's actual question.
+Agentic beats the fixed pipeline by **+12.4 points, a 43% relative gain**, and
+escalated on **71%** of questions — the system correctly recognising that its
+own planner is unreliable.
 
-### On 60 chained questions — the agent is required
+### Where the agent pays, and where it doesn't
 
-| | Accuracy | Avg tokens | Escalated |
-|---|---|---|---|
-| GraphRAG | 0.117 | 769 | — |
-| Agentic GraphRAG | **0.414** | 3,717 | 89.7% |
+| Type | RAG | GraphRAG | Agentic | Verdict |
+|---|---|---|---|---|
+| `aggregation` | 0.00 | 0.62 | **0.91** | worth it — **+28.6 pts for 2 extra tokens** |
+| `temporal` | 0.09 | 0.27 | **0.41** | worth it — +13.6 pts for 3,577 tokens |
+| `multi_hop` | 0.11 | 0.07 | **0.14** | worth it — +7.2 pts for 4,681 tokens |
+| `lookup` | **0.79** | 0.37 | 0.44 | **RAG wins** — plain retrieval beats the graph here |
+| `superlative` | 0.00 | 0.10 | 0.10 | not worth it — no gain beyond noise |
 
-Per question type, the verdict is genuinely mixed — which is the point:
+Three things worth reading carefully:
 
-| Type | GraphRAG | Agentic | Verdict |
-|---|---|---|---|
-| `chained_discipline` | 0.167 | **0.833** | worth it — **+66.6 pts for −19 tokens** |
-| `cross_edition` | 0.000 | **0.455** | agent needed |
-| `relaxation` | 0.333 | **0.500** | worth it — +16.7 pts for 1,938 tokens |
-| `chained_chronology` | 0.083 | **0.182** | worth it — +9.9 pts for 6,610 tokens |
-| `chained_venue` | 0.000 | 0.083 | agent needed, but barely works |
+**`aggregation` gains 28.6 points for 2 tokens.** The planner misreads the
+threshold ("more than 41" compiled as `min_competitors: 42`); the grounding
+check catches it and a deterministic repair substitutes the number the question
+actually states — no LLM call. That is the cheapest accuracy in the table.
 
-`chained_discipline` is the result worth staring at: **more accurate and
-cheaper**. The deterministic repair resolves the unnamed discipline from the
-graph for zero tokens, while the fixed pipeline burns its LLM fallback guessing.
+**`lookup` is a loss for us.** Single-document fact retrieval is exactly what
+vector search is good at, and our graph planner fumbles exact title resolution.
+We report it because it bounds the claim: graph structure helps with counting,
+chronology and comparison, not with "find this one fact in this one document".
+
+**`superlative` shows the agent adding nothing.** When the planner fails in a
+way the grounding check cannot detect — a plausible-looking argmax over the
+wrong set — there is nothing for the agent to repair.
+
+### The zero-token result, reported separately
+
+With the regex fast path enabled (`--fast-path`), GraphRAG and Agentic both
+score **100/100 on this set spending no LLM tokens at all**, resolving 99 of
+100 questions deterministically. That is a real engineering result — once a
+corpus is modelled as a graph, a large class of questions needs no LLM — but it
+is *not* an architectural comparison, because the regex parser encodes prior
+knowledge of the question templates that RAG is never given. See
+[Making the comparison fair](#making-the-comparison-fair).
+
+### On the 60 chained questions
+
+GraphRAG 0.117 → Agentic **0.414**. Where the question's subject must be
+resolved before it can be queried, the fixed pipeline is not merely worse, it
+is structurally unable to express the query.
 
 ### The crossover
 
-Adaptivity pays exactly when a question needs **the output of one graph query as
-the input to the next**. Above that line the agent is essential; below it, it is
-pure overhead. That boundary is the finding.
-
-All numbers above are with a local **llama3:8b** — deliberately weak, to show
-how little rides on model strength. The grounding check and all three repair
-classes are deterministic; a stronger model lifts only the LLM-loop path.
+Adaptivity pays when a question needs **the output of one graph query as the
+input to the next**, and when the planner is unreliable enough that its output
+needs checking. Both conditions are common with small or cheap models — which
+is precisely when you would want an agent.
 
 ![Architecture](docs/architecture.svg)
 

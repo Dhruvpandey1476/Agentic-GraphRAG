@@ -98,7 +98,9 @@
 <script>
 // Each tab is one benchmark run written by src/eval/run_benchmark.py.
 const SETS = [
-  {key:"_tg_public", label:"TigerGraph · Public (100)",
+  {key:"_fair100", label:"Fair comparison (100)",
+   desc:"all three pipelines on the same LLM — the headline result"},
+  {key:"_tg_public", label:"TigerGraph · Public (100, fast path)",
    desc:"provided evaluation set, live TigerGraph Savanna"},
   {key:"_tg_stress", label:"TigerGraph · Stress (60)",
    desc:"chained-reasoning set, live TigerGraph Savanna"},
