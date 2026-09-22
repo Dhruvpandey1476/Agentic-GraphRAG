@@ -6,6 +6,7 @@ __pycache__/
 
 # Build artifacts — regenerate with: python -m src.ingestion.build_graph
 outputs/graph_store.json
+outputs/*.partial.jsonl
 outputs/tfidf_vectorizer.pkl
 
 # Benchmark outputs ARE committed (they are a deliverable), but the local

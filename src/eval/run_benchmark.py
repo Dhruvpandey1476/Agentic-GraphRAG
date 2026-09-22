@@ -23,6 +23,14 @@ Usage:
   python -m src.eval.run_benchmark --ablation           # disable regex fast path
   python -m src.eval.run_benchmark --judge              # + LLM-as-judge scoring
   python -m src.eval.run_benchmark --pipelines graphrag,agentic_graphrag
+  python -m src.eval.run_benchmark --no-resume           # ignore a checkpoint
+
+Long runs are CHECKPOINTED. Each question's result is appended to
+outputs/results<suffix>.partial.jsonl as soon as it completes, and a re-run
+skips questions already present. A sweep paced against a hosted free tier
+takes the better part of an hour, and losing all of it to a laptop running
+out of memory — or a rate limit, or a dropped connection — is the
+difference between finishing and not. Pass --no-resume to start clean.
 """
 import argparse
 import json
@@ -41,6 +49,24 @@ from src.llm_client import make_llm
 from src.tigergraph_client import get_graph
 
 STRESS_PATH = os.path.join(config.DATA_DIR, "eval_stress.jsonl")
+
+
+def _load_checkpoint(path):
+    """Completed rows from a previous attempt, keyed by qid."""
+    if not os.path.exists(path):
+        return {}
+    done = {}
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                continue     # a partial last line from a hard kill
+            done[str(row.get("qid"))] = row
+    return done
 
 
 def load_jsonl(path):
@@ -63,6 +89,8 @@ def main():
                          "measured accuracy is the system's true un-cached generalisation")
     ap.add_argument("--pipelines", default="rag,graphrag,agentic_graphrag")
     ap.add_argument("--suffix", default=None)
+    ap.add_argument("--no-resume", action="store_true",
+                    help="ignore any checkpoint and re-run every question")
     args = ap.parse_args()
     pipelines = args.pipelines.split(",")
 
@@ -103,10 +131,23 @@ def main():
               "cannot escalate. Token columns will be zero and the comparison is NOT "
               "publishable. Set a provider key in .env (groq/openrouter/ollama).\n")
 
+    ckpt_path = os.path.join(config.OUTPUT_DIR, f"results{suffix}.partial.jsonl")
+    if args.no_resume and os.path.exists(ckpt_path):
+        os.remove(ckpt_path)
+    done = _load_checkpoint(ckpt_path)
+    if done:
+        print(f"[resume] {len(done)} question(s) already completed in "
+              f"{os.path.basename(ckpt_path)}; skipping those")
+
     all_results = []
     t0 = time.time()
+    ckpt = open(ckpt_path, "a", encoding="utf-8")
     for i, q in enumerate(questions):
         qt = q["question"]
+        qid = str(q.get("qid", i))
+        if qid in done:
+            all_results.append(done[qid])
+            continue
         print(f"[{i+1}/{len(questions)}] ({q.get('qtype','?')}) {qt[:75]}")
         row = {"qid": q.get("qid", i), "question": qt, "qtype": q.get("qtype"),
                "hops_required": q.get("hops_required")}
@@ -143,7 +184,13 @@ def main():
                                                   q.get("answer"), llm=llm)
             row[name] = entry
         all_results.append(row)
+        # Flush immediately: an unflushed buffer is exactly what gets lost
+        # when the process is killed rather than exiting.
+        ckpt.write(json.dumps(row, ensure_ascii=False) + "\n")
+        ckpt.flush()
+        os.fsync(ckpt.fileno())
 
+    ckpt.close()
     os.makedirs(config.OUTPUT_DIR, exist_ok=True)
     with open(os.path.join(config.OUTPUT_DIR, f"results{suffix}.json"), "w",
               encoding="utf-8") as f:
@@ -154,6 +201,14 @@ def main():
     with open(os.path.join(config.OUTPUT_DIR, f"summary{suffix}.json"), "w",
               encoding="utf-8") as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
+
+    # Drop the checkpoint only now that the real outputs are safely on disk.
+    # Leaving it would make a deliberate re-run of this suffix skip every
+    # question and silently reuse the old results.
+    try:
+        os.remove(ckpt_path)
+    except OSError:
+        pass
 
     print(f"\nDone in {time.time()-t0:.1f}s -> outputs/summary{suffix}.json")
     _print_table(summary, has_gold)
