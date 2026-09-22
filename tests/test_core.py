@@ -115,6 +115,21 @@ def test_llm_planner_is_the_default():
     assert spec["_planner"] == "none" and spec["type"] == "unstructured"
 
 
+def test_planner_coerces_numeric_strings():
+    """An LLM emits "73" as happily as 73 — valid JSON, wrong type. The
+    executor then raises TypeError deep inside a filter comparison, which is
+    how a whole run lost questions. The regex planner never did this, so it
+    only surfaced once the LLM compiler became the default."""
+    from src.agents.query_planner import _coerce_numerics
+    assert _coerce_numerics({"min_competitors": "73"})["min_competitors"] == 73
+    assert _coerce_numerics({"min_competitors": "1,200"})["min_competitors"] == 1200
+    assert _coerce_numerics({"target_year": "2016.0"})["target_year"] == 2016
+    assert _coerce_numerics({"min_competitors": 41.0})["min_competitors"] == 41
+    # unusable values are dropped, not passed through to crash the executor
+    assert "min_competitors" not in _coerce_numerics({"min_competitors": "many"})
+    assert "min_competitors" not in _coerce_numerics({"min_competitors": ["73"]})
+
+
 def test_planner_repairs_games_id_shapes():
     for raw in ("2012Summer", "2012 summer", "2012-Summer"):
         fixed = qp._repair_games_id({"type": "aggregation", "games_id": raw})

@@ -180,11 +180,11 @@ def compile_llm(question: str, known_disciplines: list, llm):
     if not isinstance(spec, dict) or "type" not in spec:
         spec = {"type": "unstructured"}
 
-    # Models frequently emit year+season instead of a games_id, or a
-    # games_id in the wrong shape. Repair rather than fail the query.
-    spec = _repair_games_id(spec)
+    # Models frequently emit year+season instead of a games_id, a games_id in
+    # the wrong shape, or numbers as strings. Repair rather than fail.
+    spec = _repair_games_id(_coerce_numerics(spec))
     if spec.get("type") == "comparison" and isinstance(spec.get("sub"), dict):
-        spec["sub"] = _repair_games_id(spec["sub"])
+        spec["sub"] = _repair_games_id(_coerce_numerics(spec["sub"]))
 
     # Snap a hallucinated discipline back onto a real one when it's an
     # obvious case/spacing variant; otherwise leave it and let execution
@@ -196,6 +196,34 @@ def compile_llm(question: str, known_disciplines: list, llm):
             spec["discipline"] = exact
 
     return spec, r
+
+
+# Fields the executor does arithmetic or comparisons on. An LLM will
+# happily emit "73" instead of 73 — valid JSON, wrong type — and the
+# executor then raises TypeError deep inside a filter comparison. The regex
+# planner always produced ints, so this only appears once the LLM compiler
+# is the default. Coerce at the boundary rather than defensively casting at
+# every use site.
+_NUMERIC_FIELDS = ("min_competitors", "max_competitors", "target_year",
+                   "year", "k", "hops")
+
+
+def _coerce_numerics(spec: dict) -> dict:
+    for key in _NUMERIC_FIELDS:
+        v = spec.get(key)
+        if isinstance(v, str):
+            try:
+                # float() first so "2016.0" and "73" both work; a value that
+                # is not a number at all is dropped rather than crashing the
+                # executor mid-comparison.
+                spec[key] = int(float(v.strip().replace(",", "")))
+            except (TypeError, ValueError):
+                spec.pop(key, None)
+        elif isinstance(v, float):
+            spec[key] = int(v)
+        elif v is not None and not isinstance(v, int):
+            spec.pop(key, None)
+    return spec
 
 
 def _repair_games_id(spec: dict) -> dict:
