@@ -232,27 +232,51 @@ rather than by the model.
 
 ---
 
-## Honest accounting: the regex fast path
+## Making the comparison fair
 
-A regex fast path covers this dataset's templated phrasings for zero tokens.
-It would be easy to present its accuracy as the system's capability. It isn't —
-it is a **cache over the general path**, and the repo treats it that way:
+The most important methodological decision in this repo, and the one most
+worth attacking:
 
-- Every compiled query is labelled `_planner: "regex" | "llm" | "none"`, and the
-  counts appear in the dashboard under **planner provenance**.
-- `--ablation` disables the fast path *and* deterministic triage entirely, so
-  you can measure the system's true un-cached generalisation:
+A regex question-parser can resolve this dataset's templated phrasings for
+**zero tokens**. With it on, GraphRAG and Agentic score 100/100 spending
+nothing, while RAG spends ~3,000 tokens per question and scores far lower.
+That looks like a crushing architectural win.
 
-  ```bash
-  python -m src.eval.run_benchmark --ablation
-  python -m src.eval.run_benchmark --stress --ablation
-  ```
+It isn't. The regex parser is only free because it **encodes prior knowledge
+of what the questions look like** — a prior the RAG baseline is never given.
+Reporting that gap as "architecture" compares a pre-tuned system against an
+untuned one.
 
-Judges should read the ablation numbers as the real ones.
+So the fast path is **off by default**. Every pipeline compiles its query with
+the LLM, every pipeline spends real tokens, and the comparison measures
+architecture rather than eval-fitting:
 
----
+```bash
+python -m src.eval.run_benchmark              # LLM planner everywhere (default)
+python -m src.eval.run_benchmark --fast-path  # the zero-token cached path
+```
 
-## The stress set
+`run_meta.regex_fast_path` records which configuration produced any given
+results file, and every compiled query is labelled `_planner: "llm" | "regex"`.
+
+**What survives the fair comparison.** Structure still wins on cost — one
+~300-token planner call versus RAG's ~3,000-token context — but now it is
+*earned*. The graph pipelines have to understand the question with the same
+model RAG uses; they just need far less text in the prompt to act on it.
+
+**The zero-token result is still worth reporting**, as an engineering finding
+rather than an architectural one: once a corpus has been modelled into a
+graph, a large class of questions can be answered with **no LLM at all**. That
+belongs in its own table, clearly labelled, not blended into the comparison.
+
+### Cost per correct answer
+
+`avg_tokens` alone is misleading across pipelines with different accuracies —
+a pipeline that is cheap because it answers nothing is not efficient, just
+cheap. The summary therefore reports **`tokens_per_correct_answer`**, which is
+the number that actually answers "was the extra reasoning worth it".
+
+## The stress set## The stress set
 
 The provided 100 questions saturate at ~99% for GraphRAG. A benchmark at its
 ceiling cannot measure anything above it, so it cannot answer *when* agentic

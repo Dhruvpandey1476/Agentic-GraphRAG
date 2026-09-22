@@ -155,9 +155,21 @@ layer is thin). Close on the finding, not the code.
 ## Likely judge questions, and the honest answers
 
 **"Isn't the regex path just fitting the eval set?"**
-Yes — which is why it is labelled as a cache, reported separately as planner
-provenance, and disableable with `--ablation`. The ablation numbers are the
-system's real accuracy.
+Yes — which is why it is **off by default**. Every pipeline compiles its query
+with the LLM and spends real tokens, so the headline comparison measures
+architecture, not a prior on the question templates. `--fast-path` reproduces
+the zero-token numbers, reported separately as an engineering result: once the
+corpus is modelled as a graph, a large class of questions needs no LLM at all.
+
+**"Your graph pipelines used no tokens while RAG used thousands — how is that
+a fair comparison?"**
+It wasn't, in the first version, and that is exactly why the default changed.
+With the fast path on, the graph pipelines got prior knowledge of the question
+shapes that RAG never got. With it off, all three use the same model on the
+same questions. Structure still costs less — a ~300-token planner call versus a
+~3,000-token context — but that advantage is now earned rather than assumed.
+We also report tokens per *correct answer*, because a pipeline that is cheap
+because it answers nothing is not efficient.
 
 **"You generated your own benchmark. Isn't that self-serving?"**
 The gold answers are computed from the graph, not from our system's output —
