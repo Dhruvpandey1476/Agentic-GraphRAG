@@ -114,7 +114,7 @@ Return ONLY JSON: {"answer": str|null, "citations": [str], "confidence": float}"
 #  Deterministic triage
 # ==========================================================================
 
-def _run_graph_query(state, graph, llm, question, force_llm=False, usage=None):
+def _run_graph_query(state, graph, llm, question, force_llm=None, usage=None):
     """Compile + execute one graph query, logging it as a trace step.
     Returns (result, spec). Shared by the triage path and the agent loop so
     both are measured identically."""
@@ -606,7 +606,7 @@ def _final_answer(state, llm, usage):
 # ==========================================================================
 
 def run(question: str, graph=None, llm=None, embedder=None, verbose=False,
-        force_llm_planner=False, skip_triage=False) -> dict:
+        force_llm_planner=None, skip_triage=False) -> dict:
     """force_llm_planner / skip_triage exist for the ablation benchmark:
     they disable the free fast paths so the agent's true cost and accuracy
     can be measured without any template caching."""

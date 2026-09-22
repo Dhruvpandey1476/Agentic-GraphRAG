@@ -99,6 +99,20 @@ VECTOR_BACKEND = os.getenv("VECTOR_BACKEND", "local").lower()
 # always has a budget) and a hard requirement on hosted free tiers: Groq's
 # on-demand tier rejects any single request over 8,000 tokens outright with
 # a 413, so a fixed k=8 (~8.5k tokens) could not run there at all.
+# The regex question-parser is an OPT-IN cache, not the default.
+#
+# It resolves this dataset's templated phrasings for zero tokens, which
+# makes GraphRAG and Agentic look free next to a RAG baseline that must
+# always call an LLM. But it only costs zero because it encodes prior
+# knowledge of what the questions look like — a prior RAG is not given. So
+# using it by default compares a pre-tuned system against an untuned one
+# and reports the gap as if it were architecture.
+#
+# Default OFF: every pipeline compiles its query with the LLM, so all three
+# spend real tokens and the comparison measures architecture rather than
+# eval-fitting. Set USE_REGEX_FAST_PATH=1 to measure the cached path.
+USE_REGEX_FAST_PATH = os.getenv("USE_REGEX_FAST_PATH", "0") == "1"
+
 RAG_TOP_K = _int("RAG_TOP_K", 8)
 # Client-side pacing for hosted free tiers, in tokens per minute. 0 = off.
 # Groq's on-demand tier allows 8,000 TPM and penalises bursts with

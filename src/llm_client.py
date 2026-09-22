@@ -63,6 +63,24 @@ class _TokenBucket:
         self.tpm = tokens_per_minute
         self._events = []          # (timestamp, tokens)
 
+    def reconcile(self, reserved: int, actual: int):
+        """Correct the most recent reservation once real usage is known.
+
+        Reservations use max_tokens as the output estimate, which is badly
+        wrong for reasoning models: gpt-oss emits reasoning tokens that are
+        billed but not bounded by max_tokens, so a request reserved at 3.4k
+        can actually cost 6k. Pacing on the estimate alone therefore still
+        trips the provider's limit — which is exactly what happened. Folding
+        the real number back in keeps the window honest.
+        """
+        if not self.tpm or not self._events:
+            return
+        t, n = self._events[-1]
+        self._events[-1] = (t, max(n, actual))
+        if actual > reserved * 1.5:
+            print(f"[llm_client] request cost {actual} tokens, reserved {reserved} "
+                  f"(reasoning tokens are not bounded by max_tokens)")
+
     def consume(self, tokens: int):
         if not self.tpm:
             return
@@ -216,10 +234,13 @@ class LLMClient:
         """
         import random
         # Reserve budget before sending. Output tokens are unknown up front,
-        # so max_tokens is the conservative assumption.
-        _BUCKET.consume(
-            estimate_tokens("".join(m["content"] for m in req["messages"]))
-            + int(req.get("max_tokens") or 0))
+        # so max_tokens is the initial assumption; reconcile() corrects it
+        # from the response, which matters because reasoning models spend
+        # far more output tokens than max_tokens implies.
+        reserved = (estimate_tokens("".join(m["content"] for m in req["messages"]))
+                    + int(req.get("max_tokens") or 0))
+        _BUCKET.consume(reserved)
+        self._last_reserved = reserved
         delay = 2.0
         for attempt in range(attempts):
             try:
@@ -277,6 +298,10 @@ class LLMClient:
             usage = getattr(resp, "usage", None)
             in_tok = getattr(usage, "prompt_tokens", None) if usage else None
             out_tok = getattr(usage, "completion_tokens", None) if usage else None
+
+        # Fold real usage back into the pacing window.
+        if in_tok and out_tok:
+            _BUCKET.reconcile(getattr(self, "_last_reserved", 0), in_tok + out_tok)
 
         estimated = False
         if not in_tok:

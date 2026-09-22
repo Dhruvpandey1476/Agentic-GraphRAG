@@ -95,8 +95,12 @@ def main():
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--judge", action="store_true", help="also run LLM-as-judge scoring")
     ap.add_argument("--ablation", action="store_true",
-                    help="disable the regex fast path and deterministic triage, so the "
-                         "measured accuracy is the system's true un-cached generalisation")
+                    help="also disable the agent's deterministic triage, forcing every "
+                         "question through the full adaptive loop")
+    ap.add_argument("--fast-path", action="store_true",
+                    help="re-enable the zero-token regex question-parser (OFF by default: "
+                         "it encodes prior knowledge of the question templates, which RAG "
+                         "is not given, so it measures eval-fitting rather than architecture)")
     ap.add_argument("--pipelines", default="rag,graphrag,agentic_graphrag")
     ap.add_argument("--suffix", default=None)
     ap.add_argument("--no-resume", action="store_true",
@@ -150,7 +154,10 @@ def main():
         "embedder": embedder.describe(),
         "llm_provider": config.LLM_PROVIDER if llm else None,
         "llm_model": llm.model if llm else None,
-        "ablation": args.ablation,
+        "ablation_skip_triage": args.ablation,
+        # False here is the headline configuration: every pipeline compiles
+        # its query with the LLM, so all three spend real tokens.
+        "regex_fast_path": args.fast_path,
         "started": time.strftime("%Y-%m-%d %H:%M:%S"),
     }
     print(json.dumps(run_meta, indent=2))
@@ -184,11 +191,11 @@ def main():
         runners = {
             "rag": lambda: rag_pipeline.run(qt, graph=graph, embedder=embedder,
                                             llm=llm, qtype=q.get("qtype")),
-            "graphrag": lambda: graphrag_pipeline.run(qt, graph=graph, llm=llm,
-                                                      force_llm_planner=args.ablation),
+            "graphrag": lambda: graphrag_pipeline.run(
+                qt, graph=graph, llm=llm, force_llm_planner=not args.fast_path),
             "agentic_graphrag": lambda: agentic_pipeline.run(
                 qt, graph=graph, llm=llm, embedder=embedder,
-                force_llm_planner=args.ablation, skip_triage=args.ablation),
+                force_llm_planner=not args.fast_path, skip_triage=args.ablation),
         }
 
         for name in pipelines:
@@ -273,6 +280,13 @@ def _agg(rows, has_gold):
     if has_gold:
         m = [bool(r.get("exact_match")) for r in rows]
         entry["exact_match_accuracy"] = round(sum(m) / max(len(m), 1), 3)
+        # Cost per RESULT, not per question. Pipelines that answer different
+        # numbers of questions correctly are not comparable on avg_tokens
+        # alone: a pipeline that is cheap because it answers nothing is not
+        # efficient, it is just cheap.
+        n_correct = sum(m)
+        entry["tokens_per_correct_answer"] = (
+            round(sum(tokens) / n_correct, 1) if n_correct else None)
         rec = [r["retrieval_recall"] for r in rows if r.get("retrieval_recall") is not None]
         if rec:
             entry["avg_retrieval_recall"] = round(sum(rec) / len(rec), 3)

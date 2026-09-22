@@ -38,7 +38,7 @@ evidence is insufficient, set answer to null.
 Return ONLY valid JSON: {"answer": str|null, "citations": [str], "confidence": float}"""
 
 
-def run(question: str, graph=None, llm=None, force_llm_planner=False) -> dict:
+def run(question: str, graph=None, llm=None, force_llm_planner=None) -> dict:
     graph = graph or get_graph()
     usage = UsageTracker()
     disciplines = graph.known_disciplines()

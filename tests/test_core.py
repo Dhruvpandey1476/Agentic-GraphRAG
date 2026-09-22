@@ -103,8 +103,16 @@ def test_regex_planner_types(q, expected):
 
 
 def test_planner_marks_provenance():
+    spec, _ = qp.plan("how many nations competed in X?", [], force_llm=False)
+    assert spec["_planner"] == "regex"
+
+
+def test_llm_planner_is_the_default():
+    """The regex cache must not be reachable without asking for it: with no
+    LLM available and no fast-path opt-in, planning yields nothing rather
+    than silently falling back to the template matcher."""
     spec, _ = qp.plan("how many nations competed in X?", [])
-    assert spec["_planner"] in ("regex", "none")
+    assert spec["_planner"] == "none" and spec["type"] == "unstructured"
 
 
 def test_planner_repairs_games_id_shapes():
@@ -203,7 +211,14 @@ def test_executor_returns_none_not_zero_when_nothing_matches(graph):
 
 
 def test_public_set_accuracy_does_not_regress(graph):
-    """End-to-end guard on the deterministic path over the real eval set."""
+    """End-to-end guard on the REGEX path over the real eval set.
+
+    force_llm=False is explicit because the regex parser is no longer the
+    default — the LLM compiles every query now, so that all three pipelines
+    spend real tokens and the benchmark measures architecture rather than a
+    prior on the question templates. This test still pins the cached path,
+    which remains available via --fast-path.
+    """
     path = config.EVAL_QUESTIONS_PATH
     if not os.path.exists(path):
         pytest.skip("eval_public.jsonl missing")
@@ -211,7 +226,7 @@ def test_public_set_accuracy_does_not_regress(graph):
     disciplines = graph.known_disciplines()
     hits = 0
     for q in qs:
-        spec, _ = qp.plan(q["question"], disciplines)
+        spec, _ = qp.plan(q["question"], disciplines, force_llm=False)
         if spec["type"] == "unstructured":
             continue
         ans = sa.execute(spec, graph)["answer"]

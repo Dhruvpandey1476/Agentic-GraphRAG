@@ -42,6 +42,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+import config
 from src.ingestion.infobox import normalize, games_id as make_games_id
 from src.llm_client import parse_json_safely
 
@@ -213,15 +214,18 @@ def _repair_games_id(spec: dict) -> dict:
 
 # ---------------------------------------------------------------- entry point
 
-def plan(question: str, known_disciplines: list, llm=None, force_llm: bool = False):
+def plan(question: str, known_disciplines: list, llm=None, force_llm=None):
     """Compile `question` into a query spec.
 
-    force_llm=True skips the regex cache entirely — this is what the
-    ablation benchmark uses to measure accuracy without any template
-    matching, i.e. the system's real generalisation.
+    force_llm=None (the default) defers to config.USE_REGEX_FAST_PATH,
+    which is OFF by default: the LLM compiles every query, so GraphRAG and
+    Agentic pay real tokens exactly as RAG does. Passing True or False
+    overrides that explicitly.
 
     Returns (spec, llm_result_or_None). spec always carries `_planner`.
     """
+    if force_llm is None:
+        force_llm = not config.USE_REGEX_FAST_PATH
     if not force_llm:
         spec = compile_regex(question, known_disciplines)
         if spec is not None:
