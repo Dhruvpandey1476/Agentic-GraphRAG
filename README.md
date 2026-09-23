@@ -57,11 +57,38 @@ is *not* an architectural comparison, because the regex parser encodes prior
 knowledge of the question templates that RAG is never given. See
 [Making the comparison fair](#making-the-comparison-fair).
 
-### On the 60 chained questions
+### On the 60 chained questions — the agent becomes cheaper, not just better
 
-GraphRAG 0.117 → Agentic **0.414**. Where the question's subject must be
-resolved before it can be queried, the fixed pipeline is not merely worse, it
-is structurally unable to express the query.
+| Pipeline | Accuracy | Avg tokens | **Tokens / correct answer** | Answered |
+|---|---|---|---|---|
+| RAG | 0.083 | 2,807 | 33,680 | 28% |
+| GraphRAG | 0.100 | 923 | 9,229 | 100% |
+| **Agentic GraphRAG** | **0.450** | 3,128 | **6,950** | 98% |
+
+**4.5× the accuracy at 75% of GraphRAG's cost per correct answer.** On the
+provided set the agent bought accuracy *with* tokens; here it is simultaneously
+the most accurate and the most efficient pipeline. The inversion is the point:
+the deterministic repairs (`resolve_slot` ×24, `repair_literal` ×21,
+`decompose` ×7) produce answers without LLM calls, so the worse the planner
+performs, the better the agent's economics look.
+
+| Family | RAG | GraphRAG | Agentic | |
+|---|---|---|---|---|
+| `chained_discipline` | 0.00 | 0.25 | **0.92** | +66.7 pts for 83 tokens |
+| `relaxation` | 0.00 | 0.25 | **0.75** | +50.0 pts for 1,208 tokens |
+| `cross_edition` | 0.25 | 0.00 | **0.50** | fixed pipeline cannot express it |
+| `chained_chronology` | 0.17 | 0.00 | 0.08 | 3 hops — everything struggles |
+| `chained_venue` | 0.00 | 0.00 | 0.00 | **nothing works** |
+
+Two rows we report rather than bury. `chained_venue` is 0.00 across all three
+pipelines: resolving a venue's full cross-edition event set and then taking an
+argmax defeats every approach here. And `chained_chronology` is the one family
+where RAG beats the agent — three sequential resolutions is past what an 8B
+planner sustains.
+
+RAG's `answered` rate of 28% is also worth reading: it declined to answer most
+of these rather than hallucinating, which is correct behaviour and why its cost
+per correct answer is so poor.
 
 ### The crossover
 

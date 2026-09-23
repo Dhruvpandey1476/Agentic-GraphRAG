@@ -1,0 +1,182 @@
+{
+  "rag": {
+    "n_questions": 60,
+    "avg_tokens": 2806.6,
+    "total_tokens": 168398,
+    "avg_input_tokens": 2752.5,
+    "avg_output_tokens": 54.1,
+    "avg_context_tokens": 2598.7,
+    "avg_llm_calls": 1.0,
+    "avg_steps": 1.0,
+    "avg_latency_s": 10.223,
+    "answered_rate": 0.283,
+    "exact_match_accuracy": 0.083,
+    "tokens_per_correct_answer": 33679.6,
+    "avg_retrieval_recall": 0.378
+  },
+  "graphrag": {
+    "n_questions": 60,
+    "avg_tokens": 922.9,
+    "total_tokens": 55371,
+    "avg_input_tokens": 871.9,
+    "avg_output_tokens": 50.9,
+    "avg_context_tokens": 1.8,
+    "avg_llm_calls": 1.4,
+    "avg_steps": 2.4,
+    "avg_latency_s": 4.54,
+    "answered_rate": 1.0,
+    "exact_match_accuracy": 0.1,
+    "tokens_per_correct_answer": 9228.5,
+    "avg_retrieval_recall": 0.304
+  },
+  "agentic_graphrag": {
+    "n_questions": 60,
+    "avg_tokens": 3127.5,
+    "total_tokens": 187649,
+    "avg_input_tokens": 2975.3,
+    "avg_output_tokens": 152.2,
+    "avg_context_tokens": 490.0,
+    "avg_llm_calls": 3.63,
+    "avg_steps": 4.98,
+    "avg_latency_s": 22.173,
+    "answered_rate": 0.983,
+    "exact_match_accuracy": 0.45,
+    "tokens_per_correct_answer": 6950.0,
+    "avg_retrieval_recall": 0.411
+  },
+  "agentic_behavior": {
+    "escalation_rate": 0.9,
+    "n_escalated": 54,
+    "n_resolved_free": 6,
+    "avg_tokens_when_escalated": 3376.7,
+    "avg_tokens_when_not_escalated": 884.7,
+    "avg_strategy_changes": 3.38,
+    "avg_citations": 6.07,
+    "avg_evidence_items": 5.92,
+    "retrieval_methods_used": {
+      "graph_query": 60,
+      "verify": 60,
+      "resolve_slot": 24,
+      "repair_literal": 21,
+      "entity_linking": 11,
+      "decompose": 7,
+      "compare": 5,
+      "relax_query": 2,
+      "similarity_search": 1
+    },
+    "specialized_agents_invoked": {
+      "graph_query": 60,
+      "resolve_slot": 24,
+      "repair_literal": 21,
+      "entity_linking": 11,
+      "decompose": 7,
+      "compare": 5,
+      "relax_query": 2,
+      "similarity_search": 1
+    },
+    "stopping_reasons": {
+      "escalated": 27,
+      "reached max_steps": 23,
+      "deterministic graph query resolved and passed verification — no agentic reasoning needed": 6,
+      "agent judged evidence sufficient after 4 steps": 4
+    }
+  },
+  "planner_provenance": {
+    "llm": 60
+  },
+  "agentic_value_by_qtype": {
+    "chained_chronology": {
+      "n": 12,
+      "accuracy": {
+        "rag": 0.167,
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.083
+      },
+      "avg_tokens": {
+        "graphrag": 1066.7,
+        "agentic_graphrag": 5652.8
+      },
+      "accuracy_delta": 0.083,
+      "extra_tokens": 4586.1,
+      "tokens_per_accuracy_point": 552.5,
+      "verdict": "AGENT NEEDED — fixed pipeline cannot answer these at all"
+    },
+    "chained_discipline": {
+      "n": 12,
+      "accuracy": {
+        "rag": 0.0,
+        "graphrag": 0.25,
+        "agentic_graphrag": 0.917
+      },
+      "avg_tokens": {
+        "graphrag": 871.1,
+        "agentic_graphrag": 954.2
+      },
+      "accuracy_delta": 0.667,
+      "extra_tokens": 83.1,
+      "tokens_per_accuracy_point": 1.2,
+      "verdict": "AGENT WORTH IT — +66.7 pts for 83 extra tokens"
+    },
+    "chained_venue": {
+      "n": 12,
+      "accuracy": {
+        "rag": 0.0,
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.0
+      },
+      "avg_tokens": {
+        "graphrag": 885.7,
+        "agentic_graphrag": 3391.8
+      },
+      "accuracy_delta": 0.0,
+      "extra_tokens": 2506.1,
+      "verdict": "AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing"
+    },
+    "cross_edition": {
+      "n": 12,
+      "accuracy": {
+        "rag": 0.25,
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.5
+      },
+      "avg_tokens": {
+        "graphrag": 915.7,
+        "agentic_graphrag": 3556.0
+      },
+      "accuracy_delta": 0.5,
+      "extra_tokens": 2640.3,
+      "tokens_per_accuracy_point": 52.8,
+      "verdict": "AGENT NEEDED — fixed pipeline cannot answer these at all"
+    },
+    "relaxation": {
+      "n": 12,
+      "accuracy": {
+        "rag": 0.0,
+        "graphrag": 0.25,
+        "agentic_graphrag": 0.75
+      },
+      "avg_tokens": {
+        "graphrag": 875.2,
+        "agentic_graphrag": 2082.7
+      },
+      "accuracy_delta": 0.5,
+      "extra_tokens": 1207.5,
+      "tokens_per_accuracy_point": 24.1,
+      "verdict": "AGENT WORTH IT — +50.0 pts for 1208 extra tokens"
+    }
+  },
+  "_meta": {
+    "questions_file": "eval_stress.jsonl",
+    "n_questions": 60,
+    "graph_backend": "tigergraph",
+    "embedder": "ollama:nomic-embed-text",
+    "llm_provider": "ollama",
+    "llm_model": "llama3:latest",
+    "ablation_skip_triage": false,
+    "regex_fast_path": false,
+    "started": "2026-09-23 21:37:36",
+    "elapsed_s": 2813.4,
+    "patched_rows": 9,
+    "note": "9 errored row(s) re-run by scripts/patch_failed.py"
+  }
+}

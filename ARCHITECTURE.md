@@ -312,8 +312,10 @@ Gold answers are computed directly from the structured graph at generation time
 reproducible. Ambiguous cases (tied superlatives) are skipped rather than
 labelled, because an ambiguous question cannot be graded.
 
-Fixed GraphRAG scores **7/60 (0.117)** with its LLM planner, and **0/60** with
-the regex planner alone. The few it gets come from the planner guessing the
+Measured fairly — every pipeline compiling with the same LLM — fixed GraphRAG
+scores **0.100** against the agent's **0.450**, and is *more* expensive per
+correct answer (9,229 tokens vs 6,950). With the regex planner alone it scores
+**0/60**. The few it gets come from the planner guessing the
 unstated value correctly — luck, not capability, and the grounding check flags
 exactly those queries as ungrounded. This is not a tuning gap to be closed with
 a better prompt; it is an expressiveness gap, because one compiled query has
