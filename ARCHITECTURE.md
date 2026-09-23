@@ -249,31 +249,85 @@ These appear aggregated in the dashboard.
 
 ---
 
-## 6. Why the provided set could not answer the research question
+## 6. Two experiments, and why both were needed
 
-GraphRAG scores ~0.99 on the provided 100 questions. A benchmark sitting at its
-ceiling cannot measure anything above it — if the fixed pipeline is already
-right 99 times out of 100, no agent can demonstrate value, and "agentic
-reasoning adds one point" is a measurement artifact rather than a finding.
+### 6a. The provided set, measured fairly
 
-So `src/eval/stress_set.py` generates 60 harder questions **on the same corpus**,
+The first version of this benchmark used a regex question-parser by default.
+It resolved the provided set's templated phrasings for zero tokens, GraphRAG
+and Agentic both scored 100/100, and the conclusion was "on this set the agent
+is not worth its cost".
+
+That conclusion was an artifact. The regex parser is only free because it
+**encodes prior knowledge of the question templates** — a prior the RAG
+baseline is never given. The comparison was between a pre-tuned system and an
+untuned one.
+
+With the fast path off and every pipeline compiling its query with the same
+LLM, the result **reverses**:
+
+| Pipeline | Accuracy | Avg tokens | Tokens / correct |
+|---|---|---|---|
+| RAG | 0.200 | 2,764 | 13,820 |
+| GraphRAG | 0.290 | 985 | 3,396 |
+| Agentic GraphRAG | **0.414** | 3,795 | 9,163 |
+
+The agent wins by 12.4 points, and escalates on 71% of questions. The reason is
+visible in the per-type breakdown: `llama3` is a poor NL→query compiler. It
+emits `superlative` where `aggregation` was meant, invents disciplines the
+question never names, and misreads numeric thresholds. GraphRAG accepts those
+queries and returns confidently wrong answers. The agent's grounding check
+catches them.
+
+The sharpest single number is `aggregation`: **0.62 → 0.91 for two extra
+tokens**. The planner compiles "more than 41 competitors" as
+`min_competitors: 42`; the grounding check notices 42 is not a number the
+question contains, and a deterministic repair substitutes the one that is. No
+LLM call, no reasoning — a rule, applied to a diagnostic.
+
+`lookup` runs the other way: **RAG 0.79 against the graph pipelines' 0.37 and
+0.44**. Single-document fact retrieval is what vector search is for, and our
+planner fumbles exact title resolution. That result bounds the claim honestly —
+graph structure helps with counting, chronology and comparison, not with
+finding one fact in one document.
+
+`superlative` shows the agent adding nothing at all (0.10 both). When a planner
+failure produces a *plausible* query — an argmax over the wrong set — there is
+no diagnostic for the grounding check to fire on, so there is nothing to
+repair. That is the boundary of the technique.
+
+### 6b. The stress set, because the provided set has a ceiling
+
+Even measured fairly, the provided questions are single-hop. They cannot show
+whether an agent can do something a fixed pipeline *structurally cannot*, as
+opposed to doing the same thing more reliably.
+
+So `src/eval/stress_set.py` generates 60 harder questions on the same corpus,
 where the discriminating variable is precisely the capability Pipeline 2 lacks:
 feeding one query's output into the next. Every question has the shape "resolve
 X, then query using X", where X is never stated.
 
 Gold answers are computed directly from the structured graph at generation time
-— correct by construction, no LLM in the labelling path, no human judgement to
-disagree with, seeded and reproducible. Ambiguous cases (tied superlatives) are
-skipped rather than labelled, because an ambiguous question cannot be graded.
+— correct by construction, no LLM in the labelling path, seeded and
+reproducible. Ambiguous cases (tied superlatives) are skipped rather than
+labelled, because an ambiguous question cannot be graded.
 
 Fixed GraphRAG scores **7/60 (0.117)** with its LLM planner, and **0/60** with
 the regex planner alone. The few it gets come from the planner guessing the
 unstated value correctly — luck, not capability, and the grounding check flags
-exactly those queries as ungrounded. Either way this is not a tuning gap to be
-closed with a better prompt; it is an expressiveness gap, because one compiled
-query has nowhere to put the result of another.
+exactly those queries as ungrounded. This is not a tuning gap to be closed with
+a better prompt; it is an expressiveness gap, because one compiled query has
+nowhere to put the result of another.
 
----
+### What the two experiments say together
+
+Adaptivity pays under two conditions, and the provided set only exercises the
+first:
+
+1. **The planner is unreliable enough that its output needs checking.** Common
+   with small or cheap models — exactly when you would want an agent.
+2. **The question needs the output of one query as the input to the next.** No
+   fixed pipeline can express this at any model quality.
 
 ## 7. Token accounting
 

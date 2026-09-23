@@ -92,13 +92,7 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
 # or "tigergraph" (native TigerGraph vector index).
 VECTOR_BACKEND = os.getenv("VECTOR_BACKEND", "local").lower()
 
-# ---------------------------------------------------------------- RAG
-# Context budget for the RAG baseline, in tokens. Chunks are packed by
-# descending similarity until the budget is reached, rather than always
-# sending a fixed k. This is both better RAG practice (production RAG
-# always has a budget) and a hard requirement on hosted free tiers: Groq's
-# on-demand tier rejects any single request over 8,000 tokens outright with
-# a 413, so a fixed k=8 (~8.5k tokens) could not run there at all.
+# ---------------------------------------------------------------- Planner
 # The regex question-parser is an OPT-IN cache, not the default.
 #
 # It resolves this dataset's templated phrasings for zero tokens, which
@@ -113,6 +107,13 @@ VECTOR_BACKEND = os.getenv("VECTOR_BACKEND", "local").lower()
 # eval-fitting. Set USE_REGEX_FAST_PATH=1 to measure the cached path.
 USE_REGEX_FAST_PATH = os.getenv("USE_REGEX_FAST_PATH", "0") == "1"
 
+# ---------------------------------------------------------------- RAG
+# Context budget for the RAG baseline, in tokens. Chunks are packed by
+# descending similarity until the budget is reached, rather than always
+# sending a fixed k. This is both better RAG practice (production RAG always
+# has a budget) and a hard requirement on hosted free tiers: Groq's
+# on-demand tier rejects any single request over 8,000 tokens with a 413, so
+# a fixed k=8 (~8.5k tokens) could not run there at all.
 RAG_TOP_K = _int("RAG_TOP_K", 8)
 # Client-side pacing for hosted free tiers, in tokens per minute. 0 = off.
 # Groq's on-demand tier allows 8,000 TPM and penalises bursts with

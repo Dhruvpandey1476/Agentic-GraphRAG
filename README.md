@@ -87,8 +87,13 @@ python -m src.eval.run_benchmark --stress
 python -m http.server 8000              # open /dashboard/
 ```
 
-Nothing above requires a paid API key. TF-IDF embeddings and the deterministic
-graph layer are free; an LLM is only needed for the generative pipelines.
+Nothing above requires a paid API key: `ollama` runs the LLM locally and the
+deterministic graph layer is free either way.
+
+By default **every pipeline compiles its query with the LLM**, so all three
+spend real tokens and the comparison is fair. `--fast-path` enables the
+zero-token regex parser, reported separately — see
+[Making the comparison fair](#making-the-comparison-fair).
 
 ---
 
@@ -159,17 +164,39 @@ are sparse, so set `EMBEDDING_PROVIDER=ollama` (or `openai`) if you want them.
 Five providers, one interface, identical token accounting across all of them:
 
 ```ini
-LLM_PROVIDER=groq          # groq | openrouter | ollama | anthropic | openai
-GROQ_API_KEY=...
-GROQ_MODEL=llama-3.3-70b-versatile
+LLM_PROVIDER=ollama        # groq | openrouter | ollama | anthropic | openai
+OLLAMA_MODEL=llama3
 ```
 
 | Provider | Notes |
 |---|---|
-| `groq` | Fast, generous free tier. Good default. |
+| `ollama` | **What the published numbers were produced with.** Local, free, no rate limit. `ollama serve && ollama pull llama3 && ollama pull nomic-embed-text`. |
+| `groq` | Fast per call, but its on-demand tier could not sustain this benchmark — see below. Note Groq has **retired the hosted Llama 3.x models**; use `openai/gpt-oss-120b`. |
 | `openrouter` | One key, many models. |
-| `ollama` | Fully local and free — `ollama serve && ollama pull llama3.1:8b`. Needs no key at all. |
 | `anthropic` / `openai` | Supported for completeness. |
+
+### A warning about hosted free tiers
+
+We tried to run the benchmark on Groq's on-demand tier and could not. Three
+distinct failures, all worth knowing about before you plan a run:
+
+1. **A single RAG request exceeded the per-request cap.** 8 chunks is ~8.5k
+   tokens against an 8,000 TPM limit, returning `413`. Not retryable — the same
+   request can never succeed. Fixed by packing context to a budget
+   (`RAG_MAX_CONTEXT_TOKENS`) rather than a fixed `k`.
+2. **Reasoning tokens are billed but not bounded by `max_tokens`.** `gpt-oss`
+   spends far more output than requested, so client-side pacing that reserves
+   `max_tokens` under-counts badly. `LLM_TOKENS_PER_MINUTE` now reconciles each
+   reservation against actual usage after the call.
+3. **A throttle the headers do not expose.** With
+   `x-ratelimit-remaining-tokens: 7923` and a sub-second reset, the API still
+   returned `429` with `Retry-After` of **301s, 468s, 502s**. Sustained
+   benchmarking was impossible regardless of pacing.
+
+`LLM_TOKENS_PER_MINUTE` (0 = off) paces requests *before* they breach a limit,
+because these providers punish a burst far more than they reward one. Long runs
+are also checkpointed per question, so a rate-limit stall or an OOM kill costs
+one question rather than the run.
 
 Token counts come from each provider's own usage object. When a provider omits
 them we fall back to a tiktoken estimate and **flag it** (`estimated: true`)
