@@ -28,3 +28,7 @@
 [14/60] (chained_chronology) How many nations competed in the judo Women's +78 kg event at the Summer Ol
 [15/60] (chained_chronology) How many nations competed in the wrestling Men's Greco-Roman 66 kg event at
 [16/60] (chained_chronology) How many nations competed in the athletics Men's 110 metres hurdles event a
+    !! agentic_graphrag raised TypeError: '<' not supported between instances of 'int' and 'NoneType'
+[17/60] (chained_chronology) How many nations competed in the equestrian Individual jumping event at the
+    !! agentic_graphrag raised TypeError: '<' not supported between instances of 'int' and 'NoneType'
+[18/60] (chained_chronology) How many nations competed in the badminton Men's doubles event at the Summe
