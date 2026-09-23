@@ -20483,12 +20483,188 @@
       "retrieval_recall": 1.0
     },
     "agentic_graphrag": {
-      "error": "TypeError: '>' not supported between instances of 'int' and 'str'",
-      "answer": null,
+      "question": "How many nations competed in Biathlon at the 2018 Winter Olympics – Women's pursuit?",
+      "steps_taken": 4,
+      "total_tokens": 4360,
+      "stopped_reason": "agent judged evidence sufficient after 4 steps (confidence=1.0)",
+      "num_evidence_items": 3,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a '' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "How many nations competed in Biathlon at the 2018 Winter Olympics – Women's pursuit?",
+            "spec": {
+              "type": "",
+              "title": "2018 Winter Olympics - Women's pursuit",
+              "field": "nations"
+            }
+          },
+          "output_summary": "query ran but matched no records (unstructured or unknown query type)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 843,
+          "latency_s": 32.71281123161316
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query matched no records (unstructured or unknown query type)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "How many nations competed in Biathlon at the 2018 Winter Olympics – Women's pursuit?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "How many nations competed in Biathlon at the 2018 Winter Olympics – Women's pursuit?",
+              "field": "nations"
+            }
+          },
+          "output_summary": "resolved exactly: '24' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": true,
+          "tokens": 861,
+          "latency_s": 3.5067124366760254
+        },
+        {
+          "step": 4,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "How many nations competed in Biathlon at the Winter Olympics?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "Biathlon",
+              "games_id": "null",
+              "min_competitors": null,
+              "max_competitors": 0,
+              "venue_substr": null
+            }
+          },
+          "output_summary": "resolved exactly: '0' from 0 graph record(s)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 853,
+          "latency_s": 3.395547866821289
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "24",
+      "citations": [
+        "q3",
+        "Q47155365"
+      ],
+      "matched_doc_ids": [
+        "q3",
+        "Q47155365"
+      ],
+      "confidence": 1.0,
       "usage": {
-        "total_tokens": 0,
-        "num_calls": 0
-      }
+        "num_calls": 7,
+        "input_tokens": 4467,
+        "output_tokens": 260,
+        "context_tokens": 363,
+        "total_tokens": 4727,
+        "latency_s": 51.612,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3:latest",
+            "input_tokens": 823,
+            "output_tokens": 20,
+            "context_tokens": 0,
+            "total_tokens": 843,
+            "latency_s": 32.37,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3:latest",
+            "input_tokens": 608,
+            "output_tokens": 60,
+            "context_tokens": 0,
+            "total_tokens": 668,
+            "latency_s": 4.946,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3:latest",
+            "input_tokens": 823,
+            "output_tokens": 38,
+            "context_tokens": 0,
+            "total_tokens": 861,
+            "latency_s": 3.196,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3:latest",
+            "input_tokens": 772,
+            "output_tokens": 55,
+            "context_tokens": 168,
+            "total_tokens": 827,
+            "latency_s": 4.176,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3:latest",
+            "input_tokens": 816,
+            "output_tokens": 37,
+            "context_tokens": 0,
+            "total_tokens": 853,
+            "latency_s": 2.935,
+            "estimated": false
+          },
+          {
+            "tag": "sufficiency_check",
+            "model": "llama3:latest",
+            "input_tokens": 288,
+            "output_tokens": 20,
+            "context_tokens": 0,
+            "total_tokens": 308,
+            "latency_s": 1.651,
+            "estimated": false
+          },
+          {
+            "tag": "final_answer",
+            "model": "llama3:latest",
+            "input_tokens": 337,
+            "output_tokens": 30,
+            "context_tokens": 195,
+            "total_tokens": 367,
+            "latency_s": 2.338,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "graph query matched no records (unstructured or unknown query type)",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 2,
+      "num_citations": 2,
+      "wall_time_s": 52.727,
+      "exact_match": true,
+      "retrieval_recall": 1.0
     }
   },
   {

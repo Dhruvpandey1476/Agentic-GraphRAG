@@ -270,9 +270,9 @@ LLM, the result **reverses**:
 |---|---|---|---|
 | RAG | 0.200 | 2,764 | 13,820 |
 | GraphRAG | 0.290 | 985 | 3,396 |
-| Agentic GraphRAG | **0.414** | 3,795 | 9,163 |
+| Agentic GraphRAG | **0.420** | 3,795 | 9,057 |
 
-The agent wins by 12.4 points, and escalates on 71% of questions. The reason is
+The agent wins by 13.0 points, and escalates on 71% of questions. The reason is
 visible in the per-type breakdown: `llama3` is a poor NL→query compiler. It
 emits `superlative` where `aggregation` was meant, invents disciplines the
 question never names, and misreads numeric thresholds. GraphRAG accepts those

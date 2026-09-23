@@ -30,32 +30,32 @@
     "avg_retrieval_recall": 0.245
   },
   "agentic_graphrag": {
-    "n_questions": 99,
-    "avg_tokens": 3794.8,
-    "total_tokens": 375684,
-    "avg_input_tokens": 3607.1,
-    "avg_output_tokens": 187.7,
-    "avg_context_tokens": 355.2,
-    "avg_llm_calls": 4.83,
+    "n_questions": 100,
+    "avg_tokens": 3804.1,
+    "total_tokens": 380411,
+    "avg_input_tokens": 3615.7,
+    "avg_output_tokens": 188.4,
+    "avg_context_tokens": 355.3,
+    "avg_llm_calls": 4.85,
     "avg_steps": 4.17,
-    "avg_latency_s": 13.407,
-    "answered_rate": 0.939,
-    "exact_match_accuracy": 0.414,
-    "tokens_per_correct_answer": 9163.0,
-    "avg_retrieval_recall": 0.268
+    "avg_latency_s": 13.789,
+    "answered_rate": 0.94,
+    "exact_match_accuracy": 0.42,
+    "tokens_per_correct_answer": 9057.4,
+    "avg_retrieval_recall": 0.275
   },
   "agentic_behavior": {
-    "escalation_rate": 0.707,
-    "n_escalated": 70,
+    "escalation_rate": 0.71,
+    "n_escalated": 71,
     "n_resolved_free": 29,
-    "avg_tokens_when_escalated": 5006.7,
+    "avg_tokens_when_escalated": 5002.8,
     "avg_tokens_when_not_escalated": 869.4,
     "avg_strategy_changes": 2.45,
-    "avg_citations": 3.65,
-    "avg_evidence_items": 4.25,
+    "avg_citations": 3.63,
+    "avg_evidence_items": 4.24,
     "retrieval_methods_used": {
-      "graph_query": 99,
-      "verify": 99,
+      "graph_query": 100,
+      "verify": 100,
       "entity_linking": 32,
       "repair_literal": 18,
       "relax_query": 1,
@@ -63,7 +63,7 @@
       "multihop_reason": 1
     },
     "specialized_agents_invoked": {
-      "graph_query": 99,
+      "graph_query": 100,
       "entity_linking": 32,
       "repair_literal": 18,
       "relax_query": 1,
@@ -74,7 +74,7 @@
       "reached max_steps": 36,
       "deterministic graph query resolved and passed verification — no agentic reasoning needed": 29,
       "escalated": 18,
-      "agent judged evidence sufficient after 4 steps": 13,
+      "agent judged evidence sufficient after 4 steps": 14,
       "agent judged evidence sufficient after 5 steps": 3
     }
   },
@@ -103,16 +103,16 @@
       "accuracy": {
         "rag": 0.789,
         "graphrag": 0.368,
-        "agentic_graphrag": 0.444
+        "agentic_graphrag": 0.474
       },
       "avg_tokens": {
         "graphrag": 944.5,
-        "agentic_graphrag": 3145.0
+        "agentic_graphrag": 3228.3
       },
-      "accuracy_delta": 0.076,
-      "extra_tokens": 2200.5,
-      "tokens_per_accuracy_point": 289.5,
-      "verdict": "AGENT WORTH IT — +7.6 pts for 2200 extra tokens"
+      "accuracy_delta": 0.106,
+      "extra_tokens": 2283.8,
+      "tokens_per_accuracy_point": 215.5,
+      "verdict": "AGENT WORTH IT — +10.6 pts for 2284 extra tokens"
     },
     "multi_hop": {
       "n": 28,
@@ -172,6 +172,7 @@
     "ablation_skip_triage": false,
     "regex_fast_path": false,
     "started": "2026-09-23 01:03:07",
-    "elapsed_s": 3391.5
+    "elapsed_s": 3391.5,
+    "note": "pub-071 re-run after the numeric-coercion fix"
   }
 }

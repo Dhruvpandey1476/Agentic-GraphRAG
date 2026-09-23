@@ -15,9 +15,9 @@ Our answer, measured on a **live TigerGraph Savanna workspace** (4.2.5), with
 |---|---|---|---|---|
 | RAG | 0.200 | 2,764 | 13,820 | 1.0 |
 | GraphRAG | 0.290 | 985 | **3,396** | 2.0 |
-| **Agentic GraphRAG** | **0.414** | 3,795 | 9,163 | 4.8 |
+| **Agentic GraphRAG** | **0.420** | 3,795 | 9,057 | 4.8 |
 
-Agentic beats the fixed pipeline by **+12.4 points, a 43% relative gain**, and
+Agentic beats the fixed pipeline by **+13.0 points, a 45% relative gain**, and
 escalated on **71%** of questions — the system correctly recognising that its
 own planner is unreliable.
 
