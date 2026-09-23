@@ -152,6 +152,46 @@ layer is thin). Close on the finding, not the code.
 
 ---
 
+## What running it live actually taught us
+
+Worth 30 seconds of the demo, because it is the part most submissions will not
+have: the defects that only appeared once the system ran against a real
+instance with a real model.
+
+**GSQL `LIKE` is substring containment, not word matching.** A query for
+`men's 20 kilometres walk` also matched **"WOmen's** 20 kilometres walk" and
+returned the wrong medallist on 4 of 100 questions — succeeding, citing a real
+document, and being wrong. The in-memory backend matched on word boundaries, so
+the two silently disagreed 95/100. Fixed by giving matching exactly one
+definition (`search_key()`, space-padded, shared by both backends).
+
+**Switching the compiler from regex to an LLM broke the executor four ways.**
+The regex parser had always produced well-formed specs, so nothing downstream
+had ever been given malformed input:
+
+| Compiler output | Consequence |
+|---|---|
+| `min_competitors: "73"` | `TypeError` inside a filter comparison |
+| `target_year` absent | `int < None` |
+| `season: null` | `AttributeError` on `None.lower()` — and the handler caught only `TypeError, ValueError`, so it escaped |
+| no `games_id` **and** no `discipline` | **silently counted the whole corpus** and returned a plausible number |
+
+The common root is that `dict.get(k, "")` returns `None` when the key *exists*
+with a null value — precisely what an LLM emits for optional fields — so call
+sites that look correct still propagate `None`. A compiled spec is untrusted
+input and is now validated as such.
+
+The last row is the one to dwell on: no exception, no warning, a clean trace and
+a believable count. That is the same failure this project exists to catch, found
+in our own code.
+
+**Hosted free tiers defeated the benchmark three separate ways** — a `413` on
+any request over the per-request cap, reasoning tokens billed outside
+`max_tokens` (so client-side pacing under-counted), and `429`s with 5-8 minute
+`Retry-After` while the headers reported ample quota. The published numbers were
+produced on a local model for that reason, and the repo now paces, checkpoints
+and resumes accordingly.
+
 ## Likely judge questions, and the honest answers
 
 **"Isn't the regex path just fitting the eval set?"**

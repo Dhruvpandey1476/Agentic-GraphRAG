@@ -38,3 +38,10 @@
 [20/60] (chained_chronology) How many nations competed in the cycling Women's individual road race event
 [21/60] (chained_chronology) How many nations competed in the alpine skiing Women's slalom event at the 
 [22/60] (chained_chronology) How many nations competed in the tennis Men's singles event at the Summer O
+    !! graphrag raised TypeError: '<' not supported between instances of 'int' and 'NoneType'
+[23/60] (chained_chronology) How many nations competed in the fencing Women's foil event at the Summer O
+    !! graphrag raised TypeError: '<' not supported between instances of 'int' and 'NoneType'
+    !! agentic_graphrag raised TypeError: '<' not supported between instances of 'int' and 'NoneType'
+[24/60] (chained_chronology) How many nations competed in the rowing Men's single sculls event at the Su
+    !! agentic_graphrag raised TypeError: '<' not supported between instances of 'int' and 'NoneType'
+[25/60] (chained_venue) Among all events held at Olympic Weightlifting Gymnasium, which one had the
