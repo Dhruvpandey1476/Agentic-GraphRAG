@@ -217,6 +217,33 @@ def test_discipline_superlative_is_a_real_argmax(graph):
     assert counts[r["answer"]] == max(counts.values())
 
 
+@pytest.mark.parametrize("spec,expect_in_note", [
+    ({"type": "temporal", "discipline": "Rowing", "field": "nations"}, "target_year"),
+    ({"type": "venue_date", "venue": "Somewhere"}, "date"),
+    ({"type": "aggregation"}, "entire corpus"),
+    ({"type": "discipline_superlative"}, "games_id"),
+    ({"type": "venue_games"}, "venue"),
+])
+def test_executor_validates_incomplete_specs(graph, spec, expect_in_note):
+    """A compiled spec is untrusted input. The model omits fields, and
+    _coerce_numerics drops values it cannot parse — either way the executor
+    would reach `year < None` and kill the question. It must return an
+    honest empty result the grounding check can act on instead."""
+    r = sa.execute(spec, graph)
+    assert r["answer"] is None
+    assert expect_in_note in r.get("note", "")
+
+
+def test_resolve_relative_games_guards_itself(graph):
+    """The function doing the arithmetic guards its own inputs rather than
+    trusting every call site."""
+    from src.agents.structured_agent import _resolve_relative_games
+    chrono = graph.games_chronology()
+    assert _resolve_relative_games(chrono, None, 2016) is None
+    assert _resolve_relative_games(chrono, "Summer", None) is None
+    assert _resolve_relative_games(chrono, "Summer", 2016) == "2012-summer"
+
+
 def test_executor_returns_none_not_zero_when_nothing_matches(graph):
     """A lookup that finds nothing must return None so the agent keeps
     investigating — returning a 0 or "" would be read as a real answer."""

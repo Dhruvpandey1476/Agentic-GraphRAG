@@ -23,6 +23,20 @@ from src.agents.query_planner import plan  # re-exported for callers
 DEPRIORITIZE_ROUND = ("heat", "semi", "qualif", "quarter", "prelim", "round 1")
 
 
+def _missing(spec, *fields):
+    """Names of required fields the compiler failed to supply.
+
+    A compiled spec is not trustworthy input: the model omits fields, and
+    _coerce_numerics deliberately DROPS values it cannot parse rather than
+    passing a string into an arithmetic comparison. Either way the field is
+    absent, and using it raises deep inside the executor — a temporal query
+    missing target_year reached `year < None` and killed the question.
+    Validating at the top of each branch turns that into an honest empty
+    result, which the grounding check can then act on.
+    """
+    return [f for f in fields if spec.get(f) in (None, "")]
+
+
 def _empty(note=""):
     return {"answer": None, "evidence": [], "matched_doc_ids": [], "note": note}
 
@@ -105,7 +119,14 @@ def _resolve_relative_games(chrono, season, target_year, direction="before"):
     """Walk the GAMES_SEQUENCE chain to the nearest edition of the same
     season before/after target_year. Editions of the other season are
     skipped rather than counted, because 'the Summer Olympics held
-    immediately before 2016' means 2012, not the 2014 Winter Games."""
+    immediately before 2016' means 2012, not the 2014 Winter Games.
+
+    Returns None when either input is missing. Callers validate first, but
+    this is the function that actually does the arithmetic (`y < target_year`),
+    so it guards itself rather than trusting every call site.
+    """
+    if season is None or target_year is None:
+        return None
     target_gid = make_games_id(target_year, season)
     node = chrono.get(target_gid)
     key = "prev_id" if direction == "before" else "next_id"
@@ -151,6 +172,9 @@ def execute(spec: dict, graph) -> dict:
 
     # ---- counting ----
     if t == "aggregation":
+        if _missing(spec, "games_id") and _missing(spec, "discipline"):
+            return _empty("aggregation query has no games_id and no discipline "
+                          "— it would count the entire corpus")
         matches = graph.filter_olympic_events(
             discipline=spec.get("discipline"), games_id=spec.get("games_id"),
             min_competitors=spec.get("min_competitors"),
@@ -179,6 +203,9 @@ def execute(spec: dict, graph) -> dict:
 
     # ---- relative-chronology resolution, then a query on that edition ----
     if t == "temporal":
+        gaps = _missing(spec, "season", "target_year")
+        if gaps:
+            return _empty(f"temporal query is missing {', '.join(gaps)}")
         chrono = graph.games_chronology()
         prev_gid = _resolve_relative_games(
             chrono, spec.get("season"), spec.get("target_year"),
@@ -198,6 +225,9 @@ def execute(spec: dict, graph) -> dict:
 
     # ---- identify an event by venue + date ----
     if t == "venue_date":
+        gaps = _missing(spec, "venue", "date")
+        if gaps:
+            return _empty(f"venue_date query is missing {', '.join(gaps)}")
         matches = graph.filter_olympic_events(
             venue_substr=spec.get("venue"), date_substr=spec.get("date"),
             games_id=spec.get("games_id"))
@@ -245,6 +275,8 @@ def execute(spec: dict, graph) -> dict:
 
     if t == "discipline_superlative":
         # "which discipline had the most events at <games>"
+        if _missing(spec, "games_id"):
+            return _empty("discipline_superlative query is missing games_id")
         matches = graph.filter_olympic_events(games_id=spec.get("games_id"))
         if not matches:
             return _empty("no events at that Games edition")
@@ -264,6 +296,9 @@ def execute(spec: dict, graph) -> dict:
 
     if t == "chronology_lookup":
         # "which Games edition came immediately before/after <games>"
+        gaps = _missing(spec, "season", "target_year")
+        if gaps:
+            return _empty(f"chronology_lookup is missing {', '.join(gaps)}")
         chrono = graph.games_chronology()
         gid = _resolve_relative_games(chrono, spec.get("season"), spec.get("target_year"),
                                       spec.get("direction", "before"))
@@ -275,6 +310,8 @@ def execute(spec: dict, graph) -> dict:
 
     if t == "venue_games":
         # "at which Games edition was <venue> used" -> a games_id
+        if _missing(spec, "venue"):
+            return _empty("venue_games query is missing venue")
         matches = graph.filter_olympic_events(venue_substr=spec.get("venue"),
                                               discipline=spec.get("discipline"))
         if not matches:
