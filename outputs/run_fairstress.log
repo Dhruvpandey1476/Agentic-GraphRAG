@@ -46,3 +46,7 @@
     !! agentic_graphrag raised TypeError: '<' not supported between instances of 'int' and 'NoneType'
 [25/60] (chained_venue) Among all events held at Olympic Weightlifting Gymnasium, which one had the
 [26/60] (chained_venue) Among all events held at Georgia Tech Aquatic Center, which one had the hig
+[27/60] (chained_venue) Among all events held at Olympic Aquatic Centre, which one had the highest 
+[28/60] (chained_venue) Among all events held at ExCeL London, which one had the highest number of 
+[29/60] (chained_venue) Among all events held at Sydney International Regatta Centre, which one had
+[30/60] (chained_venue) Among all events held at Palau Blaugrana, which one had the highest number 

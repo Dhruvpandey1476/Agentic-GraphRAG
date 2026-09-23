@@ -69,12 +69,12 @@
   <text x="974" y="181" class="t" font-size="12">Vector + text layer</text>
   <text x="974" y="198" class="lbl">Document · Chunk</text>
   <text x="974" y="213" class="lbl">Entity · MENTIONS</text>
-  <text x="974" y="230" class="lbl">chunkVectorSearch</text>
+  <text x="974" y="230" class="lbl">9,065 chunks · 768-dim</text>
 
   <rect x="774" y="250" width="360" height="72" class="box2"/>
   <text x="786" y="269" class="t" font-size="12">Installed GSQL queries</text>
-  <text x="786" y="286" class="mono">filterOlympicEvents · gamesChronology · adjacentGamesEdition</text>
-  <text x="786" y="301" class="mono">disciplineEventCounts · chunkVectorSearch · entityLookup</text>
+  <text x="786" y="286" class="mono">filterOlympicEvents · gamesChronology · disciplineEventCounts</text>
+  <text x="786" y="301" class="mono">entityLookup · kHopNeighborhood · entitySupportingChunks</text>
   <text x="786" y="316" class="lbl">MockGraph implements the same interface for offline runs</text>
 
   <line x1="724" y1="149" x2="756" y2="180" class="ln"/>
@@ -86,7 +86,7 @@
   <!-- P1 -->
   <rect x="32" y="394" width="330" height="120" class="box" stroke="#5b8def"/>
   <text x="48" y="418" class="h" fill="#5b8def">1 · RAG</text>
-  <text x="48" y="440" class="t" font-size="12">embed question → top-k=8 → LLM answers</text>
+  <text x="48" y="440" class="t" font-size="12">embed question → top-k → token budget → LLM answers</text>
   <text x="48" y="459" class="lbl">One retrieval. One generation. No structure.</text>
   <text x="48" y="478" class="lbl">Fails structurally on aggregation/temporal:</text>
   <text x="48" y="493" class="lbl">no top-k window holds 12 documents to count,</text>
@@ -106,9 +106,9 @@
   <text x="752" y="418" class="h" fill="#38c793">3 · Agentic GraphRAG  (adaptive)</text>
   <text x="752" y="440" class="t" font-size="12">triage → VERIFY → repair / decompose → answer</text>
   <text x="752" y="459" class="lbl">Re-decides its next move after every step.</text>
-  <text x="752" y="478" class="lbl">Spends 0 tokens on questions the free path</text>
-  <text x="752" y="493" class="lbl">already answers verifiably; pays for reasoning</text>
-  <text x="752" y="508" class="lbl">only on questions that actually need it.</text>
+  <text x="752" y="478" class="lbl">Verifies its own query is GROUNDED in the</text>
+  <text x="752" y="493" class="lbl">question, then repairs it for free. +13 pts</text>
+  <text x="752" y="508" class="lbl">over the fixed pipeline; 71% escalation rate.</text>
 
   <!-- ============ AGENT LOOP ============ -->
   <text x="32" y="558" class="sec">PIPELINE 3 — THE LOOP</text>
@@ -117,7 +117,7 @@
   <rect x="52" y="592" width="150" height="62" class="box2"/>
   <text x="64" y="613" class="t" font-size="12">Triage</text>
   <text x="64" y="630" class="lbl">compile + run one</text>
-  <text x="64" y="645" class="lbl">graph query — free</text>
+  <text x="64" y="645" class="lbl">graph query</text>
 
   <rect x="226" y="592" width="186" height="62" class="box2" stroke="#38c793"/>
   <text x="238" y="613" class="t" font-size="12">Verify  ← the gate</text>
@@ -146,7 +146,7 @@
 
   <path d="M319,592 L319,578 L1002,578 L1002,590" class="lnag"/>
   <text x="600" y="573" class="lbl" fill="#38c793" text-anchor="middle">verified → answer
-    immediately, 0 reasoning tokens</text>
+    immediately, no reasoning loop</text>
 
   <path d="M534,654 L534,672 L319,672 L319,656" class="lnag"/>
   <text x="430" y="688" class="lbl" fill="#38c793" text-anchor="middle">re-verify the repair</text>
@@ -165,7 +165,7 @@
   <text x="32" y="800" class="sec">BENCHMARK</text>
   <rect x="32" y="810" width="1116" height="38" class="box"/>
   <text x="48" y="826" class="t" font-size="12">100 public · 50 hidden · 60 generated
-    chained-reasoning (stress) · ablation mode with the regex fast path disabled</text>
-  <text x="48" y="841" class="mono">eval/run_benchmark.py → outputs/*.json → dashboard/index.html
-    · per-qtype verdict: AGENT NEEDED / WORTH IT / NOT WORTH IT</text>
+    chained-reasoning (stress) · every pipeline compiles its query with the LLM</text>
+  <text x="48" y="841" class="mono">fair comparison, 100 provided questions:
+    RAG 0.200 · GraphRAG 0.290 · Agentic 0.420 — per-qtype verdicts in the dashboard</text>
 </svg>
