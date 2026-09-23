@@ -62,6 +62,7 @@ def _date_match_priority(date_field: str, date_substr: str):
     Tier 3: matched inside some other round label.
     Tier 4: matched inside a heats/semis/qualifying round label.
     None if date_substr doesn't match anywhere."""
+    date_field = date_field or ""
     if normalize(date_field) == normalize(date_substr):
         return 0
     if "(" not in date_field:

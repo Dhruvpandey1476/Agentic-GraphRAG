@@ -342,6 +342,26 @@ def test_search_key_has_word_boundary_semantics(haystack, needle, expected):
     assert padded == contains_phrase(haystack, needle)
 
 
+def test_string_helpers_tolerate_none():
+    """dict.get(k, "") returns None when the key EXISTS with a null value —
+    exactly what an LLM emits for optional fields. Callers that look correct
+    (`spec.get("venue", "")`) still hand None to these helpers, which used to
+    raise AttributeError on None.lower() and kill the question."""
+    from src.ingestion.infobox import games_id as gid, contains_phrase as cp
+    assert gid(2016, None) == "2016-"
+    assert cp(None, "x") is False
+    assert cp("abc", None) is True
+    from src.agents.structured_agent import _date_match_priority
+    assert _date_match_priority(None, "x") is None
+
+
+def test_repair_games_id_survives_null_season():
+    """The except-clause listed only (TypeError, ValueError); an
+    AttributeError from None.lower() escaped it entirely."""
+    out = qp._repair_games_id({"year": 2016, "season": None})
+    assert isinstance(out, dict)
+
+
 def test_search_key_is_space_padded():
     from src.ingestion.infobox import search_key
     k = search_key("Men's foil")

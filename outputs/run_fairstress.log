@@ -32,3 +32,9 @@
 [17/60] (chained_chronology) How many nations competed in the equestrian Individual jumping event at the
     !! agentic_graphrag raised TypeError: '<' not supported between instances of 'int' and 'NoneType'
 [18/60] (chained_chronology) How many nations competed in the badminton Men's doubles event at the Summe
+    !! agentic_graphrag raised AttributeError: 'NoneType' object has no attribute 'lower'
+[19/60] (chained_chronology) How many nations competed in the swimming Women's 200 metre backstroke even
+    !! agentic_graphrag raised TypeError: '<' not supported between instances of 'int' and 'NoneType'
+[20/60] (chained_chronology) How many nations competed in the cycling Women's individual road race event
+[21/60] (chained_chronology) How many nations competed in the alpine skiing Women's slalom event at the 
+[22/60] (chained_chronology) How many nations competed in the tennis Men's singles event at the Summer O

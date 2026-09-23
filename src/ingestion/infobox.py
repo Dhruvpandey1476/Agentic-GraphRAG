@@ -67,7 +67,11 @@ def parse_title(title: str):
 
 
 def games_id(year: int, season: str) -> str:
-    return f"{year}-{season.lower()}"
+    """Build "<year>-<season>". Tolerates a missing season because an LLM
+    compiler emits null for fields it is unsure about, and the caller's
+    except-clause used to list only (TypeError, ValueError) — an
+    AttributeError from None.lower() escaped it and killed the question."""
+    return f"{year}-{str(season or '').lower()}"
 
 
 def normalize(s: str) -> str:
@@ -112,8 +116,11 @@ def contains_phrase(haystack: str, needle: str) -> bool:
     """
     if not needle:
         return True
-    h = re.sub(r"[^a-z0-9+\-\s]", " ", haystack.lower())
-    n = re.sub(r"[^a-z0-9+\-\s]", " ", needle.lower())
+    # Coerce rather than assume: dict.get(k, "") returns None when the key
+    # EXISTS with a null value, which is exactly what an LLM emits for
+    # optional fields — so callers passing .get(k, "") still hand us None.
+    h = re.sub(r"[^a-z0-9+\-\s]", " ", str(haystack or "").lower())
+    n = re.sub(r"[^a-z0-9+\-\s]", " ", str(needle or "").lower())
     h = re.sub(r"\s+", " ", h).strip()
     n = re.sub(r"\s+", " ", n).strip()
     if not n:

@@ -230,7 +230,7 @@ def _repair_games_id(spec: dict) -> dict:
     if "games_id" not in spec and "year" in spec and "season" in spec:
         try:
             spec["games_id"] = make_games_id(int(spec["year"]), spec["season"])
-        except (TypeError, ValueError):
+        except (TypeError, ValueError, AttributeError):
             pass
     gid = spec.get("games_id")
     if isinstance(gid, str):
