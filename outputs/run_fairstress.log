@@ -45,3 +45,4 @@
 [24/60] (chained_chronology) How many nations competed in the rowing Men's single sculls event at the Su
     !! agentic_graphrag raised TypeError: '<' not supported between instances of 'int' and 'NoneType'
 [25/60] (chained_venue) Among all events held at Olympic Weightlifting Gymnasium, which one had the
+[26/60] (chained_venue) Among all events held at Georgia Tech Aquatic Center, which one had the hig

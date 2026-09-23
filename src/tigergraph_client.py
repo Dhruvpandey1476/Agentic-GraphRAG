@@ -485,9 +485,15 @@ class MockGraph(BaseGraph):
                 if c.get("doc_id") == doc_id]
 
     def entity_lookup(self, name_substr):
-        name_substr = name_substr.lower()
+        # Both sides coerced: the agent passes whatever the LLM put in
+        # args["name"], which can be null, and a stored entity can carry a
+        # null name. `.get(k, "")` does not help — it returns None when the
+        # key exists with a null value.
+        name_substr = str(name_substr or "").lower()
+        if not name_substr:
+            return []
         return [{"entity_id": eid, **e} for eid, e in self.store["entities"].items()
-                if name_substr in e.get("name", "").lower()][:10]
+                if name_substr in str(e.get("name") or "").lower()][:10]
 
     def k_hop_neighborhood(self, seed_id, hops=2):
         visited, frontier = {seed_id}, {seed_id}
