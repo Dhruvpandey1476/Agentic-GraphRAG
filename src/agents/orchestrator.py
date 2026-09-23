@@ -98,6 +98,23 @@ Return ONLY JSON: {{"action": str, "args": {{}}, "reason": str}}
 specific to this question, not a generic justification."""
 
 
+REPLAN_SYSTEM = """You compiled a graph query for a question and it was
+REJECTED. Compile a corrected one.
+
+The rejection reason is precise and literal — it names exactly what is wrong.
+The usual causes:
+  * you filtered on a value the question never states (you guessed it). If the
+    question refers to something indirectly ("the discipline that held the most
+    events"), you cannot name it — instead emit a query that RESOLVES it, such
+    as discipline_superlative.
+  * you used a number the question does not contain. Copy the number from the
+    question exactly.
+  * you covered only part of the question (one edition when two were named).
+  * you omitted a field the query type requires.
+
+Emit the SAME JSON shapes as before, corrected. Output ONLY the JSON."""
+
+
 FINAL_ANSWER_SYSTEM = """Using ALL evidence gathered during this investigation,
 give the final answer.
 
@@ -435,6 +452,62 @@ def _repair_query(state, graph, spec, question, reason, _fixed=None):
     return None
 
 
+def _replan_with_feedback(state, graph, llm, question, reason, usage):
+    """One targeted recompile: hand the compiler its own rejection reason.
+
+    Cheaper and more accurate than the generic loop, because the grounding
+    check has already localised the fault — there is no search to do, only a
+    correction to make. Returns an executed result, or None if the retry is
+    no better than the original.
+    """
+    t0 = time.time()
+    disciplines = graph.known_disciplines()
+    prior = {k: v for k, v in (state.last_spec or {}).items() if not k.startswith("_")}
+    gap = chr(10) * 2
+    prompt = (f"QUESTION: {question}{gap}"
+              f"KNOWN DISCIPLINES: {', '.join(disciplines[:120])}{gap}"
+              f"YOUR REJECTED QUERY: {json.dumps(prior)}{gap}"
+              f"WHY IT WAS REJECTED: {reason}")
+    r = llm.complete(REPLAN_SYSTEM, prompt, max_tokens=300, json_mode=True)
+    usage.record("replan_with_feedback", r)
+    state.total_tokens += r.total_tokens
+
+    spec = parse_json_safely(r.text, default={})
+    if not isinstance(spec, dict) or "type" not in spec:
+        state.log_step("replan", "asked the compiler to correct its rejected query",
+                       {}, "the correction was unparseable", 0,
+                       tokens=r.total_tokens, latency_s=r.latency_s)
+        return None
+
+    spec = qp._repair_games_id(qp._coerce_numerics(spec))
+    # A "correction" identical to what was just rejected is not a correction.
+    if {k: v for k, v in spec.items() if not k.startswith("_")} == prior:
+        state.log_step("replan", "asked the compiler to correct its rejected query",
+                       {}, "it returned the same query unchanged", 0,
+                       tokens=r.total_tokens, latency_s=r.latency_s)
+        return None
+
+    result = sa.execute(spec, graph)
+    state.last_spec = spec
+    state.log_step(
+        "replan", f"recompiled after rejection: {reason[:70]}",
+        {"spec": {k: v for k, v in spec.items() if not k.startswith("_")}},
+        f"corrected query answered {result.get('answer')!r} from "
+        f"{len(result.get('evidence', []))} record(s)",
+        len(result.get("evidence", [])), tokens=r.total_tokens, latency_s=time.time() - t0)
+
+    if result.get("answer") is None:
+        return None
+    for e in result.get("evidence", [])[:8]:
+        state.add_evidence([EvidenceItem(
+            step=state.step_count, source_agent="replan", kind="fact",
+            ref_id=e["doc_id"],
+            content=f"{e['title']}: " + json.dumps(
+                {k: v for k, v in e.items() if k not in ("doc_id", "url", "medalists")}),
+            metadata={"medalists": e.get("medalists", [])})])
+    return result
+
+
 # ==========================================================================
 #  Adaptive loop
 # ==========================================================================
@@ -657,6 +730,28 @@ def run(question: str, graph=None, llm=None, embedder=None, verbose=False,
                                0.9, usage, graph, escalated=True,
                                escalation_reason=escalation_reason, t_start=t_start,
                                repair=repaired["repaired"])
+
+    # ---- Ask the compiler to fix its own query, given the diagnostic ----
+    #
+    # The deterministic repairs cover three failure classes exactly. Anything
+    # else previously fell straight into the generic plan->act loop, which is
+    # both expensive and vague — it asks "what should I do next?" when we
+    # already know precisely what went wrong. Handing the compiler its own
+    # rejection reason is a far more direct instruction, and it is the natural
+    # use of a diagnostic that already names the faulty slot.
+    if llm is not None and state.last_spec:
+        fixed = _replan_with_feedback(state, graph, llm, question, escalation_reason, usage)
+        if fixed is not None:
+            ok3, why3 = _verify_deterministically(fixed, state.last_spec, question)
+            state.log_step("verify", "re-checking the recompiled query", {}, why3, 0)
+            if ok3:
+                state.stopped_reason = (
+                    "escalated, then the compiler corrected its own query when given "
+                    "the rejection reason")
+                return _result(state, fixed["answer"], fixed["matched_doc_ids"],
+                               0.85, usage, graph, escalated=True,
+                               escalation_reason=escalation_reason, t_start=t_start,
+                               repair="replan_with_feedback")
 
     # ---- Needs investigation, but no LLM available ----
     if llm is None:

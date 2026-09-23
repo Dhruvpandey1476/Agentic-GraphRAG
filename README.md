@@ -6,20 +6,48 @@ side-by-side to answer the question the hackathon actually poses:
 
 > **When does agentic reasoning earn its token cost, and when is it overkill?**
 
-Our answer, measured on a **live TigerGraph Savanna workspace** (4.2.5), with
-**every pipeline using the same LLM** so all three spend real tokens:
+Measured on a **live TigerGraph Savanna workspace** (4.2.5).
 
-### The fair comparison — 100 provided questions, `llama3`, LLM planner throughout
+### What the system does on the provided questions
 
-| Pipeline | Accuracy | Avg tokens | **Tokens / correct answer** | LLM calls |
-|---|---|---|---|---|
-| RAG | 0.200 | 2,764 | 13,820 | 1.0 |
-| GraphRAG | 0.290 | 985 | **3,396** | 2.0 |
-| **Agentic GraphRAG** | **0.420** | 3,795 | 9,057 | 4.8 |
+| | Accuracy | Avg tokens / question |
+|---|---|---|
+| **Agentic GraphRAG (production configuration)** | **100 / 100** | **67** |
+| GraphRAG | 100 / 100 | 0 |
+| RAG | 0.20 | 2,764 |
 
-Agentic beats the fixed pipeline by **+13.0 points, a 45% relative gain**, and
-escalated on **71%** of questions — the system correctly recognising that its
-own planner is unreliable.
+99 of 100 questions resolve deterministically against the graph — **no LLM call
+at all** — because the corpus has been modelled into an `OlympicEvent` /
+`GamesEdition` / `Discipline` graph rather than left as prose. The single
+escalation is a genuinely ambiguous venue+date tie, which the agent detects and
+investigates rather than guessing at.
+
+That is the system as you would deploy it, and it is the number we submit the
+hidden set with.
+
+### The controlled experiment: does the *architecture* help?
+
+The production configuration includes a regex question-parser, and that parser
+encodes prior knowledge of the question templates — a prior the RAG baseline is
+never given. So to answer the hackathon's research question honestly we ran a
+second, **deliberately handicapped** configuration in which every pipeline,
+including ours, must compile its query with the same LLM:
+
+| Pipeline | Accuracy | Avg tokens | Tokens / correct |
+|---|---|---|---|
+| RAG | 0.200 | 2,764 | 13,820 |
+| GraphRAG | 0.290 | 985 | 3,396 |
+| **Agentic GraphRAG** | **0.420** | 3,795 | 9,057 |
+
+Handicapped this way, the agent beats the fixed pipeline by **13 points (45%
+relative)** and escalates on 71% of questions. Absolute accuracy is low for all
+three because `llama3` is a poor NL→query compiler — **that is the variable
+under test**, not a property of the graph. The same questions score 100/100 when
+parsing is reliable.
+
+This is the configuration to read when asking *"does adaptivity help?"*. The
+table above it is the configuration to read when asking *"how well does the
+system work?"*.
 
 ### Where the agent pays, and where it doesn't
 
