@@ -125,6 +125,10 @@ input to the next**, and when the planner is unreliable enough that its output
 needs checking. Both conditions are common with small or cheap models — which
 is precisely when you would want an agent.
 
+Full numbers, with the provenance of every run, are in **[RESULTS.md](RESULTS.md)** —
+generated from `outputs/*.json` by `python -m scripts.make_report`, so they cannot
+drift from what the benchmark actually produced.
+
 ![Architecture](docs/architecture.svg)
 
 ---

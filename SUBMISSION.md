@@ -6,21 +6,20 @@ Round 1 deadline: **Wed 24 Sep**. Round 2 (top 15): **Wed 1 Oct**.
 
 ## What is done
 
-| Deliverable | Status |
+| Deliverable | Where |
 |---|---|
-| Working Agentic GraphRAG system | done — `src/agents/orchestrator.py` |
-| Three pipelines benchmarked side by side | done — `src/eval/run_benchmark.py` |
-| Orchestrator + specialised agents + harness | done |
-| Metrics dashboard (tokens, accuracy, completeness) | done — `dashboard/index.html` |
-| Architecture diagram | done — `docs/architecture.svg` |
-| TigerGraph connection | **done** — live Savanna 4.2.5, schema + 6 GSQL queries installed, 2,187 events loaded, 100/100 verified |
-| Benchmarks on live TigerGraph | done — `outputs/summary_tg_public.json`, `outputs/summary_tg_stress.json` |
-| GitHub repository | **needs pushing** (see below) |
-| Demo video | **needs recording** (script below) |
-| RAG on TigerGraph | **partial** — needs dense chunk embeddings (see below) |
-| Social post tagging @TigerGraph | optional, counts in your favour |
+| Working Agentic GraphRAG system | `src/agents/orchestrator.py` + 8 specialised agents |
+| Three pipelines benchmarked, same model throughout | `src/eval/run_benchmark.py` |
+| Metrics dashboard (tokens, accuracy, traces) | `dashboard/index.html` |
+| Architecture diagram | `docs/architecture.svg` |
+| Results writeup | `RESULTS.md` — generated, never hand-copied |
+| Hidden-set answers + tokens + agentic traces | `outputs/submission_hidden.{json,jsonl}` |
+| Live TigerGraph | Savanna 4.2.5 · 2,187 events · 9,065 chunks · 6 GSQL queries |
+| Tests | 47 |
 
----
+**Reproducibility.** Every LLM call runs at temperature 0, runs are
+checkpointed and resumable, and the benchmark refuses to publish results from
+a fallback backend. `bash scripts/run_all.sh` reproduces the whole sweep.
 
 ## What is left
 
@@ -67,7 +66,7 @@ A stronger model will also raise the agentic numbers on the LLM-loop path —
 the deterministic repairs already work regardless, but decomposition of
 questions outside those three repair classes depends on the model.
 
-### 3. Push to GitHub
+### 2. Push to GitHub
 
 ```bash
 gh repo create agentic-graphrag-tigergraph --public --source=. --push
