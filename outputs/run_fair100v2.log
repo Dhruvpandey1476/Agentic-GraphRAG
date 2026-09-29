@@ -14,3 +14,13 @@
 [1/100] (aggregation) According to the provided corpus, how many biathlon events at the 2018 Wint
 [2/100] (temporal) Who won the gold medal in the men's 20 kilometres walk athletics event at t
 [3/100] (aggregation) According to the provided corpus, how many shooting events at the 2004 Summ
+[4/100] (superlative) According to the provided corpus, which athletics event at the 2008 Summer 
+[5/100] (multi_hop) Who won the gold medal in the event held at Olympic Weightlifting Gymnasium
+[6/100] (temporal) Who won the gold medal in the women's 57 kg judo event at the Summer Olympi
+[7/100] (temporal) Who won the gold medal in the men's pole vault athletics event at the Summe
+[8/100] (superlative) According to the provided corpus, which sailing event at the 2000 Summer Ol
+[9/100] (lookup) How many nations competed in Sailing at the 2016 Summer Olympics – Women's 
+[10/100] (aggregation) According to the provided corpus, how many cycling events at the 2000 Summe
+[11/100] (multi_hop) Who won the gold medal in the event held at Richmond Olympic Oval on 14 Feb
+[12/100] (aggregation) According to the provided corpus, how many rowing events at the 2020 Summer
+[13/100] (temporal) Who won the gold medal in the women's 200 metre freestyle swimming event at

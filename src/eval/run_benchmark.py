@@ -158,6 +158,7 @@ def main():
         # False here is the headline configuration: every pipeline compiles
         # its query with the LLM, so all three spend real tokens.
         "regex_fast_path": args.fast_path,
+        "temperature": config.LLM_TEMPERATURE,
         "started": time.strftime("%Y-%m-%d %H:%M:%S"),
     }
     print(json.dumps(run_meta, indent=2))
@@ -169,7 +170,12 @@ def main():
     ckpt_path = os.path.join(config.OUTPUT_DIR, f"results{suffix}.partial.jsonl")
     if args.no_resume and os.path.exists(ckpt_path):
         os.remove(ckpt_path)
-    fingerprint = f"{graph.backend}/{embedder.describe()}/{run_meta['llm_model']}"
+    # Temperature belongs in the fingerprint: a checkpoint written at a
+    # non-zero temperature is not comparable with one written at 0, and
+    # resuming across the two would splice a sampled run into a deterministic
+    # one without any visible sign.
+    fingerprint = (f"{graph.backend}/{embedder.describe()}/{run_meta['llm_model']}"
+                   f"/T{config.LLM_TEMPERATURE}")
     done = _load_checkpoint(ckpt_path, fingerprint)
     if done:
         print(f"[resume] {len(done)} question(s) already completed in "

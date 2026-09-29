@@ -268,6 +268,7 @@ class LLMClient:
         if self.provider == "anthropic":
             resp = self._client.messages.create(
                 model=self._model, max_tokens=max_tokens, system=system,
+                temperature=config.LLM_TEMPERATURE,
                 messages=[{"role": "user", "content": prompt}],
             )
             text = "".join(b.text for b in resp.content if b.type == "text")
@@ -276,6 +277,7 @@ class LLMClient:
             req = {
                 "model": self._model,
                 "max_tokens": max_tokens,
+                "temperature": config.LLM_TEMPERATURE,
                 "messages": [
                     {"role": "system", "content": system},
                     {"role": "user", "content": prompt},

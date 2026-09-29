@@ -92,6 +92,17 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
 # or "tigergraph" (native TigerGraph vector index).
 VECTOR_BACKEND = os.getenv("VECTOR_BACKEND", "local").lower()
 
+# Sampling temperature for every LLM call. 0 by default, deliberately.
+#
+# This is a benchmark: two pipelines compile the SAME question with the SAME
+# prompt, and any difference between them is supposed to be attributable to
+# architecture. At a non-zero temperature they get different specs by chance
+# — observed directly, GraphRAG compiling a correct `superlative` while the
+# agent compiled an `aggregation` for the identical question — so part of
+# every reported gap was a coin flip. Temperature 0 also makes a run
+# reproducible, which the repo claims and should therefore be true.
+LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0"))
+
 # ---------------------------------------------------------------- Planner
 # The regex question-parser is an OPT-IN cache, not the default.
 #
