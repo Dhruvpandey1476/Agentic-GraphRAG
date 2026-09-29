@@ -1,0 +1,14 @@
+[config] shell environment overrides .env for: LLM_PROVIDER (.env='groq' -> using 'ollama'), LLM_TOKENS_PER_MINUTE (.env='5000' -> using '0')
+[graph] connected to TigerGraph at https://tg-fdb2a666-d98f-4292-b8f2-47f463a61d5e.tg-2635877100.i.tgcloud.io (graph=HackathonGraph)
+{
+  "questions_file": "eval_public.jsonl",
+  "n_questions": 100,
+  "graph_backend": "tigergraph",
+  "embedder": "ollama:nomic-embed-text",
+  "llm_provider": "ollama",
+  "llm_model": "llama3:latest",
+  "ablation_skip_triage": false,
+  "regex_fast_path": false,
+  "started": "2026-09-29 19:57:38"
+}
+[1/100] (aggregation) According to the provided corpus, how many biathlon events at the 2018 Wint
