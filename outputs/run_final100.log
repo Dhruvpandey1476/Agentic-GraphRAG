@@ -34,3 +34,12 @@
 [20/100] (aggregation) According to the provided corpus, how many alpine skiing events at the 2014
 [21/100] (superlative) According to the provided corpus, which alpine skiing event at the 1988 Win
 [22/100] (multi_hop) Who won the gold medal in the event held at Beijing Science and TechnologyU
+[23/100] (multi_hop) Who won the gold medal in the event held at Estadi Olímpic Lluís Companys, 
+[24/100] (aggregation) According to the provided corpus, how many biathlon events at the 2002 Wint
+[25/100] (lookup) How many nations competed in Judo at the 2016 Summer Olympics – Women's 57 
+[26/100] (temporal) Who won the gold medal in the men's cross-country cycling event at the Summ
+[27/100] (aggregation) According to the provided corpus, how many fencing events at the 2008 Summe
+[28/100] (multi_hop) Who won the gold medal in the event held at Olympic Aquatic Centre on Augus
+[29/100] (lookup) How many nations competed in Shooting at the 2012 Summer Olympics – Men's 5
+[30/100] (multi_hop) Who won the gold medal in the event held at Carioca Arena 3 on 6 August 201
+[31/100] (multi_hop) Who won the gold medal in the event held at Nikaia Olympic Weightlifting Ha
