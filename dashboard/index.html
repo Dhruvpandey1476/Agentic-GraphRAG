@@ -98,23 +98,20 @@
 <script>
 // Each tab is one benchmark run written by src/eval/run_benchmark.py.
 const SETS = [
-  {key:"_fair100", label:"Fair comparison (100)",
-   desc:"all three pipelines on the same LLM — the headline result"},
-  {key:"_tg_public", label:"TigerGraph · Public (100, fast path)",
-   desc:"provided evaluation set, live TigerGraph Savanna"},
-  {key:"_tg_stress", label:"TigerGraph · Stress (60)",
-   desc:"chained-reasoning set, live TigerGraph Savanna"},
-  {key:"_tg_public_ablation", label:"TigerGraph · Public (ablation)",
-   desc:"regex fast path AND triage disabled — the true un-cached accuracy"},
-  {key:"_tg_stress_ablation", label:"TigerGraph · Stress (ablation)",
-   desc:"chained set with no fast path"},
-  {key:"_tg_hidden", label:"TigerGraph · Hidden (50)",
-   desc:"submission set — no gold answers, raw outputs + traces"},
-  {key:"",          label:"Public (100)",   desc:"the provided evaluation set"},
-  {key:"_stress",   label:"Stress (60)",    desc:"generated chained-reasoning set"},
-  {key:"_hidden",   label:"Hidden (50)",    desc:"submission set — no gold answers"},
-  {key:"_ablation", label:"Ablation",       desc:"regex fast path disabled"},
-  {key:"_stress_ablation", label:"Stress ablation", desc:"stress set, no fast path"},
+  // The final, reproducible sweep: temperature 0, live TigerGraph.
+  {key:"_final100", label:"Provided 100 · controlled",
+   desc:"every pipeline compiles with the same LLM — answers 'does adaptivity help'"},
+  {key:"_finalstress", label:"Chained 60 · controlled",
+   desc:"questions whose subject must be resolved before it can be queried"},
+  {key:"_final_fastpath", label:"Provided 100 · production",
+   desc:"regex fast path on, as deployed — answers 'how well does it work'"},
+  {key:"_tg_hidden", label:"Hidden 50 · submission",
+   desc:"no gold answers; raw outputs, tokens and agentic traces"},
+  // Earlier runs, kept for provenance.
+  {key:"_fair100", label:"(prior) Provided 100", desc:"before temperature was pinned"},
+  {key:"_fairstress", label:"(prior) Chained 60", desc:"before temperature was pinned"},
+  {key:"_tg_public", label:"(prior) Production", desc:"earlier fast-path run"},
+  {key:"_tg_stress", label:"(prior) Chained", desc:"earlier fast-path run"},
 ];
 const PIPES = ["rag","graphrag","agentic_graphrag"];
 const LABEL = {rag:"RAG", graphrag:"GraphRAG", agentic_graphrag:"Agentic GraphRAG"};
@@ -263,7 +260,10 @@ async function show(key){
       graph backend <code>${m.graph_backend||"?"}</code> ·
       embedder <code>${m.embedder||"?"}</code> ·
       LLM <code>${m.llm_model||"none"}</code> (${m.llm_provider||"—"})
-      ${m.ablation?" · <b>ABLATION: fast path disabled</b>":""}
+      ${m.temperature!=null?" · temp <code>"+m.temperature+"</code>":""}
+      ${m.regex_fast_path===false?" · <b>LLM planner in every pipeline</b>":
+        m.regex_fast_path===true?" · regex fast path ON":""}
+      ${m.ablation_skip_triage?" · triage disabled":""}
       ${m.started?" · run "+m.started:""}${m.elapsed_s?" · "+m.elapsed_s+"s":""}`;
 
     if(!m.llm_model){

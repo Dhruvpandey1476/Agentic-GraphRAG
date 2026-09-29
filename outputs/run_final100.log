@@ -13,3 +13,24 @@
   "started": "2026-09-29 20:05:11"
 }
 [1/100] (aggregation) According to the provided corpus, how many biathlon events at the 2018 Wint
+[2/100] (temporal) Who won the gold medal in the men's 20 kilometres walk athletics event at t
+[3/100] (aggregation) According to the provided corpus, how many shooting events at the 2004 Summ
+[4/100] (superlative) According to the provided corpus, which athletics event at the 2008 Summer 
+[5/100] (multi_hop) Who won the gold medal in the event held at Olympic Weightlifting Gymnasium
+[6/100] (temporal) Who won the gold medal in the women's 57 kg judo event at the Summer Olympi
+[7/100] (temporal) Who won the gold medal in the men's pole vault athletics event at the Summe
+[8/100] (superlative) According to the provided corpus, which sailing event at the 2000 Summer Ol
+[9/100] (lookup) How many nations competed in Sailing at the 2016 Summer Olympics – Women's 
+[10/100] (aggregation) According to the provided corpus, how many cycling events at the 2000 Summe
+[11/100] (multi_hop) Who won the gold medal in the event held at Richmond Olympic Oval on 14 Feb
+[12/100] (aggregation) According to the provided corpus, how many rowing events at the 2020 Summer
+[13/100] (temporal) Who won the gold medal in the women's 200 metre freestyle swimming event at
+[14/100] (multi_hop) Who won the gold medal in the event held at Riocentro – Pavilion 4 on 11–19
+[15/100] (multi_hop) Who won the gold medal in the event held at London Velopark on 3 to 4 Augus
+[16/100] (temporal) Who won the gold medal in the men's sprint biathlon event at the Winter Oly
+[17/100] (multi_hop) Who won the gold medal in the event held at Royal Artillery Barracks on 28 
+[18/100] (temporal) Who won the gold medal in the men's freestyle 82 kg wrestling event at the 
+[19/100] (aggregation) According to the provided corpus, how many fencing events at the 1988 Summe
+[20/100] (aggregation) According to the provided corpus, how many alpine skiing events at the 2014
+[21/100] (superlative) According to the provided corpus, which alpine skiing event at the 1988 Win
+[22/100] (multi_hop) Who won the gold medal in the event held at Beijing Science and TechnologyU
