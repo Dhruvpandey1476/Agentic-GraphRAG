@@ -301,6 +301,27 @@ class LLMClient:
             in_tok = getattr(usage, "prompt_tokens", None) if usage else None
             out_tok = getattr(usage, "completion_tokens", None) if usage else None
 
+        # A reasoning model can spend the ENTIRE max_tokens budget thinking
+        # and return empty content. Observed on Groq's gpt-oss: at
+        # max_tokens=300 it returns '' having billed 300 output tokens; at 800
+        # it returns the correct JSON after ~400 tokens of reasoning. Every
+        # planner call here asks for 150-300, so the compiler silently
+        # returned nothing for every question and the benchmark recorded
+        # "not expressible as a graph query" — a wrong conclusion about the
+        # question, caused by a truncation. Retry once with real headroom.
+        if (not (text or "").strip() and out_tok and out_tok >= max_tokens
+                and self.provider != "anthropic"):
+            bigger = max(max_tokens * 4, 1200)
+            print(f"[llm_client] empty content after {out_tok} output tokens "
+                  f"(reasoning consumed the budget); retrying with "
+                  f"max_tokens={bigger}")
+            req["max_tokens"] = bigger
+            resp = self._retrying_create(req)
+            text = resp.choices[0].message.content or ""
+            usage = getattr(resp, "usage", None)
+            in_tok = (getattr(usage, "prompt_tokens", None) or in_tok) if usage else in_tok
+            out_tok = (getattr(usage, "completion_tokens", None) or out_tok) if usage else out_tok
+
         # Fold real usage back into the pacing window.
         if in_tok and out_tok:
             _BUCKET.reconcile(getattr(self, "_last_reserved", 0), in_tok + out_tok)

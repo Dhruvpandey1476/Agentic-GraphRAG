@@ -100,7 +100,12 @@ VECTOR_BACKEND = os.getenv("VECTOR_BACKEND", "local").lower()
 # — observed directly, GraphRAG compiling a correct `superlative` while the
 # agent compiled an `aggregation` for the identical question — so part of
 # every reported gap was a coin flip. Temperature 0 also makes a run
-# reproducible, which the repo claims and should therefore be true.
+# reproducible — though note that temperature 0 guarantees this only for
+# ordinary models. Groq's gpt-oss-120b, a reasoning MoE, still returns
+# different specs run to run at temperature 0 (measured: 3 of 4 identical,
+# the fourth a spurious "unstructured"), so reproducibility claims should
+# name the model they were verified with. llama3 via Ollama is deterministic
+# here; gpt-oss is not.
 LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0"))
 
 # ---------------------------------------------------------------- Planner
