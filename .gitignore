@@ -16,3 +16,4 @@ outputs/tfidf_vectorizer.pkl
 /corpus.jsonl
 /eval_public.jsonl
 /eval_hidden.jsonl
+outputs/server.log

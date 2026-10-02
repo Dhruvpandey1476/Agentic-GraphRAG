@@ -143,8 +143,15 @@ python -m src.ingestion.build_graph     # build the graph (~80s, no API calls)
 python -m src.eval.stress_set --n 60    # generate the chained-reasoning set
 python -m src.eval.run_benchmark        # 100 public questions, all 3 pipelines
 python -m src.eval.run_benchmark --stress
-python -m http.server 8000              # open /dashboard/
+python server.py                        # live query UI at localhost:5000
 ```
+
+**Live UI** (`server.py`) — ask any question and watch all three pipelines
+answer it side by side against the same graph: the answer, the token cost, the
+compiled query, and the agent's full investigation trace. Sample questions from
+both evaluation sets are one click away, with their known answers, so each
+pipeline is marked correct or wrong live. The benchmark dashboard is served
+alongside at `/dashboard/index.html`.
 
 Nothing above requires a paid API key: `ollama` runs the LLM locally and the
 deterministic graph layer is free either way.

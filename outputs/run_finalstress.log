@@ -1,0 +1,92 @@
+[config] shell environment overrides .env for: LLM_PROVIDER (.env='groq' -> using 'ollama'), LLM_TOKENS_PER_MINUTE (.env='5000' -> using '0')
+[graph] connected to TigerGraph at https://tg-fdb2a666-d98f-4292-b8f2-47f463a61d5e.tg-2635877100.i.tgcloud.io (graph=HackathonGraph)
+{
+  "questions_file": "eval_stress.jsonl",
+  "n_questions": 60,
+  "graph_backend": "tigergraph",
+  "embedder": "ollama:nomic-embed-text",
+  "llm_provider": "ollama",
+  "llm_model": "llama3:latest",
+  "ablation_skip_triage": false,
+  "regex_fast_path": false,
+  "temperature": 0.0,
+  "started": "2026-09-29 21:23:04"
+}
+[1/60] (chained_discipline) In the discipline that held the most events at the 2004 Summer Olympics, ho
+[2/60] (chained_discipline) In the discipline that held the most events at the 2006 Winter Olympics, ho
+[3/60] (chained_discipline) In the discipline that held the most events at the 2016 Summer Olympics, ho
+[4/60] (chained_discipline) In the discipline that held the most events at the 2014 Winter Olympics, ho
+[5/60] (chained_discipline) In the discipline that held the most events at the 2022 Winter Olympics, ho
+[6/60] (chained_discipline) In the discipline that held the most events at the 1992 Winter Olympics, ho
+[7/60] (chained_discipline) In the discipline that held the most events at the 1996 Summer Olympics, ho
+[8/60] (chained_discipline) In the discipline that held the most events at the 2012 Summer Olympics, ho
+[9/60] (chained_discipline) In the discipline that held the most events at the 2008 Summer Olympics, ho
+[10/60] (chained_discipline) In the discipline that held the most events at the 2000 Summer Olympics, ho
+[11/60] (chained_discipline) In the discipline that held the most events at the 1988 Summer Olympics, ho
+[12/60] (chained_discipline) In the discipline that held the most events at the 2002 Winter Olympics, ho
+[13/60] (chained_chronology) How many nations competed in the rowing Men's single sculls event at the Su
+[14/60] (chained_chronology) How many nations competed in the judo Women's +78 kg event at the Summer Ol
+[15/60] (chained_chronology) How many nations competed in the wrestling Men's Greco-Roman 66 kg event at
+[16/60] (chained_chronology) How many nations competed in the athletics Men's 110 metres hurdles event a
+[17/60] (chained_chronology) How many nations competed in the equestrian Individual jumping event at the
+[18/60] (chained_chronology) How many nations competed in the badminton Men's doubles event at the Summe
+[19/60] (chained_chronology) How many nations competed in the swimming Women's 200 metre backstroke even
+[20/60] (chained_chronology) How many nations competed in the cycling Women's individual road race event
+[21/60] (chained_chronology) How many nations competed in the alpine skiing Women's slalom event at the 
+[22/60] (chained_chronology) How many nations competed in the tennis Men's singles event at the Summer O
+[23/60] (chained_chronology) How many nations competed in the fencing Women's foil event at the Summer O
+[24/60] (chained_chronology) How many nations competed in the rowing Men's single sculls event at the Su
+[25/60] (chained_venue) Among all events held at Olympic Weightlifting Gymnasium, which one had the
+[26/60] (chained_venue) Among all events held at Georgia Tech Aquatic Center, which one had the hig
+[27/60] (chained_venue) Among all events held at Olympic Aquatic Centre, which one had the highest 
+[28/60] (chained_venue) Among all events held at ExCeL London, which one had the highest number of 
+[29/60] (chained_venue) Among all events held at Sydney International Regatta Centre, which one had
+[30/60] (chained_venue) Among all events held at Palau Blaugrana, which one had the highest number 
+[31/60] (chained_venue) Among all events held at Snowbasin, which one had the highest number of com
+[32/60] (chained_venue) Among all events held at Beijing National Aquatics Center, which one had th
+[33/60] (chained_venue) Among all events held at Iceberg Skating PalaceSochi, Russia, which one had
+[34/60] (chained_venue) Among all events held at Beijing Olympic Stadium, which one had the highest
+[35/60] (chained_venue) Among all events held at Greenwich Park, which one had the highest number o
+[36/60] (chained_venue) Among all events held at London Velopark, which one had the highest number 
+[37/60] (cross_edition) Did badminton have more events with over 30 competitors at the 2008 or the 
+[38/60] (cross_edition) Did archery have more events with over 30 competitors at the 2012 or the 20
+[39/60] (cross_edition) Did gymnastics have more events with over 30 competitors at the 2016 or the
+[40/60] (cross_edition) Did tennis have more events with over 30 competitors at the 2012 or the 200
+[41/60] (cross_edition) Did canoeing have more events with over 30 competitors at the 2012 or the 2
+[42/60] (cross_edition) Did freestyle skiing have more events with over 30 competitors at the 1994 
+[43/60] (cross_edition) Did triathlon have more events with over 30 competitors at the 2000 or the 
+[44/60] (cross_edition) Did snowboarding have more events with over 30 competitors at the 2002 or t
+[45/60] (cross_edition) Did cycling have more events with over 30 competitors at the 1996 or the 20
+[46/60] (cross_edition) Did figure skating have more events with over 30 competitors at the 1994 or
+[47/60] (cross_edition) Did judo have more events with over 30 competitors at the 2020 or the 1988 
+[48/60] (cross_edition) Did cross-country skiing have more events with over 30 competitors at the 2
+[49/60] (relaxation) At the 1992 Summer Olympics, around Circuit de Catalunya and roads, how man
+[50/60] (relaxation) At the 2008 Summer Olympics, around Beijing Science and TechnologyUniversit
+[51/60] (relaxation) At the 2004 Summer Olympics, around Ano Liosia Olympic Hall, how many cycli
+[52/60] (relaxation) At the 1992 Summer Olympics, around Estadi Olímpic Lluís Companys, how many
+[53/60] (relaxation) At the 2010 Winter Olympics, around Vancouver Olympic/Paralympic Centre, ho
+[54/60] (relaxation) At the 2016 Summer Olympics, around Carioca Arena 3, how many equestrian ev
+[55/60] (relaxation) At the 2014 Winter Olympics, around Rosa Khutor Extreme Park, Krasnaya Poly
+[56/60] (relaxation) At the 2014 Winter Olympics, around Adler Arena Skating Center, how many fr
+[57/60] (relaxation) At the 2006 Winter Olympics, around Pragelato, how many speed skating event
+[58/60] (relaxation) At the 1996 Summer Olympics, around Lake Lanier Olympic Center, how many ju
+[59/60] (relaxation) At the 2008 Summer Olympics, around Olympic Green Convention Center (shooti
+[60/60] (relaxation) At the 2016 Summer Olympics, around Mountain Bike Centre, how many wrestlin
+
+Done in 3089.4s -> outputs/summary_finalstress.json
+
+pipeline                 acc    tokens   calls   steps  answered
+----------------------------------------------------------------
+rag                    0.067    2805.5    1.00    1.00     0.233
+graphrag               0.083     921.7    1.40    2.40     1.000
+agentic_graphrag       0.483    2126.3    2.55    5.37     0.967
+
+escalation rate: 95.0% (57 escalated / 3 resolved free)
+tokens when escalated: 2192 | when not: 875
+
+--- is the agent worth it? ---
+  chained_chronology     AGENT WORTH IT — +16.7 pts for 999 extra tokens
+  chained_discipline     AGENT WORTH IT — +75.0 pts for 0 extra tokens
+  chained_venue          AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing
+  cross_edition          AGENT NEEDED — fixed pipeline cannot answer these at all
+  relaxation             AGENT WORTH IT — +25.0 pts for 1451 extra tokens
