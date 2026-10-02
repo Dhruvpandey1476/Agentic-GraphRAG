@@ -1,0 +1,157 @@
+{
+  "graphrag": {
+    "n_questions": 20,
+    "avg_tokens": 947.6,
+    "total_tokens": 18953,
+    "avg_input_tokens": 895.8,
+    "avg_output_tokens": 51.9,
+    "avg_context_tokens": 3.1,
+    "avg_llm_calls": 1.7,
+    "avg_steps": 2.7,
+    "avg_latency_s": 7.722,
+    "answered_rate": 1.0,
+    "exact_match_accuracy": 0.5,
+    "tokens_per_correct_answer": 1895.3,
+    "avg_retrieval_recall": 0.276
+  },
+  "agentic_graphrag": {
+    "n_questions": 20,
+    "avg_tokens": 2795.2,
+    "total_tokens": 55905,
+    "avg_input_tokens": 2670.4,
+    "avg_output_tokens": 124.8,
+    "avg_context_tokens": 287.8,
+    "avg_llm_calls": 3.55,
+    "avg_steps": 4.0,
+    "avg_latency_s": 14.357,
+    "answered_rate": 0.95,
+    "exact_match_accuracy": 0.45,
+    "tokens_per_correct_answer": 6211.7,
+    "avg_retrieval_recall": 0.276
+  },
+  "agentic_behavior": {
+    "escalation_rate": 0.7,
+    "n_escalated": 14,
+    "n_resolved_free": 6,
+    "avg_tokens_when_escalated": 3620.6,
+    "avg_tokens_when_not_escalated": 869.5,
+    "avg_strategy_changes": 2.6,
+    "avg_citations": 5.2,
+    "avg_evidence_items": 4.35,
+    "retrieval_methods_used": {
+      "graph_query": 20,
+      "verify": 20,
+      "replan": 8,
+      "repair_literal": 6,
+      "entity_linking": 3,
+      "relax_query": 1
+    },
+    "specialized_agents_invoked": {
+      "graph_query": 20,
+      "replan": 8,
+      "repair_literal": 6,
+      "entity_linking": 3,
+      "relax_query": 1
+    },
+    "stopping_reasons": {
+      "escalated": 6,
+      "deterministic graph query resolved and passed verification — no agentic reasoning needed": 6,
+      "reached max_steps": 5,
+      "agent judged evidence sufficient after 5 steps": 2,
+      "escalated, then the compiler corrected its own query when given the rejection reason": 1
+    }
+  },
+  "planner_provenance": {
+    "llm": 20
+  },
+  "agentic_value_by_qtype": {
+    "aggregation": {
+      "n": 6,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 1.0,
+        "agentic_graphrag": 1.0
+      },
+      "avg_tokens": {
+        "graphrag": 868.8,
+        "agentic_graphrag": 868.8
+      },
+      "accuracy_delta": 0.0,
+      "extra_tokens": 0.0,
+      "verdict": "AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing"
+    },
+    "lookup": {
+      "n": 1,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.0
+      },
+      "avg_tokens": {
+        "graphrag": 856.0,
+        "agentic_graphrag": 6213.0
+      },
+      "accuracy_delta": 0.0,
+      "extra_tokens": 5357.0,
+      "verdict": "AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing"
+    },
+    "multi_hop": {
+      "n": 5,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.0
+      },
+      "avg_tokens": {
+        "graphrag": 1092.8,
+        "agentic_graphrag": 6643.6
+      },
+      "accuracy_delta": 0.0,
+      "extra_tokens": 5550.8,
+      "verdict": "AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing"
+    },
+    "superlative": {
+      "n": 2,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.0,
+        "agentic_graphrag": 0.0
+      },
+      "avg_tokens": {
+        "graphrag": 867.0,
+        "agentic_graphrag": 867.0
+      },
+      "accuracy_delta": 0.0,
+      "extra_tokens": 0.0,
+      "verdict": "AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing"
+    },
+    "temporal": {
+      "n": 6,
+      "accuracy": {
+        "rag": null,
+        "graphrag": 0.667,
+        "agentic_graphrag": 0.5
+      },
+      "avg_tokens": {
+        "graphrag": 947.7,
+        "agentic_graphrag": 1587.8
+      },
+      "accuracy_delta": -0.167,
+      "extra_tokens": 640.1,
+      "verdict": "AGENT HARMFUL — fixed pipeline is more accurate here"
+    }
+  },
+  "_meta": {
+    "questions_file": "eval_public.jsonl",
+    "n_questions": 20,
+    "graph_backend": "tigergraph",
+    "embedder": "ollama:nomic-embed-text",
+    "llm_provider": "ollama",
+    "llm_model": "llama3",
+    "ablation_skip_triage": false,
+    "regex_fast_path": false,
+    "temperature": 0.0,
+    "started": "2026-10-02 23:34:33",
+    "elapsed_s": 445.0
+  }
+}

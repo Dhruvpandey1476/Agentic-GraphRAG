@@ -1,0 +1,4329 @@
+[
+  {
+    "qid": "pub-001",
+    "question": "According to the provided corpus, how many biathlon events at the 2018 Winter Olympics had more than 73 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many biathlon events at the 2018 Winter Olympics had more than 73 competitors?",
+      "answer": "5",
+      "confidence": 0.95,
+      "citations": [
+        "Q47091419",
+        "Q47155555",
+        "Q47155408",
+        "Q47155425",
+        "Q47105341"
+      ],
+      "matched_doc_ids": [
+        "Q47091419",
+        "Q47155555",
+        "Q47155408",
+        "Q47155425",
+        "Q47105341"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "Biathlon",
+        "games_id": "2018-winter",
+        "min_competitors": 74,
+        "max_competitors": null,
+        "venue_substr": null,
+        "_planner": "llm"
+      },
+      "planner": "llm",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 829,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 869,
+        "latency_s": 26.221,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 829,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 869,
+            "latency_s": 26.221,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph",
+      "exact_match": true,
+      "retrieval_recall": 0.45454545454545453
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many biathlon events at the 2018 Winter Olympics had more than 73 competitors?",
+      "steps_taken": 4,
+      "total_tokens": 869,
+      "stopped_reason": "escalated (the query used min_competitors=74, a number the question nev...) then repaired deterministically via literal_threshold — resolved without reasoning tokens",
+      "num_evidence_items": 6,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many biathlon events at the 2018 Winter Olympics had more than 73 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "Biathlon",
+              "games_id": "2018-winter",
+              "min_competitors": 74,
+              "max_competitors": null,
+              "venue_substr": null
+            }
+          },
+          "output_summary": "resolved exactly: '5' from 5 graph record(s)",
+          "new_evidence_count": 5,
+          "strategy_changed": false,
+          "tokens": 869,
+          "latency_s": 2.657592296600342
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "the query used min_competitors=74, a number the question never mentions (it names ['2018', '73']) — the threshold was misread",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "repair_literal",
+          "reason": "the compiled query's min_competitors did not appear in the question; substituting the only threshold the question actually states",
+          "input_args": {
+            "was": 74,
+            "now": 73
+          },
+          "output_summary": "re-ran with min_competitors=73: '5' from 5 record(s)",
+          "new_evidence_count": 5,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 4,
+          "action": "verify",
+          "reason": "re-checking the repaired query's result",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "5",
+      "citations": [
+        "Q47091419",
+        "Q47105341",
+        "Q47155555",
+        "Q47155408",
+        "Q47155425"
+      ],
+      "matched_doc_ids": [
+        "Q47091419",
+        "Q47105341",
+        "Q47155555",
+        "Q47155408",
+        "Q47155425"
+      ],
+      "confidence": 0.9,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 829,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 869,
+        "latency_s": 2.371,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 829,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 869,
+            "latency_s": 2.371,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "the query used min_competitors=74, a number the question never mentions (it names ['2018', '73']) — the threshold was misread",
+      "repair": "literal_threshold",
+      "retrieval_methods_used": [
+        "graph_query",
+        "repair_literal",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query",
+        "repair_literal"
+      ],
+      "num_strategy_changes": 3,
+      "num_citations": 5,
+      "wall_time_s": 2.948,
+      "exact_match": true,
+      "retrieval_recall": 0.45454545454545453
+    }
+  },
+  {
+    "qid": "pub-002",
+    "question": "Who won the gold medal in the men's 20 kilometres walk athletics event at the Summer Olympics held immediately before 2016?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the men's 20 kilometres walk athletics event at the Summer Olympics held immediately before 2016?",
+      "answer": "Chen Ding",
+      "citations": [],
+      "matched_doc_ids": [],
+      "confidence": 1.0,
+      "planner": "llm",
+      "seed_entities": [
+        null
+      ],
+      "retrieved_chunks": [],
+      "usage": {
+        "num_calls": 3,
+        "input_tokens": 1022,
+        "output_tokens": 77,
+        "context_tokens": 9,
+        "total_tokens": 1099,
+        "latency_s": 21.198,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 830,
+            "output_tokens": 33,
+            "context_tokens": 0,
+            "total_tokens": 863,
+            "latency_s": 2.541,
+            "estimated": false
+          },
+          {
+            "tag": "entity_extract",
+            "model": "llama3",
+            "input_tokens": 84,
+            "output_tokens": 22,
+            "context_tokens": 0,
+            "total_tokens": 106,
+            "latency_s": 3.958,
+            "estimated": false
+          },
+          {
+            "tag": "graphrag_answer",
+            "model": "llama3",
+            "input_tokens": 108,
+            "output_tokens": 22,
+            "context_tokens": 9,
+            "total_tokens": 130,
+            "latency_s": 14.699,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 4,
+      "retrieval_backend": "tigergraph",
+      "exact_match": true,
+      "retrieval_recall": 0.0
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the men's 20 kilometres walk athletics event at the Summer Olympics held immediately before 2016?",
+      "steps_taken": 5,
+      "total_tokens": 4967,
+      "stopped_reason": "agent judged evidence sufficient after 5 steps (confidence=1.0)",
+      "num_evidence_items": 1,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'medalist' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the men's 20 kilometres walk athletics event at the Summer Olympics held immediately before 2016?",
+            "spec": {
+              "type": "medalist",
+              "title": "Men's 20 kilometres walk athletics event at the Summer Olympics held immediately before 2016",
+              "medal": "gold"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 863,
+          "latency_s": 13.724226951599121
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "replan",
+          "reason": "recompiled after rejection: graph query matched no records (no event matched that title)",
+          "input_args": {
+            "spec": {
+              "type": "medalist",
+              "title": "Men's 20 kilometres walk athletics",
+              "medal": "gold",
+              "edition": "2012"
+            }
+          },
+          "output_summary": "corrected query answered None from 0 record(s)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 439,
+          "latency_s": 13.949091672897339
+        },
+        {
+          "step": 4,
+          "action": "graph_query",
+          "reason": "compiled to a 'chronology_lookup' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "which games_id held the Summer Olympics immediately before 2016?",
+            "spec": {
+              "type": "chronology_lookup",
+              "season": "Summer",
+              "target_year": 2016,
+              "direction": "before"
+            }
+          },
+          "output_summary": "resolved exactly: '2012-summer' from 0 graph record(s)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 839,
+          "latency_s": 1.9381673336029053
+        },
+        {
+          "step": 5,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "what is the event_name of the men's 20 kilometres walk athletics event in the 2012 Summer Olympics?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Men's 20 kilometres walk athletics event in the 2012 Summer Olympics",
+              "field": "event_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 857,
+          "latency_s": 11.802505731582642
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Chen Ding",
+      "citations": [
+        "result:q4"
+      ],
+      "matched_doc_ids": [
+        "result:q4"
+      ],
+      "confidence": 1.0,
+      "usage": {
+        "num_calls": 8,
+        "input_tokens": 4445,
+        "output_tokens": 291,
+        "context_tokens": 62,
+        "total_tokens": 4736,
+        "latency_s": 30.429,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 830,
+            "output_tokens": 33,
+            "context_tokens": 0,
+            "total_tokens": 863,
+            "latency_s": 2.867,
+            "estimated": false
+          },
+          {
+            "tag": "replan_with_feedback",
+            "model": "llama3",
+            "input_tokens": 405,
+            "output_tokens": 34,
+            "context_tokens": 0,
+            "total_tokens": 439,
+            "latency_s": 4.634,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 614,
+            "output_tokens": 60,
+            "context_tokens": 0,
+            "total_tokens": 674,
+            "latency_s": 7.263,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 817,
+            "output_tokens": 22,
+            "context_tokens": 0,
+            "total_tokens": 839,
+            "latency_s": 1.654,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 641,
+            "output_tokens": 65,
+            "context_tokens": 31,
+            "total_tokens": 706,
+            "latency_s": 4.049,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 827,
+            "output_tokens": 30,
+            "context_tokens": 0,
+            "total_tokens": 857,
+            "latency_s": 2.813,
+            "estimated": false
+          },
+          {
+            "tag": "sufficiency_check",
+            "model": "llama3",
+            "input_tokens": 131,
+            "output_tokens": 19,
+            "context_tokens": 0,
+            "total_tokens": 150,
+            "latency_s": 5.245,
+            "estimated": false
+          },
+          {
+            "tag": "final_answer",
+            "model": "llama3",
+            "input_tokens": 180,
+            "output_tokens": 28,
+            "context_tokens": 31,
+            "total_tokens": 208,
+            "latency_s": 1.904,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "graph query matched no records (no event matched that title)",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "replan",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query",
+        "replan"
+      ],
+      "num_strategy_changes": 3,
+      "num_citations": 1,
+      "wall_time_s": 59.875,
+      "exact_match": true,
+      "retrieval_recall": 0.0
+    }
+  },
+  {
+    "qid": "pub-003",
+    "question": "According to the provided corpus, how many shooting events at the 2004 Summer Olympics had more than 37 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many shooting events at the 2004 Summer Olympics had more than 37 competitors?",
+      "answer": "8",
+      "confidence": 0.95,
+      "citations": [
+        "Q7500832",
+        "Q7500827",
+        "Q5395306",
+        "Q7500829",
+        "Q4354074",
+        "Q5481589",
+        "Q7500834",
+        "Q4354615"
+      ],
+      "matched_doc_ids": [
+        "Q7500832",
+        "Q7500827",
+        "Q5395306",
+        "Q7500829",
+        "Q4354074",
+        "Q5481589",
+        "Q7500834",
+        "Q4354615"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "Shooting",
+        "games_id": "2004-summer",
+        "min_competitors": 38,
+        "max_competitors": null,
+        "venue_substr": null,
+        "_planner": "llm"
+      },
+      "planner": "llm",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 828,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 868,
+        "latency_s": 3.097,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 868,
+            "latency_s": 3.097,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph",
+      "exact_match": true,
+      "retrieval_recall": 0.47058823529411764
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many shooting events at the 2004 Summer Olympics had more than 37 competitors?",
+      "steps_taken": 4,
+      "total_tokens": 868,
+      "stopped_reason": "escalated (the query used min_competitors=38, a number the question nev...) then repaired deterministically via literal_threshold — resolved without reasoning tokens",
+      "num_evidence_items": 9,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many shooting events at the 2004 Summer Olympics had more than 37 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "Shooting",
+              "games_id": "2004-summer",
+              "min_competitors": 38,
+              "max_competitors": null,
+              "venue_substr": null
+            }
+          },
+          "output_summary": "resolved exactly: '8' from 8 graph record(s)",
+          "new_evidence_count": 8,
+          "strategy_changed": false,
+          "tokens": 868,
+          "latency_s": 2.594081163406372
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "the query used min_competitors=38, a number the question never mentions (it names ['2004', '37']) — the threshold was misread",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "repair_literal",
+          "reason": "the compiled query's min_competitors did not appear in the question; substituting the only threshold the question actually states",
+          "input_args": {
+            "was": 38,
+            "now": 37
+          },
+          "output_summary": "re-ran with min_competitors=37: '8' from 8 record(s)",
+          "new_evidence_count": 8,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 4,
+          "action": "verify",
+          "reason": "re-checking the repaired query's result",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "8",
+      "citations": [
+        "Q7500827",
+        "Q5395306",
+        "Q4354615",
+        "Q7500829",
+        "Q4354074",
+        "Q5481589",
+        "Q7500834",
+        "Q7500832"
+      ],
+      "matched_doc_ids": [
+        "Q7500827",
+        "Q5395306",
+        "Q4354615",
+        "Q7500829",
+        "Q4354074",
+        "Q5481589",
+        "Q7500834",
+        "Q7500832"
+      ],
+      "confidence": 0.9,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 828,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 868,
+        "latency_s": 2.296,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 868,
+            "latency_s": 2.296,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "the query used min_competitors=38, a number the question never mentions (it names ['2004', '37']) — the threshold was misread",
+      "repair": "literal_threshold",
+      "retrieval_methods_used": [
+        "graph_query",
+        "repair_literal",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query",
+        "repair_literal"
+      ],
+      "num_strategy_changes": 3,
+      "num_citations": 8,
+      "wall_time_s": 2.877,
+      "exact_match": true,
+      "retrieval_recall": 0.47058823529411764
+    }
+  },
+  {
+    "qid": "pub-004",
+    "question": "According to the provided corpus, which athletics event at the 2008 Summer Olympics had the highest number of competitors?",
+    "qtype": "superlative",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, which athletics event at the 2008 Summer Olympics had the highest number of competitors?",
+      "answer": "43",
+      "confidence": 0.95,
+      "citations": [
+        "Q917348",
+        "Q947678",
+        "Q744487",
+        "Q544177",
+        "Q754844",
+        "Q848291",
+        "Q830711",
+        "Q657467",
+        "Q848278",
+        "Q247070",
+        "Q257545",
+        "Q932865",
+        "Q1043347",
+        "Q656634",
+        "Q922361",
+        "Q903439",
+        "Q288549",
+        "Q1084677",
+        "Q904345",
+        "Q1043361",
+        "Q847592",
+        "Q917328",
+        "Q1043354",
+        "Q1066390",
+        "Q853003",
+        "Q766954",
+        "Q899312",
+        "Q677027",
+        "Q743905",
+        "Q947750",
+        "Q917323",
+        "Q1005784",
+        "Q693595",
+        "Q853049",
+        "Q917333",
+        "Q1043342",
+        "Q853023",
+        "Q853040",
+        "Q922248",
+        "Q916976",
+        "Q947691",
+        "Q517035",
+        "Q853072"
+      ],
+      "matched_doc_ids": [
+        "Q917348",
+        "Q947678",
+        "Q744487",
+        "Q544177",
+        "Q754844",
+        "Q848291",
+        "Q830711",
+        "Q657467",
+        "Q848278",
+        "Q247070",
+        "Q257545",
+        "Q932865",
+        "Q1043347",
+        "Q656634",
+        "Q922361",
+        "Q903439",
+        "Q288549",
+        "Q1084677",
+        "Q904345",
+        "Q1043361",
+        "Q847592",
+        "Q917328",
+        "Q1043354",
+        "Q1066390",
+        "Q853003",
+        "Q766954",
+        "Q899312",
+        "Q677027",
+        "Q743905",
+        "Q947750",
+        "Q917323",
+        "Q1005784",
+        "Q693595",
+        "Q853049",
+        "Q917333",
+        "Q1043342",
+        "Q853023",
+        "Q853040",
+        "Q922248",
+        "Q916976",
+        "Q947691",
+        "Q517035",
+        "Q853072"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "Athletics",
+        "games_id": "2008-summer",
+        "min_competitors": null,
+        "max_competitors": null,
+        "venue_substr": null,
+        "_planner": "llm"
+      },
+      "planner": "llm",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 827,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 867,
+        "latency_s": 2.685,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 827,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 867,
+            "latency_s": 2.685,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph",
+      "exact_match": false,
+      "retrieval_recall": 1.0
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, which athletics event at the 2008 Summer Olympics had the highest number of competitors?",
+      "steps_taken": 2,
+      "total_tokens": 867,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 13,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, which athletics event at the 2008 Summer Olympics had the highest number of competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "Athletics",
+              "games_id": "2008-summer",
+              "min_competitors": null,
+              "max_competitors": null,
+              "venue_substr": null
+            }
+          },
+          "output_summary": "resolved exactly: '43' from 43 graph record(s)",
+          "new_evidence_count": 43,
+          "strategy_changed": false,
+          "tokens": 867,
+          "latency_s": 2.613504409790039
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "43",
+      "citations": [
+        "Q917348",
+        "Q947678",
+        "Q544177",
+        "Q917328",
+        "Q754844",
+        "Q744487",
+        "Q848291",
+        "Q830711",
+        "Q848278",
+        "Q247070",
+        "Q257545",
+        "Q932865",
+        "Q1043347",
+        "Q657467",
+        "Q656634",
+        "Q922361",
+        "Q903439",
+        "Q1043361",
+        "Q288549",
+        "Q1084677",
+        "Q904345",
+        "Q1043354",
+        "Q853003",
+        "Q766954",
+        "Q1066390",
+        "Q899312",
+        "Q677027",
+        "Q743905",
+        "Q917323",
+        "Q947750",
+        "Q693595",
+        "Q853049",
+        "Q1005784",
+        "Q947691",
+        "Q917333",
+        "Q847592",
+        "Q922248",
+        "Q916976",
+        "Q517035",
+        "Q1043342",
+        "Q853023",
+        "Q853040",
+        "Q853072"
+      ],
+      "matched_doc_ids": [
+        "Q917348",
+        "Q947678",
+        "Q544177",
+        "Q917328",
+        "Q754844",
+        "Q744487",
+        "Q848291",
+        "Q830711",
+        "Q848278",
+        "Q247070",
+        "Q257545",
+        "Q932865",
+        "Q1043347",
+        "Q657467",
+        "Q656634",
+        "Q922361",
+        "Q903439",
+        "Q1043361",
+        "Q288549",
+        "Q1084677",
+        "Q904345",
+        "Q1043354",
+        "Q853003",
+        "Q766954",
+        "Q1066390",
+        "Q899312",
+        "Q677027",
+        "Q743905",
+        "Q917323",
+        "Q947750",
+        "Q693595",
+        "Q853049",
+        "Q1005784",
+        "Q947691",
+        "Q917333",
+        "Q847592",
+        "Q922248",
+        "Q916976",
+        "Q517035",
+        "Q1043342",
+        "Q853023",
+        "Q853040",
+        "Q853072"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 827,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 867,
+        "latency_s": 2.289,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 827,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 867,
+            "latency_s": 2.289,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 43,
+      "wall_time_s": 2.614,
+      "exact_match": false,
+      "retrieval_recall": 1.0
+    }
+  },
+  {
+    "qid": "pub-005",
+    "question": "Who won the gold medal in the event held at Olympic Weightlifting Gymnasium on 20 September 1988?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at Olympic Weightlifting Gymnasium on 20 September 1988?",
+      "answer": "Kim Chang-hee",
+      "citations": [],
+      "matched_doc_ids": [],
+      "confidence": 1.0,
+      "planner": "llm",
+      "seed_entities": [
+        null
+      ],
+      "retrieved_chunks": [],
+      "usage": {
+        "num_calls": 3,
+        "input_tokens": 1016,
+        "output_tokens": 78,
+        "context_tokens": 9,
+        "total_tokens": 1094,
+        "latency_s": 9.93,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 31,
+            "context_tokens": 0,
+            "total_tokens": 859,
+            "latency_s": 2.891,
+            "estimated": false
+          },
+          {
+            "tag": "entity_extract",
+            "model": "llama3",
+            "input_tokens": 82,
+            "output_tokens": 24,
+            "context_tokens": 0,
+            "total_tokens": 106,
+            "latency_s": 4.678,
+            "estimated": false
+          },
+          {
+            "tag": "graphrag_answer",
+            "model": "llama3",
+            "input_tokens": 106,
+            "output_tokens": 23,
+            "context_tokens": 9,
+            "total_tokens": 129,
+            "latency_s": 2.361,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 4,
+      "retrieval_backend": "tigergraph",
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at Olympic Weightlifting Gymnasium on 20 September 1988?",
+      "steps_taken": 6,
+      "total_tokens": 5462,
+      "stopped_reason": "reached max_steps (6)",
+      "num_evidence_items": 0,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Olympic Weightlifting Gymnasium on 20 September 1988?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "1988 Summer Olympics - Weightlifting",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 850,
+          "latency_s": 10.748135328292847
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "the query filtered on title='1988 Summer Olympics - Weightlifting', which the question never states — the planner guessed it, so the real subject has to be resolved by a prior query",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "replan",
+          "reason": "recompiled after rejection: the query filtered on title='1988 Summer Olympics - Weightlifting', wh",
+          "input_args": {
+            "spec": {
+              "type": "lookup_field",
+              "title": "Who won the gold medal",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "corrected query answered None from 0 record(s)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 442,
+          "latency_s": 15.034547090530396
+        },
+        {
+          "step": 4,
+          "action": "entity_linking",
+          "reason": "to resolve the surface-form name 'Olympic Weightlifting Gymnasium' to graph entities.",
+          "input_args": {},
+          "output_summary": "bad arguments for this tool (entity_linking() missing 1 required positional argument: 'name') — skipped",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 676,
+          "latency_s": 5.808651447296143
+        },
+        {
+          "step": 5,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Olympic Weightlifting Gymnasium on 20 September 1988?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "1988 Summer Olympics - Weightlifting",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 850,
+          "latency_s": 11.499472856521606
+        },
+        {
+          "step": 6,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Olympic Weightlifting Gymnasium on 20 September 1988?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "1988 Summer Olympics - Weightlifting",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 850,
+          "latency_s": 11.551231622695923
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Liu Ping",
+      "citations": [
+        "evidence_id_1"
+      ],
+      "matched_doc_ids": [
+        "evidence_id_1"
+      ],
+      "confidence": 1.0,
+      "usage": {
+        "num_calls": 8,
+        "input_tokens": 4968,
+        "output_tokens": 227,
+        "context_tokens": 0,
+        "total_tokens": 5195,
+        "latency_s": 28.66,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 22,
+            "context_tokens": 0,
+            "total_tokens": 850,
+            "latency_s": 1.605,
+            "estimated": false
+          },
+          {
+            "tag": "replan_with_feedback",
+            "model": "llama3",
+            "input_tokens": 417,
+            "output_tokens": 25,
+            "context_tokens": 0,
+            "total_tokens": 442,
+            "latency_s": 4.947,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 638,
+            "output_tokens": 38,
+            "context_tokens": 0,
+            "total_tokens": 676,
+            "latency_s": 5.809,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 639,
+            "output_tokens": 35,
+            "context_tokens": 0,
+            "total_tokens": 674,
+            "latency_s": 2.422,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 22,
+            "context_tokens": 0,
+            "total_tokens": 850,
+            "latency_s": 1.575,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 643,
+            "output_tokens": 35,
+            "context_tokens": 0,
+            "total_tokens": 678,
+            "latency_s": 5.435,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 22,
+            "context_tokens": 0,
+            "total_tokens": 850,
+            "latency_s": 1.576,
+            "estimated": false
+          },
+          {
+            "tag": "final_answer",
+            "model": "llama3",
+            "input_tokens": 147,
+            "output_tokens": 28,
+            "context_tokens": 0,
+            "total_tokens": 175,
+            "latency_s": 5.291,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "the query filtered on title='1988 Summer Olympics - Weightlifting', which the question never states — the planner guessed it, so the real subject has to be resolved by a prior query",
+      "repair": null,
+      "retrieval_methods_used": [
+        "entity_linking",
+        "graph_query",
+        "replan",
+        "verify"
+      ],
+      "agents_invoked": [
+        "entity_linking",
+        "graph_query",
+        "replan"
+      ],
+      "num_strategy_changes": 4,
+      "num_citations": 1,
+      "wall_time_s": 67.791,
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    }
+  },
+  {
+    "qid": "pub-006",
+    "question": "Who won the gold medal in the women's 57 kg judo event at the Summer Olympics held immediately before 2020?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the women's 57 kg judo event at the Summer Olympics held immediately before 2020?",
+      "answer": "Kaori Matsumoto",
+      "confidence": 0.95,
+      "citations": [
+        "Q1064016"
+      ],
+      "matched_doc_ids": [
+        "Q1064016"
+      ],
+      "query_spec": {
+        "type": "temporal",
+        "discipline": "Judo",
+        "event_name_substr": "women's 57 kg",
+        "season": "Summer",
+        "target_year": 2016,
+        "direction": "before",
+        "field": "gold",
+        "_planner": "llm"
+      },
+      "planner": "llm",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 830,
+        "output_tokens": 41,
+        "context_tokens": 0,
+        "total_tokens": 871,
+        "latency_s": 3.433,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 830,
+            "output_tokens": 41,
+            "context_tokens": 0,
+            "total_tokens": 871,
+            "latency_s": 3.433,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph",
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the women's 57 kg judo event at the Summer Olympics held immediately before 2020?",
+      "steps_taken": 2,
+      "total_tokens": 871,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'temporal' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the women's 57 kg judo event at the Summer Olympics held immediately before 2020?",
+            "spec": {
+              "type": "temporal",
+              "discipline": "Judo",
+              "event_name_substr": "women's 57 kg",
+              "season": "Summer",
+              "target_year": 2016,
+              "direction": "before",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Kaori Matsumoto' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 871,
+          "latency_s": 3.427161455154419
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Kaori Matsumoto",
+      "citations": [
+        "Q1064016"
+      ],
+      "matched_doc_ids": [
+        "Q1064016"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 830,
+        "output_tokens": 41,
+        "context_tokens": 0,
+        "total_tokens": 871,
+        "latency_s": 3.136,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 830,
+            "output_tokens": 41,
+            "context_tokens": 0,
+            "total_tokens": 871,
+            "latency_s": 3.136,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 3.427,
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    }
+  },
+  {
+    "qid": "pub-007",
+    "question": "Who won the gold medal in the men's pole vault athletics event at the Summer Olympics held immediately before 2016?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the men's pole vault athletics event at the Summer Olympics held immediately before 2016?",
+      "answer": "Renaud Lavillenie",
+      "citations": [],
+      "matched_doc_ids": [],
+      "confidence": 1.0,
+      "planner": "llm",
+      "seed_entities": [
+        null
+      ],
+      "retrieved_chunks": [],
+      "usage": {
+        "num_calls": 3,
+        "input_tokens": 1016,
+        "output_tokens": 77,
+        "context_tokens": 9,
+        "total_tokens": 1093,
+        "latency_s": 10.294,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 26,
+            "context_tokens": 0,
+            "total_tokens": 854,
+            "latency_s": 2.567,
+            "estimated": false
+          },
+          {
+            "tag": "entity_extract",
+            "model": "llama3",
+            "input_tokens": 82,
+            "output_tokens": 26,
+            "context_tokens": 0,
+            "total_tokens": 108,
+            "latency_s": 5.24,
+            "estimated": false
+          },
+          {
+            "tag": "graphrag_answer",
+            "model": "llama3",
+            "input_tokens": 106,
+            "output_tokens": 25,
+            "context_tokens": 9,
+            "total_tokens": 131,
+            "latency_s": 2.487,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 4,
+      "retrieval_backend": "tigergraph",
+      "exact_match": true,
+      "retrieval_recall": 0.0
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the men's pole vault athletics event at the Summer Olympics held immediately before 2016?",
+      "steps_taken": 4,
+      "total_tokens": 1762,
+      "stopped_reason": "escalated, then the compiler corrected its own query when given the rejection reason",
+      "num_evidence_items": 1,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'medalist' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the men's pole vault athletics event at the Summer Olympics held immediately before 2016?",
+            "spec": {
+              "type": "medalist",
+              "title": "Men's Pole Vault at the 2012 Summer Olympics",
+              "medal": "gold"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 854,
+          "latency_s": 7.5498130321502686
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "the query filtered on title=\"Men's Pole Vault at the 2012 Summer Olympics\", which the question never states — the planner guessed it, so the real subject has to be resolved by a prior query",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "replan",
+          "reason": "recompiled after rejection: the query filtered on title=\"Men's Pole Vault at the 2012 Summer Olymp",
+          "input_args": {
+            "spec": {
+              "type": "medalist",
+              "title": "Athletics",
+              "medal": "gold",
+              "edition": "2012"
+            }
+          },
+          "output_summary": "corrected query answered 'Anna Chicherova' from 1 record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": true,
+          "tokens": 454,
+          "latency_s": 6.960878610610962
+        },
+        {
+          "step": 4,
+          "action": "verify",
+          "reason": "re-checking the recompiled query",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Anna Chicherova",
+      "citations": [
+        "Q2070547"
+      ],
+      "matched_doc_ids": [
+        "Q2070547"
+      ],
+      "confidence": 0.85,
+      "usage": {
+        "num_calls": 2,
+        "input_tokens": 1253,
+        "output_tokens": 55,
+        "context_tokens": 0,
+        "total_tokens": 1308,
+        "latency_s": 6.548,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 26,
+            "context_tokens": 0,
+            "total_tokens": 854,
+            "latency_s": 1.955,
+            "estimated": false
+          },
+          {
+            "tag": "replan_with_feedback",
+            "model": "llama3",
+            "input_tokens": 425,
+            "output_tokens": 29,
+            "context_tokens": 0,
+            "total_tokens": 454,
+            "latency_s": 4.593,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "the query filtered on title=\"Men's Pole Vault at the 2012 Summer Olympics\", which the question never states — the planner guessed it, so the real subject has to be resolved by a prior query",
+      "repair": "replan_with_feedback",
+      "retrieval_methods_used": [
+        "graph_query",
+        "replan",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query",
+        "replan"
+      ],
+      "num_strategy_changes": 3,
+      "num_citations": 1,
+      "wall_time_s": 14.513,
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    }
+  },
+  {
+    "qid": "pub-008",
+    "question": "According to the provided corpus, which sailing event at the 2000 Summer Olympics had the highest number of competitors?",
+    "qtype": "superlative",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, which sailing event at the 2000 Summer Olympics had the highest number of competitors?",
+      "answer": "8",
+      "confidence": 0.95,
+      "citations": [
+        "Q7400334",
+        "Q7400335",
+        "Q7400332",
+        "Q7400329",
+        "Q7400327",
+        "Q7400333",
+        "Q7400330",
+        "Q7400328"
+      ],
+      "matched_doc_ids": [
+        "Q7400334",
+        "Q7400335",
+        "Q7400332",
+        "Q7400329",
+        "Q7400327",
+        "Q7400333",
+        "Q7400330",
+        "Q7400328"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "Sailing",
+        "games_id": "2000-summer",
+        "min_competitors": null,
+        "max_competitors": null,
+        "venue_substr": null,
+        "_planner": "llm"
+      },
+      "planner": "llm",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 827,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 867,
+        "latency_s": 3.72,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 827,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 867,
+            "latency_s": 3.72,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph",
+      "exact_match": false,
+      "retrieval_recall": 1.0
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, which sailing event at the 2000 Summer Olympics had the highest number of competitors?",
+      "steps_taken": 2,
+      "total_tokens": 867,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 9,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, which sailing event at the 2000 Summer Olympics had the highest number of competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "Sailing",
+              "games_id": "2000-summer",
+              "min_competitors": null,
+              "max_competitors": null,
+              "venue_substr": null
+            }
+          },
+          "output_summary": "resolved exactly: '8' from 8 graph record(s)",
+          "new_evidence_count": 8,
+          "strategy_changed": false,
+          "tokens": 867,
+          "latency_s": 3.7658753395080566
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "8",
+      "citations": [
+        "Q7400334",
+        "Q7400327",
+        "Q7400335",
+        "Q7400332",
+        "Q7400330",
+        "Q7400333",
+        "Q7400328",
+        "Q7400329"
+      ],
+      "matched_doc_ids": [
+        "Q7400334",
+        "Q7400327",
+        "Q7400335",
+        "Q7400332",
+        "Q7400330",
+        "Q7400333",
+        "Q7400328",
+        "Q7400329"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 827,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 867,
+        "latency_s": 2.943,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 827,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 867,
+            "latency_s": 2.943,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 8,
+      "wall_time_s": 3.766,
+      "exact_match": false,
+      "retrieval_recall": 1.0
+    }
+  },
+  {
+    "qid": "pub-009",
+    "question": "How many nations competed in Sailing at the 2016 Summer Olympics – Women's RS:X?",
+    "qtype": "lookup",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "How many nations competed in Sailing at the 2016 Summer Olympics – Women's RS:X?",
+      "answer": "27",
+      "confidence": 0.95,
+      "citations": [
+        "Q3039134"
+      ],
+      "matched_doc_ids": [
+        "Q3039134"
+      ],
+      "query_spec": {
+        "type": "lookup_field",
+        "title": "Nations at Sailing at the 2016 Summer Olympics – Women's RS:X",
+        "field": "nations",
+        "_planner": "llm"
+      },
+      "planner": "llm",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 824,
+        "output_tokens": 32,
+        "context_tokens": 0,
+        "total_tokens": 856,
+        "latency_s": 2.878,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 824,
+            "output_tokens": 32,
+            "context_tokens": 0,
+            "total_tokens": 856,
+            "latency_s": 2.878,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph",
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    },
+    "agentic_graphrag": {
+      "question": "How many nations competed in Sailing at the 2016 Summer Olympics – Women's RS:X?",
+      "steps_taken": 5,
+      "total_tokens": 6020,
+      "stopped_reason": "agent judged evidence sufficient after 5 steps (confidence=1.0)",
+      "num_evidence_items": 6,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "How many nations competed in Sailing at the 2016 Summer Olympics – Women's RS:X?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Nations that competed in Sailing at the 2016 Summer Olympics – Women's RS:X",
+              "field": "nations"
+            }
+          },
+          "output_summary": "resolved exactly: '27' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 858,
+          "latency_s": 2.871452808380127
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "the query filtered on title=\"Nations that competed in Sailing at the 2016 Summer Olympics – Women's RS:X\", which the question never states — the planner guessed it, so the real subject has to be resolved by a prior query",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "replan",
+          "reason": "recompiled after rejection: the query filtered on title=\"Nations that competed in Sailing at the 2",
+          "input_args": {
+            "spec": {
+              "type": "lookup_field",
+              "title": "discipline_superlative",
+              "field": "nations"
+            }
+          },
+          "output_summary": "corrected query answered None from 0 record(s)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 465,
+          "latency_s": 8.542376279830933
+        },
+        {
+          "step": 4,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "What nations competed in Sailing at the 2012 Summer Olympics – Women's RS:X?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Nations that competed in Sailing at the 2012 Summer Olympics – Women's RS:X",
+              "field": "nations"
+            }
+          },
+          "output_summary": "resolved exactly: '27' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": true,
+          "tokens": 857,
+          "latency_s": 3.346818208694458
+        },
+        {
+          "step": 5,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "What nations competed in Sailing at the 2012 Summer Olympics – Women's RS:X?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Nations that competed in Sailing at the 2012 Summer Olympics – Women's RS:X",
+              "field": "nations"
+            }
+          },
+          "output_summary": "resolved exactly: '27' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 857,
+          "latency_s": 2.6640517711639404
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "27",
+      "citations": [
+        "q1"
+      ],
+      "matched_doc_ids": [
+        "q1"
+      ],
+      "confidence": 1.0,
+      "usage": {
+        "num_calls": 8,
+        "input_tokens": 5906,
+        "output_tokens": 307,
+        "context_tokens": 984,
+        "total_tokens": 6213,
+        "latency_s": 27.498,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 824,
+            "output_tokens": 34,
+            "context_tokens": 0,
+            "total_tokens": 858,
+            "latency_s": 2.529,
+            "estimated": false
+          },
+          {
+            "tag": "replan_with_feedback",
+            "model": "llama3",
+            "input_tokens": 440,
+            "output_tokens": 25,
+            "context_tokens": 0,
+            "total_tokens": 465,
+            "latency_s": 2.134,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 807,
+            "output_tokens": 62,
+            "context_tokens": 165,
+            "total_tokens": 869,
+            "latency_s": 7.046,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 823,
+            "output_tokens": 34,
+            "context_tokens": 0,
+            "total_tokens": 857,
+            "latency_s": 3.067,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 970,
+            "output_tokens": 74,
+            "context_tokens": 328,
+            "total_tokens": 1044,
+            "latency_s": 5.508,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 823,
+            "output_tokens": 34,
+            "context_tokens": 0,
+            "total_tokens": 857,
+            "latency_s": 2.378,
+            "estimated": false
+          },
+          {
+            "tag": "sufficiency_check",
+            "model": "llama3",
+            "input_tokens": 585,
+            "output_tokens": 20,
+            "context_tokens": 0,
+            "total_tokens": 605,
+            "latency_s": 2.238,
+            "estimated": false
+          },
+          {
+            "tag": "final_answer",
+            "model": "llama3",
+            "input_tokens": 634,
+            "output_tokens": 24,
+            "context_tokens": 491,
+            "total_tokens": 658,
+            "latency_s": 2.598,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "the query filtered on title=\"Nations that competed in Sailing at the 2016 Summer Olympics – Women's RS:X\", which the question never states — the planner guessed it, so the real subject has to be resolved by a prior query",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "replan",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query",
+        "replan"
+      ],
+      "num_strategy_changes": 3,
+      "num_citations": 1,
+      "wall_time_s": 34.817,
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    }
+  },
+  {
+    "qid": "pub-010",
+    "question": "According to the provided corpus, how many cycling events at the 2000 Summer Olympics had more than 30 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many cycling events at the 2000 Summer Olympics had more than 30 competitors?",
+      "answer": "4",
+      "confidence": 0.95,
+      "citations": [
+        "Q3001459",
+        "Q2526348",
+        "Q1856784",
+        "Q2133123"
+      ],
+      "matched_doc_ids": [
+        "Q3001459",
+        "Q2526348",
+        "Q1856784",
+        "Q2133123"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "Cycling",
+        "games_id": "2000-summer",
+        "min_competitors": 31,
+        "max_competitors": null,
+        "venue_substr": null,
+        "_planner": "llm"
+      },
+      "planner": "llm",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 828,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 868,
+        "latency_s": 5.68,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 868,
+            "latency_s": 5.68,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph",
+      "exact_match": true,
+      "retrieval_recall": 0.4
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many cycling events at the 2000 Summer Olympics had more than 30 competitors?",
+      "steps_taken": 4,
+      "total_tokens": 868,
+      "stopped_reason": "escalated (the query used min_competitors=31, a number the question nev...) then repaired deterministically via literal_threshold — resolved without reasoning tokens",
+      "num_evidence_items": 5,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many cycling events at the 2000 Summer Olympics had more than 30 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "Cycling",
+              "games_id": "2000-summer",
+              "min_competitors": 31,
+              "max_competitors": null,
+              "venue_substr": null
+            }
+          },
+          "output_summary": "resolved exactly: '4' from 4 graph record(s)",
+          "new_evidence_count": 4,
+          "strategy_changed": false,
+          "tokens": 868,
+          "latency_s": 3.070582151412964
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "the query used min_competitors=31, a number the question never mentions (it names ['2000', '30']) — the threshold was misread",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "repair_literal",
+          "reason": "the compiled query's min_competitors did not appear in the question; substituting the only threshold the question actually states",
+          "input_args": {
+            "was": 31,
+            "now": 30
+          },
+          "output_summary": "re-ran with min_competitors=30: '4' from 4 record(s)",
+          "new_evidence_count": 4,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 4,
+          "action": "verify",
+          "reason": "re-checking the repaired query's result",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "4",
+      "citations": [
+        "Q3001459",
+        "Q2526348",
+        "Q2133123",
+        "Q1856784"
+      ],
+      "matched_doc_ids": [
+        "Q3001459",
+        "Q2526348",
+        "Q2133123",
+        "Q1856784"
+      ],
+      "confidence": 0.9,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 828,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 868,
+        "latency_s": 2.777,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 868,
+            "latency_s": 2.777,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "the query used min_competitors=31, a number the question never mentions (it names ['2000', '30']) — the threshold was misread",
+      "repair": "literal_threshold",
+      "retrieval_methods_used": [
+        "graph_query",
+        "repair_literal",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query",
+        "repair_literal"
+      ],
+      "num_strategy_changes": 3,
+      "num_citations": 4,
+      "wall_time_s": 3.365,
+      "exact_match": true,
+      "retrieval_recall": 0.4
+    }
+  },
+  {
+    "qid": "pub-011",
+    "question": "Who won the gold medal in the event held at Richmond Olympic Oval on 14 February 2010?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at Richmond Olympic Oval on 14 February 2010?",
+      "answer": "Shani Davis",
+      "citations": [],
+      "matched_doc_ids": [],
+      "confidence": 1.0,
+      "planner": "llm",
+      "seed_entities": [
+        null
+      ],
+      "retrieved_chunks": [],
+      "usage": {
+        "num_calls": 3,
+        "input_tokens": 1007,
+        "output_tokens": 74,
+        "context_tokens": 9,
+        "total_tokens": 1081,
+        "latency_s": 10.25,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 825,
+            "output_tokens": 29,
+            "context_tokens": 0,
+            "total_tokens": 854,
+            "latency_s": 2.992,
+            "estimated": false
+          },
+          {
+            "tag": "entity_extract",
+            "model": "llama3",
+            "input_tokens": 79,
+            "output_tokens": 23,
+            "context_tokens": 0,
+            "total_tokens": 102,
+            "latency_s": 5.016,
+            "estimated": false
+          },
+          {
+            "tag": "graphrag_answer",
+            "model": "llama3",
+            "input_tokens": 103,
+            "output_tokens": 22,
+            "context_tokens": 9,
+            "total_tokens": 125,
+            "latency_s": 2.242,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 4,
+      "retrieval_backend": "tigergraph",
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at Richmond Olympic Oval on 14 February 2010?",
+      "steps_taken": 6,
+      "total_tokens": 6504,
+      "stopped_reason": "reached max_steps (6)",
+      "num_evidence_items": 0,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Richmond Olympic Oval on 14 February 2010?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Gold Medal Winner at Richmond Olympic Oval on 14 February 2010",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 854,
+          "latency_s": 11.607344627380371
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "the query filtered on title='Gold Medal Winner at Richmond Olympic Oval on 14 February 2010', which the question never states — the planner guessed it, so the real subject has to be resolved by a prior query",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "replan",
+          "reason": "recompiled after rejection: the query filtered on title='Gold Medal Winner at Richmond Olympic Ova",
+          "input_args": {
+            "spec": {
+              "type": "lookup_field",
+              "title": "gold_name",
+              "field": "event_gold_name"
+            }
+          },
+          "output_summary": "corrected query answered None from 0 record(s)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 451,
+          "latency_s": 14.458110570907593
+        },
+        {
+          "step": 4,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Richmond Olympic Oval on 14 February 2010?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Gold Medal Winner at Richmond Olympic Oval on 14 February 2010",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 854,
+          "latency_s": 11.532151222229004
+        },
+        {
+          "step": 5,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Richmond Olympic Oval on 14 February 2010?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Gold Medal Winner at Richmond Olympic Oval on 14 February 2010",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 854,
+          "latency_s": 11.908172607421875
+        },
+        {
+          "step": 6,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Richmond Olympic Oval on 14 February 2010?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Gold Medal Winner at Richmond Olympic Oval on 14 February 2010",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 854,
+          "latency_s": 11.738035440444946
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Shani Davis",
+      "citations": [
+        "evidence_id_1",
+        "evidence_id_2"
+      ],
+      "matched_doc_ids": [
+        "evidence_id_1",
+        "evidence_id_2"
+      ],
+      "confidence": 1.0,
+      "usage": {
+        "num_calls": 9,
+        "input_tokens": 5955,
+        "output_tokens": 278,
+        "context_tokens": 0,
+        "total_tokens": 6233,
+        "latency_s": 34.226,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 825,
+            "output_tokens": 29,
+            "context_tokens": 0,
+            "total_tokens": 854,
+            "latency_s": 2.139,
+            "estimated": false
+          },
+          {
+            "tag": "replan_with_feedback",
+            "model": "llama3",
+            "input_tokens": 428,
+            "output_tokens": 23,
+            "context_tokens": 0,
+            "total_tokens": 451,
+            "latency_s": 4.82,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 693,
+            "output_tokens": 37,
+            "context_tokens": 0,
+            "total_tokens": 730,
+            "latency_s": 5.766,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 825,
+            "output_tokens": 29,
+            "context_tokens": 0,
+            "total_tokens": 854,
+            "latency_s": 1.984,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 693,
+            "output_tokens": 33,
+            "context_tokens": 0,
+            "total_tokens": 726,
+            "latency_s": 4.795,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 825,
+            "output_tokens": 29,
+            "context_tokens": 0,
+            "total_tokens": 854,
+            "latency_s": 1.993,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 697,
+            "output_tokens": 33,
+            "context_tokens": 0,
+            "total_tokens": 730,
+            "latency_s": 5.295,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 825,
+            "output_tokens": 29,
+            "context_tokens": 0,
+            "total_tokens": 854,
+            "latency_s": 2.025,
+            "estimated": false
+          },
+          {
+            "tag": "final_answer",
+            "model": "llama3",
+            "input_tokens": 144,
+            "output_tokens": 36,
+            "context_tokens": 0,
+            "total_tokens": 180,
+            "latency_s": 5.409,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "the query filtered on title='Gold Medal Winner at Richmond Olympic Oval on 14 February 2010', which the question never states — the planner guessed it, so the real subject has to be resolved by a prior query",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "replan",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query",
+        "replan"
+      ],
+      "num_strategy_changes": 3,
+      "num_citations": 2,
+      "wall_time_s": 83.086,
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    }
+  },
+  {
+    "qid": "pub-012",
+    "question": "According to the provided corpus, how many rowing events at the 2020 Summer Olympics had more than 36 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many rowing events at the 2020 Summer Olympics had more than 36 competitors?",
+      "answer": "6",
+      "confidence": 0.95,
+      "citations": [
+        "Q62020028",
+        "Q62020034",
+        "Q62020035",
+        "Q62020029",
+        "Q62020027",
+        "Q62020030"
+      ],
+      "matched_doc_ids": [
+        "Q62020028",
+        "Q62020034",
+        "Q62020035",
+        "Q62020029",
+        "Q62020027",
+        "Q62020030"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "Rowing",
+        "games_id": "2020-summer",
+        "min_competitors": 37,
+        "max_competitors": null,
+        "venue_substr": null,
+        "_planner": "llm"
+      },
+      "planner": "llm",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 829,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 869,
+        "latency_s": 3.513,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 829,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 869,
+            "latency_s": 3.513,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph",
+      "exact_match": true,
+      "retrieval_recall": 0.42857142857142855
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many rowing events at the 2020 Summer Olympics had more than 36 competitors?",
+      "steps_taken": 4,
+      "total_tokens": 869,
+      "stopped_reason": "escalated (the query used min_competitors=37, a number the question nev...) then repaired deterministically via literal_threshold — resolved without reasoning tokens",
+      "num_evidence_items": 7,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many rowing events at the 2020 Summer Olympics had more than 36 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "Rowing",
+              "games_id": "2020-summer",
+              "min_competitors": 37,
+              "max_competitors": null,
+              "venue_substr": null
+            }
+          },
+          "output_summary": "resolved exactly: '6' from 6 graph record(s)",
+          "new_evidence_count": 6,
+          "strategy_changed": false,
+          "tokens": 869,
+          "latency_s": 3.0729267597198486
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "the query used min_competitors=37, a number the question never mentions (it names ['2020', '36']) — the threshold was misread",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "repair_literal",
+          "reason": "the compiled query's min_competitors did not appear in the question; substituting the only threshold the question actually states",
+          "input_args": {
+            "was": 37,
+            "now": 36
+          },
+          "output_summary": "re-ran with min_competitors=36: '6' from 6 record(s)",
+          "new_evidence_count": 6,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 4,
+          "action": "verify",
+          "reason": "re-checking the repaired query's result",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "6",
+      "citations": [
+        "Q62020028",
+        "Q62020035",
+        "Q62020034",
+        "Q62020027",
+        "Q62020030",
+        "Q62020029"
+      ],
+      "matched_doc_ids": [
+        "Q62020028",
+        "Q62020035",
+        "Q62020034",
+        "Q62020027",
+        "Q62020030",
+        "Q62020029"
+      ],
+      "confidence": 0.9,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 829,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 869,
+        "latency_s": 2.722,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 829,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 869,
+            "latency_s": 2.722,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "the query used min_competitors=37, a number the question never mentions (it names ['2020', '36']) — the threshold was misread",
+      "repair": "literal_threshold",
+      "retrieval_methods_used": [
+        "graph_query",
+        "repair_literal",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query",
+        "repair_literal"
+      ],
+      "num_strategy_changes": 3,
+      "num_citations": 6,
+      "wall_time_s": 3.38,
+      "exact_match": true,
+      "retrieval_recall": 0.42857142857142855
+    }
+  },
+  {
+    "qid": "pub-013",
+    "question": "Who won the gold medal in the women's 200 metre freestyle swimming event at the Summer Olympics held immediately before 2016?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the women's 200 metre freestyle swimming event at the Summer Olympics held immediately before 2016?",
+      "answer": "Allison Schmitt",
+      "confidence": 0.95,
+      "citations": [
+        "Q2071152"
+      ],
+      "matched_doc_ids": [
+        "Q2071152"
+      ],
+      "query_spec": {
+        "type": "temporal",
+        "discipline": "Swimming",
+        "event_name_substr": "200 metre freestyle",
+        "season": "Summer",
+        "target_year": 2015,
+        "direction": "before",
+        "field": "gold",
+        "_planner": "llm"
+      },
+      "planner": "llm",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 831,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 871,
+        "latency_s": 2.967,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 831,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 871,
+            "latency_s": 2.967,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph",
+      "exact_match": true,
+      "retrieval_recall": 0.5
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the women's 200 metre freestyle swimming event at the Summer Olympics held immediately before 2016?",
+      "steps_taken": 2,
+      "total_tokens": 871,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'temporal' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the women's 200 metre freestyle swimming event at the Summer Olympics held immediately before 2016?",
+            "spec": {
+              "type": "temporal",
+              "discipline": "Swimming",
+              "event_name_substr": "200 metre freestyle",
+              "season": "Summer",
+              "target_year": 2015,
+              "direction": "before",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Allison Schmitt' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 871,
+          "latency_s": 3.070350408554077
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Allison Schmitt",
+      "citations": [
+        "Q2071152"
+      ],
+      "matched_doc_ids": [
+        "Q2071152"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 831,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 871,
+        "latency_s": 2.764,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 831,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 871,
+            "latency_s": 2.764,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 3.07,
+      "exact_match": true,
+      "retrieval_recall": 0.5
+    }
+  },
+  {
+    "qid": "pub-014",
+    "question": "Who won the gold medal in the event held at Riocentro – Pavilion 4 on 11–19 August at the 2016 Summer Olympics?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at Riocentro – Pavilion 4 on 11–19 August at the 2016 Summer Olympics?",
+      "answer": "Andrey Mikhaylovich Kravchenko",
+      "citations": [],
+      "matched_doc_ids": [],
+      "confidence": 1.0,
+      "planner": "llm",
+      "seed_entities": [
+        null
+      ],
+      "retrieved_chunks": [],
+      "usage": {
+        "num_calls": 3,
+        "input_tokens": 1040,
+        "output_tokens": 74,
+        "context_tokens": 9,
+        "total_tokens": 1114,
+        "latency_s": 9.297,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 836,
+            "output_tokens": 24,
+            "context_tokens": 0,
+            "total_tokens": 860,
+            "latency_s": 2.575,
+            "estimated": false
+          },
+          {
+            "tag": "entity_extract",
+            "model": "llama3",
+            "input_tokens": 90,
+            "output_tokens": 20,
+            "context_tokens": 0,
+            "total_tokens": 110,
+            "latency_s": 4.635,
+            "estimated": false
+          },
+          {
+            "tag": "graphrag_answer",
+            "model": "llama3",
+            "input_tokens": 114,
+            "output_tokens": 30,
+            "context_tokens": 9,
+            "total_tokens": 144,
+            "latency_s": 2.087,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 4,
+      "retrieval_backend": "tigergraph",
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at Riocentro – Pavilion 4 on 11–19 August at the 2016 Summer Olympics?",
+      "steps_taken": 6,
+      "total_tokens": 4827,
+      "stopped_reason": "reached max_steps (6)",
+      "num_evidence_items": 0,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Riocentro – Pavilion 4 on 11–19 August at the 2016 Summer Olympics?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Gold Medal Winner at 2016 Summer Olympics",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 860,
+          "latency_s": 11.519707918167114
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "the query filtered on title='Gold Medal Winner at 2016 Summer Olympics', which the question never states — the planner guessed it, so the real subject has to be resolved by a prior query",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "replan",
+          "reason": "recompiled after rejection: the query filtered on title='Gold Medal Winner at 2016 Summer Olympics",
+          "input_args": {
+            "spec": {
+              "type": "lookup_field",
+              "title": "gold_name",
+              "field": "athlete"
+            }
+          },
+          "output_summary": "corrected query answered None from 0 record(s)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 450,
+          "latency_s": 14.545910120010376
+        },
+        {
+          "step": 4,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Riocentro – Pavilion 4 on 11–19 August at the 2016 Summer Olympics?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Gold Medal Winner at 2016 Summer Olympics",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 860,
+          "latency_s": 11.53714656829834
+        },
+        {
+          "step": 5,
+          "action": "entity_linking",
+          "reason": "to resolve the surface-form name 'Riocentro – Pavilion 4' to graph entities.",
+          "input_args": {},
+          "output_summary": "bad arguments for this tool (entity_linking() missing 1 required positional argument: 'name') — skipped",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 737,
+          "latency_s": 5.771934747695923
+        },
+        {
+          "step": 6,
+          "action": "entity_linking",
+          "reason": "to resolve the surface-form name 'Riocentro – Pavilion 4' to graph entities.",
+          "input_args": {},
+          "output_summary": "bad arguments for this tool (entity_linking() missing 1 required positional argument: 'name') — skipped",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 742,
+          "latency_s": 2.955162763595581
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Simone Biles",
+      "citations": [
+        "https://www.olympic.org/news/simone-biles-wins-gold-in-gymnastics-individual-all-around"
+      ],
+      "matched_doc_ids": [
+        "https://www.olympic.org/news/simone-biles-wins-gold-in-gymnastics-individual-all-around"
+      ],
+      "confidence": 1.0,
+      "usage": {
+        "num_calls": 7,
+        "input_tokens": 4358,
+        "output_tokens": 226,
+        "context_tokens": 0,
+        "total_tokens": 4584,
+        "latency_s": 26.58,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 836,
+            "output_tokens": 24,
+            "context_tokens": 0,
+            "total_tokens": 860,
+            "latency_s": 1.75,
+            "estimated": false
+          },
+          {
+            "tag": "replan_with_feedback",
+            "model": "llama3",
+            "input_tokens": 429,
+            "output_tokens": 21,
+            "context_tokens": 0,
+            "total_tokens": 450,
+            "latency_s": 4.632,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 699,
+            "output_tokens": 29,
+            "context_tokens": 0,
+            "total_tokens": 728,
+            "latency_s": 5.311,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 836,
+            "output_tokens": 24,
+            "context_tokens": 0,
+            "total_tokens": 860,
+            "latency_s": 1.997,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 699,
+            "output_tokens": 38,
+            "context_tokens": 0,
+            "total_tokens": 737,
+            "latency_s": 5.772,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 704,
+            "output_tokens": 38,
+            "context_tokens": 0,
+            "total_tokens": 742,
+            "latency_s": 2.955,
+            "estimated": false
+          },
+          {
+            "tag": "final_answer",
+            "model": "llama3",
+            "input_tokens": 155,
+            "output_tokens": 52,
+            "context_tokens": 0,
+            "total_tokens": 207,
+            "latency_s": 4.163,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "the query filtered on title='Gold Medal Winner at 2016 Summer Olympics', which the question never states — the planner guessed it, so the real subject has to be resolved by a prior query",
+      "repair": null,
+      "retrieval_methods_used": [
+        "entity_linking",
+        "graph_query",
+        "replan",
+        "verify"
+      ],
+      "agents_invoked": [
+        "entity_linking",
+        "graph_query",
+        "replan"
+      ],
+      "num_strategy_changes": 4,
+      "num_citations": 1,
+      "wall_time_s": 56.385,
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    }
+  },
+  {
+    "qid": "pub-015",
+    "question": "Who won the gold medal in the event held at London Velopark on 3 to 4 August at the 2012 Summer Olympics?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at London Velopark on 3 to 4 August at the 2012 Summer Olympics?",
+      "answer": "Jason Kenny",
+      "citations": [],
+      "matched_doc_ids": [],
+      "confidence": 1.0,
+      "planner": "llm",
+      "seed_entities": [
+        null
+      ],
+      "retrieved_chunks": [],
+      "usage": {
+        "num_calls": 3,
+        "input_tokens": 1031,
+        "output_tokens": 62,
+        "context_tokens": 9,
+        "total_tokens": 1093,
+        "latency_s": 8.55,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 833,
+            "output_tokens": 25,
+            "context_tokens": 0,
+            "total_tokens": 858,
+            "latency_s": 2.487,
+            "estimated": false
+          },
+          {
+            "tag": "entity_extract",
+            "model": "llama3",
+            "input_tokens": 87,
+            "output_tokens": 16,
+            "context_tokens": 0,
+            "total_tokens": 103,
+            "latency_s": 4.599,
+            "estimated": false
+          },
+          {
+            "tag": "graphrag_answer",
+            "model": "llama3",
+            "input_tokens": 111,
+            "output_tokens": 21,
+            "context_tokens": 9,
+            "total_tokens": 132,
+            "latency_s": 1.464,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 4,
+      "retrieval_backend": "tigergraph",
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at London Velopark on 3 to 4 August at the 2012 Summer Olympics?",
+      "steps_taken": 6,
+      "total_tokens": 5694,
+      "stopped_reason": "reached max_steps (6)",
+      "num_evidence_items": 0,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at London Velopark on 3 to 4 August at the 2012 Summer Olympics?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Gold Medal Winner at London Velopark in 2012 Summer Olympics",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 862,
+          "latency_s": 7.292907238006592
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "the query filtered on title='Gold Medal Winner at London Velopark in 2012 Summer Olympics', which the question never states — the planner guessed it, so the real subject has to be resolved by a prior query",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "replan",
+          "reason": "recompiled after rejection: the query filtered on title='Gold Medal Winner at London Velopark in 2",
+          "input_args": {
+            "spec": {
+              "type": "lookup_field",
+              "title": "gold_name",
+              "field": "athlete_name"
+            }
+          },
+          "output_summary": "corrected query answered None from 0 record(s)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 458,
+          "latency_s": 8.192264556884766
+        },
+        {
+          "step": 4,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at London Velopark on 3 to 4 August at the 2012 Summer Olympics?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Gold Medal Winner at the 2012 Summer Olympics",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 858,
+          "latency_s": 15.367571592330933
+        },
+        {
+          "step": 5,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at London Velopark on 3 to 4 August at the 2012 Summer Olympics?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Gold Medal Winner at the 2012 Summer Olympics",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 858,
+          "latency_s": 13.933232069015503
+        },
+        {
+          "step": 6,
+          "action": "entity_linking",
+          "reason": "to resolve the surface-form name 'London Velopark' to graph entities.",
+          "input_args": {},
+          "output_summary": "bad arguments for this tool (entity_linking() missing 1 required positional argument: 'name') — skipped",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 739,
+          "latency_s": 11.204690217971802
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Jason Kenny",
+      "citations": [
+        "evidence_id_1",
+        "evidence_id_2"
+      ],
+      "matched_doc_ids": [
+        "evidence_id_1",
+        "evidence_id_2"
+      ],
+      "confidence": 1.0,
+      "usage": {
+        "num_calls": 8,
+        "input_tokens": 5194,
+        "output_tokens": 229,
+        "context_tokens": 0,
+        "total_tokens": 5423,
+        "latency_s": 41.965,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 833,
+            "output_tokens": 29,
+            "context_tokens": 0,
+            "total_tokens": 862,
+            "latency_s": 2.128,
+            "estimated": false
+          },
+          {
+            "tag": "replan_with_feedback",
+            "model": "llama3",
+            "input_tokens": 436,
+            "output_tokens": 22,
+            "context_tokens": 0,
+            "total_tokens": 458,
+            "latency_s": 4.514,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 701,
+            "output_tokens": 33,
+            "context_tokens": 0,
+            "total_tokens": 734,
+            "latency_s": 2.77,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 833,
+            "output_tokens": 25,
+            "context_tokens": 0,
+            "total_tokens": 858,
+            "latency_s": 4.075,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 701,
+            "output_tokens": 26,
+            "context_tokens": 0,
+            "total_tokens": 727,
+            "latency_s": 5.611,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 833,
+            "output_tokens": 25,
+            "context_tokens": 0,
+            "total_tokens": 858,
+            "latency_s": 2.967,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 705,
+            "output_tokens": 34,
+            "context_tokens": 0,
+            "total_tokens": 739,
+            "latency_s": 11.205,
+            "estimated": false
+          },
+          {
+            "tag": "final_answer",
+            "model": "llama3",
+            "input_tokens": 152,
+            "output_tokens": 35,
+            "context_tokens": 0,
+            "total_tokens": 187,
+            "latency_s": 8.695,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "the query filtered on title='Gold Medal Winner at London Velopark in 2012 Summer Olympics', which the question never states — the planner guessed it, so the real subject has to be resolved by a prior query",
+      "repair": null,
+      "retrieval_methods_used": [
+        "entity_linking",
+        "graph_query",
+        "replan",
+        "verify"
+      ],
+      "agents_invoked": [
+        "entity_linking",
+        "graph_query",
+        "replan"
+      ],
+      "num_strategy_changes": 4,
+      "num_citations": 2,
+      "wall_time_s": 73.64,
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    }
+  },
+  {
+    "qid": "pub-016",
+    "question": "Who won the gold medal in the men's sprint biathlon event at the Winter Olympics held immediately before 2022?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the men's sprint biathlon event at the Winter Olympics held immediately before 2022?",
+      "answer": "Laura Dahlmeier",
+      "confidence": 0.95,
+      "citations": [
+        "Q47091419"
+      ],
+      "matched_doc_ids": [
+        "Q47091419"
+      ],
+      "query_spec": {
+        "type": "temporal",
+        "discipline": "Biathlon",
+        "event_name_substr": "sprint",
+        "season": "Winter",
+        "target_year": 2021,
+        "direction": "before",
+        "field": "gold",
+        "_planner": "llm"
+      },
+      "planner": "llm",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 828,
+        "output_tokens": 38,
+        "context_tokens": 0,
+        "total_tokens": 866,
+        "latency_s": 5.724,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 38,
+            "context_tokens": 0,
+            "total_tokens": 866,
+            "latency_s": 5.724,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph",
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the men's sprint biathlon event at the Winter Olympics held immediately before 2022?",
+      "steps_taken": 2,
+      "total_tokens": 866,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'temporal' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the men's sprint biathlon event at the Winter Olympics held immediately before 2022?",
+            "spec": {
+              "type": "temporal",
+              "discipline": "Biathlon",
+              "event_name_substr": "sprint",
+              "season": "Winter",
+              "target_year": 2021,
+              "direction": "before",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Laura Dahlmeier' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 866,
+          "latency_s": 3.124687433242798
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Laura Dahlmeier",
+      "citations": [
+        "Q47091419"
+      ],
+      "matched_doc_ids": [
+        "Q47091419"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 828,
+        "output_tokens": 38,
+        "context_tokens": 0,
+        "total_tokens": 866,
+        "latency_s": 2.836,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 38,
+            "context_tokens": 0,
+            "total_tokens": 866,
+            "latency_s": 2.836,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 3.126,
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    }
+  },
+  {
+    "qid": "pub-017",
+    "question": "Who won the gold medal in the event held at Royal Artillery Barracks on 28 July 2012?",
+    "qtype": "multi_hop",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the event held at Royal Artillery Barracks on 28 July 2012?",
+      "answer": "Mozart",
+      "citations": [],
+      "matched_doc_ids": [],
+      "confidence": 0.0,
+      "planner": "llm",
+      "seed_entities": [
+        null
+      ],
+      "retrieved_chunks": [],
+      "usage": {
+        "num_calls": 3,
+        "input_tokens": 1013,
+        "output_tokens": 69,
+        "context_tokens": 9,
+        "total_tokens": 1082,
+        "latency_s": 9.688,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 827,
+            "output_tokens": 28,
+            "context_tokens": 0,
+            "total_tokens": 855,
+            "latency_s": 2.453,
+            "estimated": false
+          },
+          {
+            "tag": "entity_extract",
+            "model": "llama3",
+            "input_tokens": 81,
+            "output_tokens": 19,
+            "context_tokens": 0,
+            "total_tokens": 100,
+            "latency_s": 4.147,
+            "estimated": false
+          },
+          {
+            "tag": "graphrag_answer",
+            "model": "llama3",
+            "input_tokens": 105,
+            "output_tokens": 22,
+            "context_tokens": 9,
+            "total_tokens": 127,
+            "latency_s": 3.088,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 4,
+      "retrieval_backend": "tigergraph",
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the event held at Royal Artillery Barracks on 28 July 2012?",
+      "steps_taken": 6,
+      "total_tokens": 10521,
+      "stopped_reason": "reached max_steps (6)",
+      "num_evidence_items": 13,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Royal Artillery Barracks on 28 July 2012?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Who won the gold medal in the event held at Royal Artillery Barracks on 28 July 2012?",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 865,
+          "latency_s": 10.5162034034729
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "replan",
+          "reason": "recompiled after rejection: graph query matched no records (no event matched that title)",
+          "input_args": {
+            "spec": {
+              "type": "lookup_field",
+              "title": "Who won the gold medal in the event held at Royal Artillery Barracks on 28 July 2012?",
+              "field": "event_gold_name",
+              "filter": {
+                "event_location": "Royal Artillery Barracks",
+                "event_date": "28 July 2012"
+              }
+            }
+          },
+          "output_summary": "corrected query answered None from 0 record(s)",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 474,
+          "latency_s": 11.82585597038269
+        },
+        {
+          "step": 4,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "what discipline held the most events at the 2012 Summer Olympics?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "Athletics",
+              "games_id": "2012-summer",
+              "min_competitors": null,
+              "max_competitors": null,
+              "venue_substr": null
+            }
+          },
+          "output_summary": "resolved exactly: '42' from 42 graph record(s)",
+          "new_evidence_count": 42,
+          "strategy_changed": true,
+          "tokens": 858,
+          "latency_s": 4.0751683712005615
+        },
+        {
+          "step": 5,
+          "action": "graph_query",
+          "reason": "compiled to a 'lookup_field' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the event held at Royal Artillery Barracks on 28 July 2012?",
+            "spec": {
+              "type": "lookup_field",
+              "title": "Who won the gold medal in the event held at Royal Artillery Barracks on 28 July 2012?",
+              "field": "gold_name"
+            }
+          },
+          "output_summary": "query ran but matched no records (no event matched that title)",
+          "new_evidence_count": 0,
+          "strategy_changed": false,
+          "tokens": 865,
+          "latency_s": 28.031028509140015
+        },
+        {
+          "step": 6,
+          "action": "relax_query",
+          "reason": "no removable constraint left on the last query",
+          "input_args": {
+            "drop": ""
+          },
+          "output_summary": "query is already minimally constrained",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": null,
+      "citations": [
+        "q4",
+        "Q2071171",
+        "Q1649415",
+        "Q2090641",
+        "Q2070547",
+        "Q956242",
+        "Q2071135",
+        "Q2000999",
+        "Q841530",
+        "Q843436"
+      ],
+      "matched_doc_ids": [
+        "q4",
+        "Q2071171",
+        "Q1649415",
+        "Q2090641",
+        "Q2070547",
+        "Q956242",
+        "Q2071135",
+        "Q2000999",
+        "Q841530",
+        "Q843436"
+      ],
+      "confidence": 0.0,
+      "usage": {
+        "num_calls": 9,
+        "input_tokens": 11383,
+        "output_tokens": 400,
+        "context_tokens": 4710,
+        "total_tokens": 11783,
+        "latency_s": 55.559,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 827,
+            "output_tokens": 38,
+            "context_tokens": 0,
+            "total_tokens": 865,
+            "latency_s": 5.095,
+            "estimated": false
+          },
+          {
+            "tag": "replan_with_feedback",
+            "model": "llama3",
+            "input_tokens": 406,
+            "output_tokens": 68,
+            "context_tokens": 0,
+            "total_tokens": 474,
+            "latency_s": 7.143,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 662,
+            "output_tokens": 53,
+            "context_tokens": 0,
+            "total_tokens": 715,
+            "latency_s": 8.69,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 818,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 858,
+            "latency_s": 3.771,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 2228,
+            "output_tokens": 42,
+            "context_tokens": 1570,
+            "total_tokens": 2270,
+            "latency_s": 5.337,
+            "estimated": false
+          },
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 827,
+            "output_tokens": 38,
+            "context_tokens": 0,
+            "total_tokens": 865,
+            "latency_s": 5.229,
+            "estimated": false
+          },
+          {
+            "tag": "sufficiency_check",
+            "model": "llama3",
+            "input_tokens": 1667,
+            "output_tokens": 61,
+            "context_tokens": 0,
+            "total_tokens": 1728,
+            "latency_s": 8.718,
+            "estimated": false
+          },
+          {
+            "tag": "orchestrator_plan",
+            "model": "llama3",
+            "input_tokens": 2232,
+            "output_tokens": 40,
+            "context_tokens": 1570,
+            "total_tokens": 2272,
+            "latency_s": 5.64,
+            "estimated": false
+          },
+          {
+            "tag": "final_answer",
+            "model": "llama3",
+            "input_tokens": 1716,
+            "output_tokens": 20,
+            "context_tokens": 1570,
+            "total_tokens": 1736,
+            "latency_s": 5.936,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "graph query matched no records (no event matched that title)",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "relax_query",
+        "replan",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query",
+        "relax_query",
+        "replan"
+      ],
+      "num_strategy_changes": 4,
+      "num_citations": 10,
+      "wall_time_s": 89.542,
+      "exact_match": false,
+      "retrieval_recall": 0.0
+    }
+  },
+  {
+    "qid": "pub-018",
+    "question": "Who won the gold medal in the men's freestyle 82 kg wrestling event at the Summer Olympics held immediately before 1996?",
+    "qtype": "temporal",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "Who won the gold medal in the men's freestyle 82 kg wrestling event at the Summer Olympics held immediately before 1996?",
+      "answer": "Kevin Jackson",
+      "confidence": 0.95,
+      "citations": [
+        "Q3498597"
+      ],
+      "matched_doc_ids": [
+        "Q3498597"
+      ],
+      "query_spec": {
+        "type": "temporal",
+        "discipline": "Wrestling",
+        "event_name_substr": "men's freestyle 82 kg",
+        "season": "Summer",
+        "target_year": 1995,
+        "direction": "before",
+        "field": "gold",
+        "_planner": "llm"
+      },
+      "planner": "llm",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 831,
+        "output_tokens": 55,
+        "context_tokens": 0,
+        "total_tokens": 886,
+        "latency_s": 6.381,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 831,
+            "output_tokens": 55,
+            "context_tokens": 0,
+            "total_tokens": 886,
+            "latency_s": 6.381,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph",
+      "exact_match": true,
+      "retrieval_recall": 0.5
+    },
+    "agentic_graphrag": {
+      "question": "Who won the gold medal in the men's freestyle 82 kg wrestling event at the Summer Olympics held immediately before 1996?",
+      "steps_taken": 2,
+      "total_tokens": 875,
+      "stopped_reason": "deterministic graph query resolved and passed verification — no agentic reasoning needed",
+      "num_evidence_items": 2,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'temporal' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "Who won the gold medal in the men's freestyle 82 kg wrestling event at the Summer Olympics held immediately before 1996?",
+            "spec": {
+              "type": "temporal",
+              "discipline": "Wrestling",
+              "event_name_substr": "men's freestyle 82 kg",
+              "season": "Summer",
+              "target_year": 1995,
+              "direction": "before",
+              "field": "gold"
+            }
+          },
+          "output_summary": "resolved exactly: 'Kevin Jackson' from 1 graph record(s)",
+          "new_evidence_count": 1,
+          "strategy_changed": false,
+          "tokens": 875,
+          "latency_s": 3.2834177017211914
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "Kevin Jackson",
+      "citations": [
+        "Q3498597"
+      ],
+      "matched_doc_ids": [
+        "Q3498597"
+      ],
+      "confidence": 0.95,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 831,
+        "output_tokens": 44,
+        "context_tokens": 0,
+        "total_tokens": 875,
+        "latency_s": 2.971,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 831,
+            "output_tokens": 44,
+            "context_tokens": 0,
+            "total_tokens": 875,
+            "latency_s": 2.971,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": false,
+      "escalation_reason": "graph query resolved uniquely, grounded in the question, with citable records",
+      "repair": null,
+      "retrieval_methods_used": [
+        "graph_query",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query"
+      ],
+      "num_strategy_changes": 1,
+      "num_citations": 1,
+      "wall_time_s": 3.284,
+      "exact_match": true,
+      "retrieval_recall": 0.5
+    }
+  },
+  {
+    "qid": "pub-019",
+    "question": "According to the provided corpus, how many fencing events at the 1988 Summer Olympics had more than 68 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many fencing events at the 1988 Summer Olympics had more than 68 competitors?",
+      "answer": "3",
+      "confidence": 0.95,
+      "citations": [
+        "Q5443142",
+        "Q5443138",
+        "Q5443140"
+      ],
+      "matched_doc_ids": [
+        "Q5443142",
+        "Q5443138",
+        "Q5443140"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "Fencing",
+        "games_id": "1988-summer",
+        "min_competitors": 69,
+        "max_competitors": null,
+        "venue_substr": null,
+        "_planner": "llm"
+      },
+      "planner": "llm",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 828,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 868,
+        "latency_s": 3.503,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 868,
+            "latency_s": 3.503,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph",
+      "exact_match": true,
+      "retrieval_recall": 0.375
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many fencing events at the 1988 Summer Olympics had more than 68 competitors?",
+      "steps_taken": 4,
+      "total_tokens": 868,
+      "stopped_reason": "escalated (the query used min_competitors=69, a number the question nev...) then repaired deterministically via literal_threshold — resolved without reasoning tokens",
+      "num_evidence_items": 4,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many fencing events at the 1988 Summer Olympics had more than 68 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "Fencing",
+              "games_id": "1988-summer",
+              "min_competitors": 69,
+              "max_competitors": null,
+              "venue_substr": null
+            }
+          },
+          "output_summary": "resolved exactly: '3' from 3 graph record(s)",
+          "new_evidence_count": 3,
+          "strategy_changed": false,
+          "tokens": 868,
+          "latency_s": 3.0217580795288086
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "the query used min_competitors=69, a number the question never mentions (it names ['1988', '68']) — the threshold was misread",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "repair_literal",
+          "reason": "the compiled query's min_competitors did not appear in the question; substituting the only threshold the question actually states",
+          "input_args": {
+            "was": 69,
+            "now": 68
+          },
+          "output_summary": "re-ran with min_competitors=68: '3' from 3 record(s)",
+          "new_evidence_count": 3,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 4,
+          "action": "verify",
+          "reason": "re-checking the repaired query's result",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "3",
+      "citations": [
+        "Q5443140",
+        "Q5443142",
+        "Q5443138"
+      ],
+      "matched_doc_ids": [
+        "Q5443140",
+        "Q5443142",
+        "Q5443138"
+      ],
+      "confidence": 0.9,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 828,
+        "output_tokens": 40,
+        "context_tokens": 0,
+        "total_tokens": 868,
+        "latency_s": 2.706,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 828,
+            "output_tokens": 40,
+            "context_tokens": 0,
+            "total_tokens": 868,
+            "latency_s": 2.706,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "the query used min_competitors=69, a number the question never mentions (it names ['1988', '68']) — the threshold was misread",
+      "repair": "literal_threshold",
+      "retrieval_methods_used": [
+        "graph_query",
+        "repair_literal",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query",
+        "repair_literal"
+      ],
+      "num_strategy_changes": 3,
+      "num_citations": 3,
+      "wall_time_s": 3.313,
+      "exact_match": true,
+      "retrieval_recall": 0.375
+    }
+  },
+  {
+    "qid": "pub-020",
+    "question": "According to the provided corpus, how many alpine skiing events at the 2014 Winter Olympics had more than 63 competitors?",
+    "qtype": "aggregation",
+    "hops_required": null,
+    "_fingerprint": "tigergraph/ollama:nomic-embed-text/llama3/T0.0",
+    "graphrag": {
+      "pipeline": "graphrag",
+      "question": "According to the provided corpus, how many alpine skiing events at the 2014 Winter Olympics had more than 63 competitors?",
+      "answer": "4",
+      "confidence": 0.95,
+      "citations": [
+        "Q15055002",
+        "Q15055004",
+        "Q15054999",
+        "Q15055001"
+      ],
+      "matched_doc_ids": [
+        "Q15055002",
+        "Q15055004",
+        "Q15054999",
+        "Q15055001"
+      ],
+      "query_spec": {
+        "type": "aggregation",
+        "discipline": "Alpine skiing",
+        "games_id": "2014-winter",
+        "min_competitors": 64,
+        "max_competitors": null,
+        "venue_substr": null,
+        "_planner": "llm"
+      },
+      "planner": "llm",
+      "ambiguous": false,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 830,
+        "output_tokens": 41,
+        "context_tokens": 0,
+        "total_tokens": 871,
+        "latency_s": 5.432,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 830,
+            "output_tokens": 41,
+            "context_tokens": 0,
+            "total_tokens": 871,
+            "latency_s": 5.432,
+            "estimated": false
+          }
+        ]
+      },
+      "steps": 2,
+      "retrieval_backend": "tigergraph",
+      "exact_match": true,
+      "retrieval_recall": 0.4
+    },
+    "agentic_graphrag": {
+      "question": "According to the provided corpus, how many alpine skiing events at the 2014 Winter Olympics had more than 63 competitors?",
+      "steps_taken": 4,
+      "total_tokens": 871,
+      "stopped_reason": "escalated (the query used min_competitors=64, a number the question nev...) then repaired deterministically via literal_threshold — resolved without reasoning tokens",
+      "num_evidence_items": 5,
+      "trace": [
+        {
+          "step": 1,
+          "action": "graph_query",
+          "reason": "compiled to a 'aggregation' graph query via the llm planner",
+          "input_args": {
+            "sub_question": "According to the provided corpus, how many alpine skiing events at the 2014 Winter Olympics had more than 63 competitors?",
+            "spec": {
+              "type": "aggregation",
+              "discipline": "Alpine skiing",
+              "games_id": "2014-winter",
+              "min_competitors": 64,
+              "max_competitors": null,
+              "venue_substr": null
+            }
+          },
+          "output_summary": "resolved exactly: '4' from 4 graph record(s)",
+          "new_evidence_count": 4,
+          "strategy_changed": false,
+          "tokens": 871,
+          "latency_s": 6.149174690246582
+        },
+        {
+          "step": 2,
+          "action": "verify",
+          "reason": "checking whether the deterministic result can be trusted without spending reasoning tokens",
+          "input_args": {},
+          "output_summary": "the query used min_competitors=64, a number the question never mentions (it names ['2014', '63']) — the threshold was misread",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 3,
+          "action": "repair_literal",
+          "reason": "the compiled query's min_competitors did not appear in the question; substituting the only threshold the question actually states",
+          "input_args": {
+            "was": 64,
+            "now": 63
+          },
+          "output_summary": "re-ran with min_competitors=63: '4' from 4 record(s)",
+          "new_evidence_count": 4,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        },
+        {
+          "step": 4,
+          "action": "verify",
+          "reason": "re-checking the repaired query's result",
+          "input_args": {},
+          "output_summary": "graph query resolved uniquely, grounded in the question, with citable records",
+          "new_evidence_count": 0,
+          "strategy_changed": true,
+          "tokens": 0,
+          "latency_s": 0.0
+        }
+      ],
+      "pipeline": "agentic_graphrag",
+      "answer": "4",
+      "citations": [
+        "Q15055002",
+        "Q15055004",
+        "Q15055001",
+        "Q15054999"
+      ],
+      "matched_doc_ids": [
+        "Q15055002",
+        "Q15055004",
+        "Q15055001",
+        "Q15054999"
+      ],
+      "confidence": 0.9,
+      "usage": {
+        "num_calls": 1,
+        "input_tokens": 830,
+        "output_tokens": 41,
+        "context_tokens": 0,
+        "total_tokens": 871,
+        "latency_s": 5.855,
+        "calls": [
+          {
+            "tag": "query_planner",
+            "model": "llama3",
+            "input_tokens": 830,
+            "output_tokens": 41,
+            "context_tokens": 0,
+            "total_tokens": 871,
+            "latency_s": 5.855,
+            "estimated": false
+          }
+        ]
+      },
+      "retrieval_backend": "tigergraph",
+      "escalated": true,
+      "escalation_reason": "the query used min_competitors=64, a number the question never mentions (it names ['2014', '63']) — the threshold was misread",
+      "repair": "literal_threshold",
+      "retrieval_methods_used": [
+        "graph_query",
+        "repair_literal",
+        "verify"
+      ],
+      "agents_invoked": [
+        "graph_query",
+        "repair_literal"
+      ],
+      "num_strategy_changes": 3,
+      "num_citations": 4,
+      "wall_time_s": 7.766,
+      "exact_match": true,
+      "retrieval_recall": 0.4
+    }
+  }
+]
