@@ -199,42 +199,84 @@ class RealGraph(BaseGraph):
         return scored[:k]
 
     def _fetch_all_chunks(self, page=2000):
-        """Fetch every Chunk, paginated, and cache it for the run.
+        """Every Chunk with its embedding, fetched once and cached on disk.
 
-        Paginated rather than one call because the payload is large — 9k
-        chunks x 768 doubles is tens of megabytes — and because
-        getVertices() applies a server-side cap. A truncated fetch would
-        not raise; RAG would simply search part of the corpus and report a
-        confidently lower score, which is the kind of silent wrong answer
-        this project exists to avoid. So the result is checked against the
-        vertex count and a shortfall is reported loudly.
+        This is the most expensive read in the system and it needs care on
+        both counts.
+
+        PARTITIONING. getVertices() takes `limit` but has no `skip`, so there
+        is no offset to page with — an earlier attempt passed skip=, raised
+        TypeError, fell into a fallback that fetched everything at once, and
+        pulled a ~170 MB response that the connection dropped halfway
+        through (IncompleteRead). Chunks are therefore partitioned by
+        chunk_index, which is small and dense (0..n within each document),
+        giving slices the server and the socket can both handle.
+
+        CACHING. 9,065 chunks x 768 floats is ~170 MB of JSON however it is
+        sliced, and re-downloading that for every process is the single
+        biggest cost in a benchmark run. It is written to disk after the
+        first fetch and reused, keyed by the graph name so two graphs cannot
+        share a cache.
         """
         if getattr(self, "_chunk_cache", None) is not None:
             return self._chunk_cache
 
-        cache, skip = {}, 0
-        while True:
-            try:
-                verts = self.conn.getVertices("Chunk", limit=page, skip=skip)
-            except TypeError:
-                # older pyTigerGraph signatures don't accept skip/limit
-                verts = self.conn.getVertices("Chunk")
-                cache.update({v["v_id"]: v["attributes"] for v in verts})
-                break
-            if not verts:
-                break
-            cache.update({v["v_id"]: v["attributes"] for v in verts})
-            if len(verts) < page:
-                break
-            skip += page
-
+        import pickle
+        cache_path = os.path.join(config.OUTPUT_DIR,
+                                  f"chunk_vectors_{config.TG_GRAPH}.pkl")
+        expected = 0
         try:
-            expected = self.conn.getVertexCount("Chunk")
-            if expected and len(cache) < expected:
-                print(f"[tigergraph] !! fetched {len(cache)} of {expected} chunks — "
-                      f"vector search is running on a PARTIAL corpus")
+            expected = int(self.conn.getVertexCount("Chunk"))
         except Exception:
             pass
+
+        if os.path.exists(cache_path):
+            try:
+                with open(cache_path, "rb") as f:
+                    cached = pickle.load(f)
+                # Only trust the cache if it still matches the graph.
+                if not expected or len(cached) == expected:
+                    print(f"[tigergraph] reusing {len(cached)} cached chunk vectors "
+                          f"({os.path.basename(cache_path)})")
+                    self._chunk_cache = cached
+                    return cached
+                print(f"[tigergraph] chunk cache holds {len(cached)} but the graph has "
+                      f"{expected}; refetching")
+            except Exception as e:
+                print(f"[tigergraph] unreadable chunk cache ({e}); refetching")
+
+        cache = {}
+        idx, empty_streak = 0, 0
+        while empty_streak < 3 and idx < 500:
+            try:
+                verts = self.conn.getVertices("Chunk", where=f"chunk_index={idx}")
+            except Exception as e:
+                print(f"[tigergraph] chunk slice {idx} failed ({type(e).__name__}); "
+                      f"continuing with {len(cache)} so far")
+                verts = []
+            if verts:
+                cache.update({v["v_id"]: v["attributes"] for v in verts})
+                empty_streak = 0
+            else:
+                # Document chunk counts vary, so a gap is not the end; stop
+                # only after several consecutive empty slices.
+                empty_streak += 1
+            idx += 1
+            if expected and len(cache) >= expected:
+                break
+
+        if expected and len(cache) < expected:
+            print(f"[tigergraph] !! fetched {len(cache)} of {expected} chunks — "
+                  f"vector search is running on a PARTIAL corpus")
+        else:
+            try:
+                os.makedirs(config.OUTPUT_DIR, exist_ok=True)
+                with open(cache_path, "wb") as f:
+                    pickle.dump(cache, f)
+                print(f"[tigergraph] cached {len(cache)} chunk vectors -> "
+                      f"{os.path.basename(cache_path)}")
+            except Exception as e:
+                print(f"[tigergraph] could not write chunk cache ({e})")
 
         self._chunk_cache = cache
         return self._chunk_cache

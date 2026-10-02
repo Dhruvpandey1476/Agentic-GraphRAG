@@ -1,0 +1,72 @@
+{
+  "graphrag": {
+    "n_questions": 50,
+    "avg_tokens": 929.2,
+    "total_tokens": 46459,
+    "avg_input_tokens": 880.8,
+    "avg_output_tokens": 48.4,
+    "avg_context_tokens": 2.5,
+    "avg_llm_calls": 1.56,
+    "avg_steps": 2.56,
+    "avg_latency_s": 6.699,
+    "answered_rate": 0.98
+  },
+  "agentic_graphrag": {
+    "n_questions": 50,
+    "avg_tokens": 2204.9,
+    "total_tokens": 110243,
+    "avg_input_tokens": 2104.4,
+    "avg_output_tokens": 100.5,
+    "avg_context_tokens": 84.8,
+    "avg_llm_calls": 2.92,
+    "avg_steps": 3.7,
+    "avg_latency_s": 10.607,
+    "answered_rate": 1.0
+  },
+  "agentic_behavior": {
+    "escalation_rate": 0.6,
+    "n_escalated": 30,
+    "n_resolved_free": 20,
+    "avg_tokens_when_escalated": 3096.9,
+    "avg_tokens_when_not_escalated": 866.8,
+    "avg_strategy_changes": 2.4,
+    "avg_citations": 4.66,
+    "avg_evidence_items": 4.84,
+    "retrieval_methods_used": {
+      "graph_query": 50,
+      "verify": 50,
+      "replan": 15,
+      "repair_literal": 15,
+      "entity_linking": 8
+    },
+    "specialized_agents_invoked": {
+      "graph_query": 50,
+      "replan": 15,
+      "repair_literal": 15,
+      "entity_linking": 8
+    },
+    "stopping_reasons": {
+      "deterministic graph query resolved and passed verification — no agentic reasoning needed": 20,
+      "escalated": 15,
+      "reached max_steps": 12,
+      "escalated, then the compiler corrected its own query when given the rejection reason": 2,
+      "agent judged evidence sufficient after 5 steps": 1
+    }
+  },
+  "planner_provenance": {
+    "llm": 50
+  },
+  "_meta": {
+    "questions_file": "eval_hidden.jsonl",
+    "n_questions": 50,
+    "graph_backend": "tigergraph",
+    "embedder": "ollama:nomic-embed-text",
+    "llm_provider": "ollama",
+    "llm_model": "llama3",
+    "ablation_skip_triage": false,
+    "regex_fast_path": false,
+    "temperature": 0.0,
+    "started": "2026-10-02 23:38:23",
+    "elapsed_s": 1545.1
+  }
+}
