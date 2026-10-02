@@ -36,7 +36,7 @@ def judge_answer(question, candidate_answer, reference_answer, llm=None):
     prompt = (f"Question: {question}\n\n"
               f"Reference answer: {reference_answer}\n\n"
               f"Candidate answer: {candidate_answer}")
-    r = llm.complete(JUDGE_SYSTEM, prompt, max_tokens=300, json_mode=True)
+    r = llm.complete(JUDGE_SYSTEM, prompt, max_tokens=1200, json_mode=True)
     parsed = parse_json_safely(r.text, default={
         "correctness": 0.0, "completeness": 0.0, "grounding": 0.0,
         "overall": 0.0, "rationale": "judge parse failure",

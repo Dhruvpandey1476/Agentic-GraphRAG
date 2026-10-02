@@ -77,7 +77,7 @@ def run(question: str, graph=None, llm=None, force_llm_planner=None) -> dict:
                 "note": "query did not resolve and no LLM configured for the fallback path",
                 "usage": usage.summary(), "steps": 1, "retrieval_backend": graph.backend}
 
-    r1 = llm.complete(ENTITY_EXTRACT_SYSTEM, question, max_tokens=150, json_mode=True)
+    r1 = llm.complete(ENTITY_EXTRACT_SYSTEM, question, max_tokens=1200, json_mode=True)
     usage.record("entity_extract", r1)
     entity_names = parse_json_safely(r1.text, default={}).get("entities", []) or []
 
@@ -114,7 +114,7 @@ def run(question: str, graph=None, llm=None, force_llm_planner=None) -> dict:
     context = f"Entities:\n{entity_block}\n\nSupporting text:\n{chunk_block}"
 
     r2 = llm.complete(ANSWER_SYSTEM, f"Question: {question}\n\n{context}",
-                      max_tokens=400, json_mode=True, context_text=context)
+                      max_tokens=1200, json_mode=True, context_text=context)
     usage.record("graphrag_answer", r2)
     parsed = parse_json_safely(r2.text, default={})
 

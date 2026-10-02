@@ -266,8 +266,13 @@ class LLMClient:
                 time.sleep(wait + random.uniform(0, 0.5))
                 delay *= 2
 
-    def complete(self, system: str, prompt: str, max_tokens: int = 1000,
+    def complete(self, system: str, prompt: str, max_tokens: int = 1200,
                  json_mode: bool = False, context_text: str = "") -> LLMResult:
+        """max_tokens is a CAP, not a target — a model that needs 40 tokens
+        bills 40 whatever the cap is. Call sites therefore ask generously:
+        a reasoning model spends several hundred tokens thinking before it
+        emits any content, and a cap sized for an ordinary model truncates
+        it to an empty string. Costs nothing for models that emit less."""
         start = time.time()
         max_tokens = max(max_tokens, getattr(self, "_min_output_tokens", 0))
 

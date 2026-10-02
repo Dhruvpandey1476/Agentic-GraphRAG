@@ -95,7 +95,7 @@ def aggregation(state, graph, llm, embedder):
     """Compress accumulated evidence when it's getting large, so later
     reasoning steps aren't paying token cost for duplicated snippets."""
     block = state.evidence_text_block()
-    result = llm.complete(AGGREGATE_SYSTEM, block, max_tokens=500, json_mode=True)
+    result = llm.complete(AGGREGATE_SYSTEM, block, max_tokens=1200, json_mode=True)
     parsed = parse_json_safely(result.text, default={"summary": block, "distinct_facts": len(state.evidence)})
     item = EvidenceItem(
         step=state.step_count, source_agent="aggregation", kind="note",
@@ -112,7 +112,7 @@ now be concluded, and what is still missing. Return ONLY JSON:
 
 def multihop_reasoning(state, graph, llm, embedder):
     prompt = f"Question: {state.question}\n\nEvidence:\n{state.evidence_text_block()}"
-    result = llm.complete(MULTIHOP_SYSTEM, prompt, max_tokens=500, json_mode=True)
+    result = llm.complete(MULTIHOP_SYSTEM, prompt, max_tokens=1200, json_mode=True)
     parsed = parse_json_safely(result.text, default={"reasoning": "", "still_missing": ""})
     item = EvidenceItem(
         step=state.step_count, source_agent="multihop_reasoning", kind="note",
@@ -131,7 +131,7 @@ NOT sufficient. Return ONLY JSON:
 def evidence_evaluation(state, graph, llm, embedder):
     """Called before the orchestrator decides whether to stop or keep going."""
     prompt = f"Question: {state.question}\n\nEvidence so far:\n{state.evidence_text_block()}"
-    result = llm.complete(EVAL_SYSTEM, prompt, max_tokens=300, json_mode=True)
+    result = llm.complete(EVAL_SYSTEM, prompt, max_tokens=1200, json_mode=True)
     parsed = parse_json_safely(result.text, default={"sufficient": False, "gap": "", "confidence": 0.3})
     return parsed, result
 

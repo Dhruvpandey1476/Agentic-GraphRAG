@@ -117,7 +117,7 @@ def run(question: str, graph=None, embedder=None, llm=None, qtype=None,
     if llm is not None:
         result = llm.complete(
             ANSWER_SYSTEM, f"Question: {question}\n\nContext passages:\n{context}",
-            max_tokens=400, json_mode=True, context_text=context,
+            max_tokens=1200, json_mode=True, context_text=context,
         )
         usage.record("rag_answer", result)
         parsed = parse_json_safely(result.text, default={})

@@ -468,7 +468,7 @@ def _replan_with_feedback(state, graph, llm, question, reason, usage):
               f"KNOWN DISCIPLINES: {', '.join(disciplines[:120])}{gap}"
               f"YOUR REJECTED QUERY: {json.dumps(prior)}{gap}"
               f"WHY IT WAS REJECTED: {reason}")
-    r = llm.complete(REPLAN_SYSTEM, prompt, max_tokens=300, json_mode=True)
+    r = llm.complete(REPLAN_SYSTEM, prompt, max_tokens=1200, json_mode=True)
     usage.record("replan_with_feedback", r)
     state.total_tokens += r.total_tokens
 
@@ -602,7 +602,7 @@ def _adaptive_loop(state, graph, llm, embedder, usage, escalation_reason=""):
             PLANNER_SYSTEM.format(tried=tried or "(nothing yet)",
                                   linked=_format_linked(state),
                                   escalation_reason=escalation_reason or "(unknown)"),
-            prompt, max_tokens=250, json_mode=True, context_text=state.evidence_text_block())
+            prompt, max_tokens=1200, json_mode=True, context_text=state.evidence_text_block())
         usage.record("orchestrator_plan", r)
 
         plan_obj = parse_json_safely(r.text, default={"action": "answer", "args": {},
@@ -668,7 +668,7 @@ def _format_linked(state):
 def _final_answer(state, llm, usage):
     prompt = (f"Question: {state.question}\n\n"
               f"All evidence gathered:\n{state.evidence_text_block()}")
-    r = llm.complete(FINAL_ANSWER_SYSTEM, prompt, max_tokens=500, json_mode=True,
+    r = llm.complete(FINAL_ANSWER_SYSTEM, prompt, max_tokens=1200, json_mode=True,
                      context_text=state.evidence_text_block())
     usage.record("final_answer", r)
     return parse_json_safely(r.text, default={"answer": None, "citations": [], "confidence": 0.3})

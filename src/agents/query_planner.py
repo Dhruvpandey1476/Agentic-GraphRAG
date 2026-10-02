@@ -174,7 +174,7 @@ def compile_llm(question: str, known_disciplines: list, llm):
     """Tier 2. Returns (spec, llm_result). spec carries `_planner`='llm'."""
     disc = ", ".join(known_disciplines[:120])
     prompt = f"KNOWN DISCIPLINES: {disc}\n\nQUESTION: {question}"
-    r = llm.complete(PLANNER_SYSTEM, prompt, max_tokens=300, json_mode=True)
+    r = llm.complete(PLANNER_SYSTEM, prompt, max_tokens=1200, json_mode=True)
     spec = parse_json_safely(r.text, default={"type": "unstructured"})
 
     if not isinstance(spec, dict) or "type" not in spec:
