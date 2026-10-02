@@ -262,6 +262,19 @@ def plan(question: str, known_disciplines: list, llm=None, force_llm=None):
 
     if llm is not None:
         spec, r = compile_llm(question, known_disciplines, llm)
+        # "unstructured" is a real answer for a genuinely unstructured
+        # question, but it is also what a flaky compiler returns on a bad
+        # draw. Measured on gpt-oss-120b at temperature 0: the same question
+        # compiled to a correct aggregation 3 times out of 4 and to
+        # "unstructured" on the fourth. One retry costs a few hundred tokens;
+        # accepting the bad draw costs the whole question, because the agent
+        # then concludes the question is not expressible as a graph query.
+        if spec.get("type") == "unstructured":
+            retry, r2 = compile_llm(question, known_disciplines, llm)
+            if retry.get("type") != "unstructured":
+                retry["_planner"] = "llm"
+                retry["_recompiled"] = True
+                return retry, (r2 or r)
         spec["_planner"] = "llm"
         return spec, r
 

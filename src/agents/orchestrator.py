@@ -90,6 +90,9 @@ that was too narrow.
 Evidence so far is shown below. What you have ALREADY tried is listed too —
 do not repeat an action that produced nothing; change strategy instead.
 
+Only these actions are available on this graph — anything else does not exist
+here and must not be chosen: {available}
+
 Actions already tried: {tried}
 Linked entities: {linked}
 
@@ -575,6 +578,11 @@ def _adaptive_loop(state, graph, llm, embedder, usage, escalation_reason=""):
     last_graph_result = None
     loop_actions = 0
     evidence_at_start = len(state.evidence)
+    # Actions that have already returned nothing. The prompt asks the model
+    # not to repeat them and the model does anyway, so this is enforced here
+    # rather than requested there.
+    barren = set()
+    tools = _available_tools(graph)
 
     while True:
         stop = state.should_stop()
@@ -601,15 +609,34 @@ def _adaptive_loop(state, graph, llm, embedder, usage, escalation_reason=""):
         r = llm.complete(
             PLANNER_SYSTEM.format(tried=tried or "(nothing yet)",
                                   linked=_format_linked(state),
+                                  available=", ".join(sorted(tools - barren)),
                                   escalation_reason=escalation_reason or "(unknown)"),
             prompt, max_tokens=1200, json_mode=True, context_text=state.evidence_text_block())
         usage.record("orchestrator_plan", r)
 
-        plan_obj = parse_json_safely(r.text, default={"action": "answer", "args": {},
-                                                      "reason": "planner output unparseable"})
-        action = plan_obj.get("action", "answer")
+        plan_obj = parse_json_safely(r.text, default={})
+        action = plan_obj.get("action")
         args = plan_obj.get("args", {}) or {}
         reason = plan_obj.get("reason", "")
+
+        if not action:
+            # An unusable plan is not a reason to stop: retry the question as
+            # a graph query, which is the single most likely useful move, and
+            # only give up if that has already been tried.
+            if "graph_query" not in barren:
+                action, args = "graph_query", {"question": state.question}
+                reason = "planner returned nothing usable; retrying the graph query"
+            else:
+                action, reason = "answer", "planner returned nothing usable twice"
+
+        if action in barren:
+            state.log_step(action, reason, args,
+                           f"skipped: {action} already returned nothing this run", 0,
+                           tokens=r.total_tokens, latency_s=r.latency_s)
+            if barren >= (tools - {"answer"}):
+                state.stopped_reason = "every available tool has been tried without result"
+                break
+            continue
         tried.append(action)
 
         if action == "answer":
@@ -655,10 +682,58 @@ def _adaptive_loop(state, graph, llm, embedder, usage, escalation_reason=""):
             continue
         n = state.add_evidence(items)
         loop_actions += 1
-        state.log_step(action, reason, args, f"retrieved {n} evidence item(s)", n,
+        if n == 0:
+            barren.add(action)
+        state.log_step(action, reason, args,
+                       f"retrieved {n} evidence item(s)"
+                       + (" — not offering this tool again" if n == 0 else ""), n,
                        tokens=r.total_tokens, latency_s=r.latency_s)
 
     return last_graph_result
+
+
+def _available_tools(graph):
+    """Tools worth offering the planner, given what this graph actually holds.
+
+    Offering a tool that cannot succeed is worse than not having it: the
+    model picks it, gets nothing, and — having no better idea — picks it
+    again. Observed in a live trace, the agent called entity_linking three
+    times in a row for 2,736 tokens against an Entity layer that is empty,
+    so every call was guaranteed to return nothing.
+    """
+    tools = {"graph_query", "relax_query", "multihop_reason", "answer"}
+    try:
+        if graph.all_chunk_count() > 0:
+            tools.add("similarity_search")
+    except Exception:
+        pass
+    try:
+        # entity_linking / traversal / document_retrieval all start from an
+        # Entity lookup, so they stand or fall together.
+        #
+        # Count the rows, do not just test truthiness: RealGraph returns
+        # [{"Result": []}] for an empty lookup, which is a non-empty list and
+        # therefore truthy. Testing the wrapper rather than its contents
+        # enabled all three tools against an empty Entity layer — exactly the
+        # bug this function exists to prevent.
+        if _entity_rows(graph) > 0:
+            tools |= {"entity_linking", "graph_traversal", "document_retrieval"}
+    except Exception:
+        pass
+    return tools
+
+
+def _entity_rows(graph) -> int:
+    """How many Entity vertices the graph actually holds."""
+    try:
+        if graph.backend == "tigergraph":
+            return int(graph.conn.getVertexCount("Entity"))
+        return len(graph.store.get("entities", {}))
+    except Exception:
+        probe = graph.entity_lookup("a") or []
+        if probe and isinstance(probe[0], dict) and "Result" in probe[0]:
+            return len(probe[0]["Result"])
+        return len(probe)
 
 
 def _format_linked(state):
