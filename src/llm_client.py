@@ -238,12 +238,17 @@ class LLMClient:
         should fail immediately and loudly, not be masked by five retries.
         """
         import random
-        # Reserve budget before sending. Output tokens are unknown up front,
-        # so max_tokens is the initial assumption; reconcile() corrects it
-        # from the response, which matters because reasoning models spend
-        # far more output tokens than max_tokens implies.
+        # Reserve budget before sending. Output length is unknown up front,
+        # and reserving the full max_tokens is badly pessimistic: the caps
+        # here are generous (1200) so that reasoning models have room, but
+        # typical completions are a few hundred tokens. Reserving the cap
+        # throttled a rate-limited tier to roughly one question per half
+        # hour. reconcile() corrects the window from the real usage
+        # immediately after the call, so a modest estimate is safe — it can
+        # briefly under-reserve, never persistently.
         reserved = (estimate_tokens("".join(m["content"] for m in req["messages"]))
-                    + int(req.get("max_tokens") or 0))
+                    + min(int(req.get("max_tokens") or 0),
+                          getattr(self, "_typical_output", 500)))
         _BUCKET.consume(reserved)
         self._last_reserved = reserved
         delay = 2.0
@@ -339,6 +344,10 @@ class LLMClient:
         # Fold real usage back into the pacing window.
         if in_tok and out_tok:
             _BUCKET.reconcile(getattr(self, "_last_reserved", 0), in_tok + out_tok)
+            # Track what this model actually emits, so the next reservation
+            # is based on measurement rather than on the cap.
+            prev = getattr(self, "_typical_output", 500)
+            self._typical_output = int(0.7 * prev + 0.3 * out_tok)
 
         estimated = False
         if not in_tok:
