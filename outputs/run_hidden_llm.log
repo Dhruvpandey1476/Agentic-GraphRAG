@@ -14,3 +14,10 @@
 }
 [1/50] (multi_hop) Who won the gold medal in the event held at Olympic Tennis Centre on 15 to 
 [llm_client] pacing: 5584/6000 tokens used this minute, waiting 53s before a 844-token request
+[llm_client] pacing: 5314/6000 tokens used this minute, waiting 0s before a 844-token request
+[2/50] (lookup) How many nations competed in Fencing at the 1988 Summer Olympics – Men's fo
+[3/50] (aggregation) According to the provided corpus, how many cycling events at the 2008 Summe
+[llm_client] pacing: 5779/6000 tokens used this minute, waiting 53s before a 1114-token request
+[llm_client] pacing: 4935/6000 tokens used this minute, waiting 2s before a 1114-token request
+[llm_client] pacing: 5397/6000 tokens used this minute, waiting 53s before a 844-token request
+[llm_client] pacing: 5183/6000 tokens used this minute, waiting 0s before a 1108-token request

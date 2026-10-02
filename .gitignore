@@ -17,3 +17,6 @@ outputs/tfidf_vectorizer.pkl
 /eval_public.jsonl
 /eval_hidden.jsonl
 outputs/server.log
+
+# Run logs are transient console output; results live in outputs/*.json
+outputs/*.log
