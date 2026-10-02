@@ -10,44 +10,48 @@ Measured on a **live TigerGraph Savanna workspace** (4.2.5).
 
 ### What the system does on the provided questions
 
-| | Accuracy | Avg tokens / question |
-|---|---|---|
-| **Agentic GraphRAG (production configuration)** | **100 / 100** | **67** |
-| GraphRAG | 100 / 100 | 0 |
-| RAG | 0.20 | 2,764 |
+| | Accuracy | Avg tokens | Tokens / correct |
+|---|---|---|---|
+| **Agentic GraphRAG (production)** | **1.000** | 62 | 62 |
+| GraphRAG | 1.000 | 0 | 0 |
+| RAG | 0.200 | 2,763 | 13,817 |
 
-99 of 100 questions resolve deterministically against the graph — **no LLM call
-at all** — because the corpus has been modelled into an `OlympicEvent` /
-`GamesEdition` / `Discipline` graph rather than left as prose. The single
-escalation is a genuinely ambiguous venue+date tie, which the agent detects and
-investigates rather than guessing at.
-
-That is the system as you would deploy it, and it is the number we submit the
-hidden set with.
+99 of 100 resolve deterministically against the graph with **no LLM call at
+all**; the single escalation is a genuinely ambiguous venue+date tie that the
+agent detects and investigates rather than guessing at. This is the system as
+deployed, and the configuration the hidden set was submitted with.
 
 ### The controlled experiment: does the *architecture* help?
 
 The production configuration includes a regex question-parser, and that parser
 encodes prior knowledge of the question templates — a prior the RAG baseline is
-never given. So to answer the hackathon's research question honestly we ran a
-second, **deliberately handicapped** configuration in which every pipeline,
-including ours, must compile its query with the same LLM:
+never given. So to answer the hackathon's research question honestly, every
+pipeline is **handicapped onto the same LLM compiler**, at temperature 0:
 
 | Pipeline | Accuracy | Avg tokens | Tokens / correct |
 |---|---|---|---|
-| RAG | 0.200 | 2,764 | 13,820 |
-| GraphRAG | 0.290 | 985 | 3,396 |
-| **Agentic GraphRAG** | **0.420** | 3,795 | 9,057 |
+| RAG | 0.200 | 2,763 | 13,816 |
+| GraphRAG | 0.350 | 950 | 2,713 |
+| **Agentic GraphRAG** | **0.440** | 2,454 | 5,576 |
 
-Handicapped this way, the agent beats the fixed pipeline by **13 points (45%
-relative)** and escalates on 71% of questions. Absolute accuracy is low for all
-three because `llama3` is a poor NL→query compiler — **that is the variable
-under test**, not a property of the graph. The same questions score 100/100 when
+**+9 points over the fixed pipeline**, escalating on 65% of questions. Absolute
+accuracy is low for all three because `llama3` is a poor NL→query compiler —
+*that is the variable under test*. The same questions score 100/100 when
 parsing is reliable.
 
-This is the configuration to read when asking *"does adaptivity help?"*. The
-table above it is the configuration to read when asking *"how well does the
-system work?"*.
+### Where it matters most: 60 chained questions
+
+| Pipeline | Accuracy | Avg tokens | Tokens / correct |
+|---|---|---|---|
+| RAG | 0.067 | 2,806 | 42,083 |
+| GraphRAG | 0.083 | 922 | 11,060 |
+| **Agentic GraphRAG** | **0.483** | 2,126 | **4,399** |
+
+**5.8× the accuracy at 40% of the cost per correct answer.** On the provided set
+the agent buys accuracy *with* tokens; here it is simultaneously the most
+accurate and the most efficient pipeline. That inversion is the finding: the
+deterministic repairs produce answers without LLM calls, so the worse the
+planner performs, the better the agent's economics get.
 
 ### Where the agent pays, and where it doesn't
 

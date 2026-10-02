@@ -91,3 +91,42 @@
 [77/100] (multi_hop) Who won the gold medal in the event held at Xiaohaituo Bobsleigh and Luge T
 [78/100] (aggregation) According to the provided corpus, how many athletics events at the 1996 Sum
 [79/100] (multi_hop) Who won the gold medal in the event held at Centennial Parklands, Sydney on
+[80/100] (lookup) How many nations competed in Beach volleyball at the 2008 Summer Olympics –
+[81/100] (multi_hop) Who won the gold medal in the event held at Beijing Shooting Range Hall on 
+[82/100] (aggregation) According to the provided corpus, how many swimming events at the 1996 Summ
+[83/100] (multi_hop) Who won the gold medal in the event held at Kvitfjell and Hafjell on Februa
+[84/100] (superlative) According to the provided corpus, which fencing event at the 1992 Summer Ol
+[85/100] (superlative) According to the provided corpus, which sailing event at the 2008 Summer Ol
+[86/100] (multi_hop) Who won the gold medal in the event held at Richmond Olympic Oval on 17 Feb
+[87/100] (aggregation) According to the provided corpus, how many athletics events at the 1988 Sum
+[88/100] (superlative) According to the provided corpus, which alpine skiing event at the 1992 Win
+[89/100] (aggregation) According to the provided corpus, how many boxing events at the 1988 Summer
+[90/100] (temporal) Who won the gold medal in the men's greco-roman 96 kg wrestling event at th
+[91/100] (lookup) How many nations competed in Wrestling at the 1992 Summer Olympics – Men's 
+[92/100] (aggregation) According to the provided corpus, how many shooting events at the 1992 Summ
+[93/100] (aggregation) According to the provided corpus, how many biathlon events at the 2006 Wint
+[94/100] (temporal) Who won the gold medal in the men's greco-roman 48 kg wrestling event at th
+[95/100] (multi_hop) Who won the gold medal in the event held at Beijing National Stadium on 16 
+[96/100] (multi_hop) Who won the gold medal in the event held at Riocentro – Pavilion 6 on 10–21
+[97/100] (temporal) Who won the gold medal in the women's épée fencing event at the Summer Olym
+[98/100] (multi_hop) Who won the gold medal in the event held at Sydney Convention and Exhibitio
+[99/100] (multi_hop) Who won the gold medal in the event held at Laura Biathlon & Ski Complex on
+[100/100] (temporal) Who won the gold medal in the women's 200 metre backstroke swimming event a
+
+Done in 1197.8s -> outputs/summary_final_fastpath.json
+
+pipeline                 acc    tokens   calls   steps  answered
+----------------------------------------------------------------
+rag                    0.200    2763.4    1.00    1.00     0.710
+graphrag               1.000       0.0    0.00    2.00     1.000
+agentic_graphrag       1.000      61.9    0.06    2.04     1.000
+
+escalation rate: 1.0% (1 escalated / 99 resolved free)
+tokens when escalated: 6187 | when not: 0
+
+--- is the agent worth it? ---
+  aggregation            AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing
+  lookup                 AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing
+  multi_hop              AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing
+  superlative            AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing
+  temporal               AGENT NOT WORTH IT — no accuracy gain beyond noise; the extra tokens buy nothing
