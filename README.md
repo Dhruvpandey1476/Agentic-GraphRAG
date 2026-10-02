@@ -112,6 +112,11 @@ python -m src.eval.run_benchmark --stress
 python server.py                        # live query UI at localhost:5000
 ```
 
+Open **http://localhost:5000** — the same server provides the page *and* the
+API, so the live UI must be reached from there. Serving `dashboard/` from a
+separate static server breaks it: the page's `/api/*` calls would go to that
+other origin.
+
 **Live UI** (`server.py`) — ask any question and watch all three pipelines
 answer it side by side against the same graph: the answer, the token cost, the
 compiled query, and the agent's full investigation trace. Sample questions from

@@ -93,6 +93,29 @@ const PIPES = [
 ];
 
 const $ = s => document.querySelector(s);
+
+// The page and the API must be served from the SAME origin. Opening this
+// file directly, or through a static server on another port, sends /api/*
+// to something that does not implement it — which surfaces as a JSON parse
+// error on an HTML or "Forbidden." body rather than anything meaningful.
+async function api(path, opts){
+  let r;
+  try{
+    r = await fetch(path, opts);
+  }catch(e){
+    throw new Error(`cannot reach the API at ${location.origin}${path}. `
+      + `Start it with "python server.py" and open http://localhost:5000`);
+  }
+  const body = await r.text();
+  try{
+    return JSON.parse(body);
+  }catch(e){
+    throw new Error(`${location.origin}${path} returned ${r.status} `
+      + `"${body.slice(0,40).trim()}" instead of JSON — this page is being served `
+      + `from the wrong origin. Open http://localhost:5000 (python server.py), `
+      + `not a static file server or file://`);
+  }
+}
 const esc = s => String(s ?? "").replace(/[<>&]/g, c => ({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
 const num = v => v == null ? "—" : Number(v).toLocaleString();
 let GOLD = null;
@@ -174,11 +197,10 @@ async function ask(){
   // them in sequence would leave the page blank for three minutes.
   await Promise.all(PIPES.map(async p => {
     try{
-      const r = await fetch("/api/query", {
+      render(p, await api("/api/query", {
         method:"POST", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({question:q, pipeline:p.key}),
-      });
-      render(p, await r.json());
+      }));
     }catch(e){
       render(p, {error:String(e)});
     }
@@ -193,7 +215,7 @@ $("#q").addEventListener("keydown", e => {
 
 (async () => {
   try{
-    const h = await (await fetch("/api/health")).json();
+    const h = await api("/api/health");
     if(!h.ready) throw new Error(h.error || "not ready");
     $("#meta").innerHTML =
       `graph <code>${h.graph_backend}</code> · ` +
@@ -211,7 +233,7 @@ $("#q").addEventListener("keydown", e => {
   }
 
   try{
-    const s = await (await fetch("/api/samples")).json();
+    const s = await api("/api/samples");
     $("#samples").innerHTML = s.map((x,i) =>
       `<span class="chip" data-i="${i}"><b>${esc(x.qtype)}</b> · ${esc(x.set)}</span>`).join("");
     $("#samples").addEventListener("click", ev => {

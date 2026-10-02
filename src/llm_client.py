@@ -218,6 +218,11 @@ class LLMClient:
         if base_url:
             kwargs["base_url"] = base_url
         self._client = openai.OpenAI(**kwargs)
+        # Raised the first time this model proves it needs more room (see
+        # complete()). Reasoning models bill a few hundred tokens of thinking
+        # before any content, and re-discovering that on every call wastes a
+        # whole request each time — which matters on a rate-limited tier.
+        self._min_output_tokens = 0
 
     @property
     def model(self) -> str:
@@ -264,6 +269,7 @@ class LLMClient:
     def complete(self, system: str, prompt: str, max_tokens: int = 1000,
                  json_mode: bool = False, context_text: str = "") -> LLMResult:
         start = time.time()
+        max_tokens = max(max_tokens, getattr(self, "_min_output_tokens", 0))
 
         if self.provider == "anthropic":
             resp = self._client.messages.create(
@@ -316,6 +322,9 @@ class LLMClient:
                   f"(reasoning consumed the budget); retrying with "
                   f"max_tokens={bigger}")
             req["max_tokens"] = bigger
+            # Remember it, so later calls ask for enough the first time
+            # rather than burning a request to learn the same thing again.
+            self._min_output_tokens = bigger
             resp = self._retrying_create(req)
             text = resp.choices[0].message.content or ""
             usage = getattr(resp, "usage", None)
