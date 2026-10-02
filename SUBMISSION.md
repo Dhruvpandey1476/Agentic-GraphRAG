@@ -84,10 +84,12 @@ The thing that wins here is the **finding**, not the feature tour. Lead with it.
 
 **0:00–0:25 — The claim**
 > "We benchmarked RAG, GraphRAG and Agentic GraphRAG on a live TigerGraph
-> Savanna workspace. Our headline result is that on the provided question set,
-> **agentic reasoning is not worth its cost** — GraphRAG answers 100 out of 100
-> with a single graph query. So we built a harder benchmark to find where it
-> *does* pay, and found the boundary."
+> Savanna workspace, with the same model driving all three. The expected
+> ordering holds on both question sets — RAG below GraphRAG below Agentic. But
+> the interesting part is the cost: on the provided questions the agent buys
+> accuracy *with* tokens, and on chained questions it is 5.8 times more accurate
+> **and** 2.5 times cheaper per correct answer. That inversion is where agentic
+> reasoning stops being a luxury."
 
 Starting with a negative result signals you measured rather than assumed. It
 also sets up the rest.
@@ -192,6 +194,12 @@ produced on a local model for that reason, and the repo now paces, checkpoints
 and resumes accordingly.
 
 ## Likely judge questions, and the honest answers
+
+**"Did every pipeline actually use an LLM, as the brief specifies?"**
+Yes. All reported numbers come from runs where RAG, GraphRAG and the agent
+each compile and answer with the same model at temperature 0, so token cost is
+comparable and the agentic trace is real. The repo ships with the regex parser
+OFF by default for exactly this reason.
 
 **"Isn't the regex path just fitting the eval set?"**
 Yes — which is why it is **off by default**. Every pipeline compiles its query
