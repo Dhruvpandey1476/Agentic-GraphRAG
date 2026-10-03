@@ -259,33 +259,47 @@ def main():
 # ---------------------------------------------------------------- summarising
 
 def _rows_for(all_results, p):
-    return [r[p] for r in all_results if p in r and "error" not in r[p]]
+    """Every row this pipeline produced, rows that errored included.
+
+    A question that errored is a question the pipeline did not answer, so it
+    belongs in the accuracy denominator. Filtering it out here silently
+    shrinks the denominator and inflates the score: the chained set reported
+    0.500 when two of its sixty rows had errored and the honest figure was
+    0.483. Cost averages are taken over the rows that ran, since a row that
+    crashed has no meaningful token count, and `n_errors` records the gap.
+    """
+    return [r[p] for r in all_results if p in r]
 
 
 def _agg(rows, has_gold):
-    tokens = [r.get("usage", {}).get("total_tokens", 0) for r in rows]
+    ran = [r for r in rows if "error" not in r]
+    n_all = max(len(rows), 1)
+    n_ran = max(len(ran), 1)
+    tokens = [r.get("usage", {}).get("total_tokens", 0) for r in ran]
     entry = {
         "n_questions": len(rows),
-        "avg_tokens": round(sum(tokens) / max(len(tokens), 1), 1),
+        "n_errors": len(rows) - len(ran),
+        "avg_tokens": round(sum(tokens) / n_ran, 1),
         "total_tokens": sum(tokens),
         "avg_input_tokens": round(sum(r.get("usage", {}).get("input_tokens", 0)
-                                      for r in rows) / max(len(rows), 1), 1),
+                                      for r in ran) / n_ran, 1),
         "avg_output_tokens": round(sum(r.get("usage", {}).get("output_tokens", 0)
-                                       for r in rows) / max(len(rows), 1), 1),
+                                       for r in ran) / n_ran, 1),
         "avg_context_tokens": round(sum(r.get("usage", {}).get("context_tokens", 0)
-                                        for r in rows) / max(len(rows), 1), 1),
+                                        for r in ran) / n_ran, 1),
         "avg_llm_calls": round(sum(r.get("usage", {}).get("num_calls", 0)
-                                   for r in rows) / max(len(rows), 1), 2),
+                                   for r in ran) / n_ran, 2),
         "avg_steps": round(sum(r.get("steps_taken", r.get("steps", 1))
-                               for r in rows) / max(len(rows), 1), 2),
+                               for r in ran) / n_ran, 2),
         "avg_latency_s": round(sum(r.get("usage", {}).get("latency_s", 0)
-                                   for r in rows) / max(len(rows), 1), 3),
+                                   for r in ran) / n_ran, 3),
+        # Over every question asked: a pipeline that errored did not answer.
         "answered_rate": round(sum(1 for r in rows
-                                   if r.get("answer") not in (None, "")) / max(len(rows), 1), 3),
+                                   if r.get("answer") not in (None, "")) / n_all, 3),
     }
     if has_gold:
         m = [bool(r.get("exact_match")) for r in rows]
-        entry["exact_match_accuracy"] = round(sum(m) / max(len(m), 1), 3)
+        entry["exact_match_accuracy"] = round(sum(m) / n_all, 3)
         # Cost per RESULT, not per question. Pipelines that answer different
         # numbers of questions correctly are not comparable on avg_tokens
         # alone: a pipeline that is cheap because it answers nothing is not

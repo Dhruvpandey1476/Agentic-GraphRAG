@@ -27,6 +27,11 @@ echo "=== sweep: chained 60 ==="
 python -u -m src.eval.run_benchmark --stress --suffix _v2_chained     > outputs/run_v2_chained.log 2>&1
 echo "=== sweep: production config ==="
 python -u -m src.eval.run_benchmark --fast-path --suffix _v2_fastpath > outputs/run_v2_fastpath.log 2>&1
+echo "=== sweep: hidden 50 ==="
+# export_submission only READS results<suffix>.json. Without this run it
+# silently re-exports whatever hidden results happen to be on disk -- which
+# once meant shipping a submission built by a much older build of the code.
+python -u -m src.eval.run_benchmark --hidden --suffix _hidden_final > outputs/run_hidden_final.log 2>&1
 python -m scripts.export_submission --suffix _hidden_final > outputs/export.log 2>&1
 python -m scripts.make_report
 echo SWEEP_COMPLETE

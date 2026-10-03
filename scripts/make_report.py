@@ -22,17 +22,26 @@ import config
 PIPES = [("rag", "RAG"), ("graphrag", "GraphRAG"), ("agentic_graphrag", "Agentic GraphRAG")]
 
 # (suffix, heading, what this run is for)
+#
+# These are the suffixes of the CURRENT sweep. They were once the suffixes of
+# an older one, and because a missing summary was silently skipped, the report
+# kept regenerating happily from whatever stale files still matched: a chained
+# section from a run three weeks old, a provided section measured with a TF-IDF
+# embedder, and a hidden section produced by a different model entirely, all
+# presented side by side as one result. Both guards below exist so that cannot
+# happen again -- a missing run is now an error, and sections that disagree
+# about the model, embedder or backend are an error.
 RUNS = [
-    ("_fair100v2", "Provided set (100) — controlled comparison",
+    ("_v2_provided", "Provided set (100) — controlled comparison",
      "Every pipeline compiles its query with the same LLM, so all three spend "
      "real tokens. This is the configuration that answers *does adaptivity help*."),
-    ("_fairstress", "Chained set (60) — controlled comparison",
+    ("_v2_chained", "Chained set (60) — controlled comparison",
      "Questions whose subject must be resolved before it can be queried. A fixed "
      "pipeline cannot express these at any model quality."),
-    ("_tg_public", "Provided set (100) — production configuration",
+    ("_v2_fastpath", "Provided set (100) — production configuration",
      "The regex fast path enabled, as you would deploy it. This is the "
      "configuration that answers *how well does the system work*."),
-    ("_tg_hidden", "Hidden set (50) — submission",
+    ("_hidden_final", "Hidden set (50) — submission",
      "No gold answers; raw outputs, token counts and full agentic traces."),
 ]
 
@@ -67,10 +76,26 @@ def main():
         "",
     ]
 
+    missing = [sfx for sfx, _, _ in RUNS if _load(sfx) is None]
+    if missing:
+        sys.exit("refusing to write a partial report — no summary for: "
+                 + ", ".join(missing)
+                 + ". Run the sweep for these before reporting.")
+
+    # Every section has to describe the SAME system, or the table compares runs
+    # rather than pipelines.
+    configs = {}
+    for sfx, _, _ in RUNS:
+        mm = _load(sfx).get("_meta", {})
+        configs[sfx] = (mm.get("graph_backend"), mm.get("llm_model"), mm.get("embedder"))
+    if len(set(configs.values())) > 1:
+        detail = [f"  summary{k}.json  backend={v[0]} model={v[1]} embedder={v[2]}"
+                  for k, v in configs.items()]
+        sys.exit("refusing to write a report mixing configurations:"
+                 + chr(10) + chr(10).join(detail))
+
     for suffix, heading, blurb in RUNS:
         s = _load(suffix)
-        if s is None:
-            continue
         m = s.get("_meta", {})
         out += [f"## {heading}", "", blurb, "",
                 f"`summary{suffix}.json` · backend **{m.get('graph_backend','?')}** · "
@@ -147,9 +172,18 @@ def main():
         "because it declines to answer is not efficient. On the chained set the agent "
         "is both the most accurate and the cheapest per correct answer.",
         "",
-        "**Negative results are included.** `chained_venue` is 0.00 for all three "
-        "pipelines. `chained_chronology` is the one family where RAG beats the agent. "
-        "Neither is omitted.",
+        "**Negative results are included.** Two chained families are not solved at "
+        "all. `chained_venue` asks for a superlative scoped by venue, which the "
+        "query schema cannot express — `superlative` takes a discipline and an "
+        "edition, not a venue — so the agent answers from the wrong scope. "
+        "`chained_chronology` identifies an edition by its host city, and nothing "
+        "resolves a city to a Games. Both are schema gaps rather than reasoning "
+        "failures, and neither is omitted here.",
+        "",
+        "**Errored questions count against the pipeline that errored.** A question "
+        "whose run raised is a question that pipeline did not answer, so it stays in "
+        "the denominator; `n_errors` in each summary records how many there were. "
+        "Dropping them is how the chained set once read 0.500 instead of 0.483.",
         "",
     ]
 
