@@ -21,3 +21,4 @@ outputs/server.log
 # Run logs are transient console output; results live in outputs/*.json
 outputs/*.log
 outputs/chunk_vectors_*.pkl
+outputs/ollama.log

@@ -203,6 +203,40 @@ GROUNDED_FILTER_KEYS = ("discipline", "event_name_substr", "venue", "venue_subst
 _YEAR_RE = re.compile(r"\b(1[89]\d{2}|20\d{2})\b")
 
 
+
+# What a compiled query RETURNS, used for answer-shape grounding below.
+_COUNT_SPECS = ("aggregation",)
+_NAME_SPECS = ("superlative", "medalist", "discipline_superlative", "venue_games")
+
+_COUNT_CUES = ("how many", "number of", "how much", "count of")
+_NAME_CUES = ("which", "what event", "what discipline", "who ", "whom", "name the")
+
+# "the highest NUMBER OF competitors" names the METRIC being ranked on; it
+# is not a request for a number. Left in, it makes every "which event had
+# the most ..." question look like a counting question and the shape rule
+# below never fires on the very case it exists for.
+_METRIC_PHRASE = re.compile(
+    r"\b(highest|greatest|largest|biggest|most|lowest|smallest|fewest|least)\s+"
+    r"(number|amount|count)\s+of\b")
+
+
+def _expected_answer_shape(question):
+    """'count' | 'name' | None — what KIND of thing the question asks for.
+
+    Counting cues outrank naming cues, because a chained question states
+    both: "in the discipline that held the most events at the 2004 Summer
+    Olympics, how many of its events had more than 41 competitors" names
+    its subject by description and then asks for a number. The outermost
+    ask is the count, and that is the shape the final answer must have.
+    """
+    q = _METRIC_PHRASE.sub(" ", " " + (question or "").lower().strip() + " ")
+    if any(c in q for c in _COUNT_CUES):
+        return "count"
+    if any(c in q for c in _NAME_CUES):
+        return "name"
+    return None
+
+
 def _check_query_grounding(spec, question):
     """Is the compiled query actually GROUNDED IN the question, or did the
     planner invent the values it filtered on?
@@ -260,6 +294,29 @@ def _check_query_grounding(spec, question):
             return False, (f"the query used {key}={val}, a number the question never mentions "
                            f"(it names {sorted(q_numbers)}) — the threshold was misread")
 
+    # 3. ANSWER-SHAPE GROUNDING. A query can filter on nothing but values
+    #    the question actually states and still answer a different
+    #    question, because it returns the wrong KIND of thing. "Which
+    #    athletics event at the 2008 Summer Olympics had the highest
+    #    number of competitors" compiled to aggregation(discipline=
+    #    "Athletics", games_id="2008-summer") — every literal grounded,
+    #    real rows, real citations, and it answered "43": the NUMBER of
+    #    athletics events, to a question asking for an event's NAME.
+    #    Rules 1 and 2 both pass it, and a reader shown only the answer
+    #    cannot tell. Comparing the question's interrogative form against
+    #    what the spec type returns catches it for zero tokens, and tests
+    #    the one thing structural validity never does — whether the query
+    #    answers the question that was asked.
+    want = _expected_answer_shape(question)
+    stype = spec.get("type")
+    if want == "name" and stype in _COUNT_SPECS:
+        return False, (f"the question asks which/who, so it wants a name, but a {stype!r} "
+                       f"query returns a count — the answer shape does not match the "
+                       f"question")
+    if want == "count" and stype in _NAME_SPECS:
+        return False, (f"the question asks how many, so it wants a count, but a {stype!r} "
+                       f"query returns a name — the answer shape does not match the "
+                       f"question")
     q_years = set(_YEAR_RE.findall(question))
     spec_years = set(_YEAR_RE.findall(json.dumps(spec)))
     if len(q_years) >= 2 and len(spec_years) < len(q_years):
@@ -375,6 +432,32 @@ def _repair_query(state, graph, spec, question, reason, _fixed=None):
                     "matched_doc_ids": [e["doc_id"] for e in evidence], "repaired": "coverage"}
         return None
 
+    # ---- wrong answer shape: a counting query for a "which ..." question ----
+    if "answer shape does not match" in reason and "shape" not in _fixed:
+        if _expected_answer_shape(question) != "name" or spec.get("type") != "aggregation":
+            return None
+        ql = question.lower()
+        direction = "min" if any(w in ql for w in _SUPERLATIVE_MIN) else "max"
+        metric = ("nations" if "nation" in ql else
+                  "teams" if "team" in ql else "competitors")
+        # Rule 1 ran first and passed, so discipline/games_id are already
+        # known to be grounded in the question; only the shape was wrong.
+        fixed = {k: v for k, v in spec.items() if k in ("discipline", "games_id")}
+        fixed.update({"type": "superlative", "metric": metric, "direction": direction})
+        out = sa.execute(fixed, graph)
+        state.log_step(
+            "repair_shape",
+            "the question asks WHICH event, but the compiled query counted events; "
+            "re-issuing it as an argmax over the same scope so the answer is the event "
+            "the question asked for rather than how many there were",
+            {"was": spec.get("type"), "now": "superlative",
+             "metric": metric, "direction": direction},
+            f"{out.get('answer')!r} from {len(out.get('evidence', []))} record(s)"
+            + (" (tied — not usable)" if out.get("ambiguous") else ""),
+            len(out.get("evidence", [])))
+        if out.get("answer") is None or out.get("ambiguous"):
+            return None
+        return {**out, "repaired": "answer_shape"}
     # ---- misread numeric threshold, recoverable from the question ----
     if "a number the question never mentions" in reason:
         q_numbers = [int(n) for n in re.findall(r"\d+", question)]

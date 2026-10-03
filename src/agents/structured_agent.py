@@ -17,7 +17,8 @@ import sys
 import os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from src.ingestion.infobox import normalize, contains_phrase, games_id as make_games_id
+from src.ingestion.infobox import (normalize, contains_phrase, search_key,
+                                   games_id as make_games_id)
 from src.agents.query_planner import plan  # re-exported for callers
 
 DEPRIORITIZE_ROUND = ("heat", "semi", "qualif", "quarter", "prelim", "round 1")
@@ -90,14 +91,73 @@ def _discipline_venue_affinity(discipline: str, venue: str) -> int:
     return 1 if contains_phrase(venue, discipline) else 0
 
 
+_YEAR_RE = re.compile(r"\b(18[5-9]\d|19\d\d|20\d\d)\b")
+
+# Event page titles join discipline and event with an en dash, not a hyphen.
+TITLE_SEP = " – "
+
+
+def _edition_hint(title: str):
+    """The (year, season) an event page title names, when it names one.
+
+    Event titles are uniformly "<Discipline> at the <year> <Summer|Winter>
+    Olympics – <Event name>", so both are recoverable by pattern and the
+    compiler does not have to have supplied them as separate fields.
+    """
+    m = _YEAR_RE.search(title or "")
+    low = (title or "").lower()
+    return (int(m.group(1)) if m else None,
+            "summer" if "summer" in low else "winter" if "winter" in low else None)
+
+
+def _edition_compatible(event, year, season) -> bool:
+    """False only when the event CONTRADICTS a hint the title actually gave.
+    A title naming no year constrains nothing, so absent hints never filter."""
+    if year is None and season is None:
+        return True
+    e_year, _, e_season = (event.get("games_id") or "").lower().partition("-")
+    if year is not None and e_year != str(year):
+        return False
+    if season is not None and e_season and e_season != season:
+        return False
+    return True
+
+
+def _title_overlap(requested: str, actual: str) -> int:
+    """How many words of the actual event title the request also mentions.
+
+    Only used to break a tie between events sharing an event_name. Extra
+    prose the compiler wrapped around the real title can add unmatched
+    words but can never steal the comparison, because this counts words of
+    `actual` that `requested` covers, not the reverse.
+    """
+    want = set(search_key(requested).split())
+    return sum(1 for w in set(search_key(actual).split()) if w in want)
+
+
 def _find_by_title(graph, title: str):
     """Resolve an event page title to one event record. Filters broadly by
-    the tail-end event-name phrase first so we don't scan the whole store."""
+    the tail-end event-name phrase first so we don't scan the whole store.
+
+    Every match tier is constrained to the Games edition the title names.
+    The loose tier used to match the event-name tail ALONE, which silently
+    discards the year: an LLM-compiled title carrying any extra prose
+    ("Nations that competed in Sailing at the 2016 Summer Olympics –
+    Women's RS:X") fails the exact and partial tiers, and the loose tier
+    then returned whichever same-named event the backend happened to list
+    first — the 2012 RS:X — reported upstream as "resolved exactly from 1
+    graph record". A confidently wrong answer is worse than none, so when
+    the loose tier cannot single an event out we return None and let the
+    caller escalate rather than guess an edition.
+    """
     if not title:
         return None
-    tail = title.split(" – ")[-1] if " – " in title else None
+    year, season = _edition_hint(title)
+    tail = title.split(TITLE_SEP)[-1] if TITLE_SEP in title else None
     candidates = graph.filter_olympic_events(event_name_substr=tail) if tail \
         else graph.filter_olympic_events()
+    candidates = [e for e in candidates if _edition_compatible(e, year, season)]
+
     exact = [e for e in candidates if normalize(title) == normalize(e["title"])]
     if exact:
         return exact[0]
@@ -107,8 +167,14 @@ def _find_by_title(graph, title: str):
     # Last resort: the title may be phrased loosely; match on event_name only.
     if tail:
         loose = [e for e in candidates if normalize(tail) in normalize(e["event_name"])]
-        if loose:
+        if len(loose) == 1:
             return loose[0]
+        if len(loose) > 1:
+            ranked = sorted(loose, key=lambda e: -_title_overlap(title, e["title"]))
+            top = _title_overlap(title, ranked[0]["title"])
+            runner_up = _title_overlap(title, ranked[1]["title"])
+            if top > runner_up:
+                return ranked[0]
     return None
 
 

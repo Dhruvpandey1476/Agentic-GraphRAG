@@ -165,6 +165,10 @@ first, then issue a second query using it.
 Rules:
 - `discipline` MUST be copied verbatim from the KNOWN DISCIPLINES list below
   when one applies; do not invent or re-case names.
+- "How many X ..." asks for a COUNT, so it compiles to "aggregation".
+  "WHICH X had the most/highest/fewest/lowest ..." asks for a NAME, so it
+  compiles to "superlative". They are not interchangeable: an aggregation
+  answers a "which" question with a number, which answers nobody's question.
 - Use "unstructured" when the question is not answerable from these fields
   (e.g. it asks why something happened, or about facts not in the schema).
 - Omit keys you don't need rather than setting them to made-up values."""
