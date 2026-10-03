@@ -165,10 +165,18 @@ first, then issue a second query using it.
 Rules:
 - `discipline` MUST be copied verbatim from the KNOWN DISCIPLINES list below
   when one applies; do not invent or re-case names.
-- "How many X ..." asks for a COUNT, so it compiles to "aggregation".
-  "WHICH X had the most/highest/fewest/lowest ..." asks for a NAME, so it
-  compiles to "superlative". They are not interchangeable: an aggregation
-  answers a "which" question with a number, which answers nobody's question.
+- Counting events, reading one event's attribute, and ranking events are
+  three different queries. Read the noun after "how many":
+  * "How many EVENTS ..." counts events matching a filter -> "aggregation".
+  * "How many nations/competitors/teams competed in <one event title>"
+    reads an attribute off that single event -> "lookup_field", with
+    field=nations|competitors|teams and title set to the event page title
+    named in the question. This is NOT an aggregation: an aggregation
+    would count the events in the discipline and answer with that instead.
+  * "WHICH <X> had the most/highest/fewest/lowest ..." names one event
+    -> "superlative".
+  An "aggregation" has no "field" and no "title"; if you are about to put
+  either on one, the query you want is a "lookup_field".
 - Use "unstructured" when the question is not answerable from these fields
   (e.g. it asks why something happened, or about facts not in the schema).
 - Omit keys you don't need rather than setting them to made-up values."""

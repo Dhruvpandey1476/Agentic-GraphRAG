@@ -231,6 +231,40 @@ _SPEC_KEYS = {
     "venue_games": {"venue", "discipline"},
     "unstructured": set(),
 }
+# Attributes an OlympicEvent stores per event. "How many nations competed
+# in <event>" reads one of these off a single event; it does not count
+# events, even though it opens with the same two words as a counting
+# question.
+_EVENT_ATTR_NOUNS = {"nations": "nations", "nation": "nations",
+                     "competitors": "competitors", "competitor": "competitors",
+                     "athletes": "competitors", "teams": "teams", "team": "teams"}
+_ATTR_ASK_RE = re.compile(
+    r"\bhow many\s+(nations?|competitors?|athletes|teams?)\b")
+
+# The corpus names every event page the same way, so the title a question
+# refers to can be lifted from the question itself rather than guessed.
+_GAMES_PHRASE_RE = re.compile(
+    r"\s+at\s+the\s+(?:1[89]\d{2}|20\d{2})\s+(?:Summer|Winter)\s+Olympics")
+_DISCIPLINE_TAIL_RE = re.compile(r"([A-Z][A-Za-z'’\-]*(?:\s+[a-z][A-Za-z'’\-]*)*)\s*$")
+
+
+def _event_title_in(question):
+    """The event page title a question names, or None.
+
+    Titles are "<Discipline> at the <year> <Season> Olympics - <Event>", so
+    the Games phrase locates the title and the capitalised run immediately
+    before it is the discipline. Lifting the title from the question is
+    what makes the repair below deterministic: nothing is invented, the
+    string is already there.
+    """
+    m = _GAMES_PHRASE_RE.search(question or "")
+    if not m:
+        return None
+    dm = _DISCIPLINE_TAIL_RE.search(question[:m.start()])
+    if not dm:
+        return None
+    tail = question[m.start():].rstrip().rstrip("?").rstrip()
+    return dm.group(1) + tail
 # The key that carries each query's SUBJECT. A spec that has shed all of
 # these has nothing left to constrain it but the Games edition.
 _TYPE_SUBJECT_KEYS = {
@@ -320,6 +354,21 @@ def _check_query_grounding(spec, question):
         return True, ""
     q_norm = normalize(question)
 
+    # 3b. A counting question is not always a count. "How many nations
+    #     competed in Sailing at the 2016 Summer Olympics - Women's RS:X"
+    #     reads the `nations` attribute off one event; compiled as an
+    #     aggregation over the discipline it answers 10 -- the number of
+    #     sailing events at that edition -- and rule 3 waves it through,
+    #     because a count really is what the question wanted. The noun
+    #     after "how many" is what separates the two, and the question
+    #     names the event page outright, so this is checkable.
+    if spec.get("type") == "aggregation":
+        attr = _ATTR_ASK_RE.search(question.lower())
+        if attr and _event_title_in(question):
+            return False, (f"the question asks how many {attr.group(1)} competed in one named "
+                           f"event, which reads that event's attribute, but an 'aggregation' "
+                           f"counts events — it would answer with the number of events in the "
+                           f"discipline instead")
     # 0. SHAPE VALIDITY. The executor reads only the keys its branch knows
     #    and ignores the rest without complaint, so a spec that is the
     #    wrong shape for the type it declares still runs and still returns
@@ -524,6 +573,26 @@ def _repair_query(state, graph, spec, question, reason, _fixed=None):
                     "matched_doc_ids": [e["doc_id"] for e in evidence], "repaired": "coverage"}
         return None
 
+    # ---- a per-event attribute read miscompiled as a count ----
+    if "reads that event's attribute" in reason and "attr" not in _fixed:
+        attr = _ATTR_ASK_RE.search(question.lower())
+        title = _event_title_in(question)
+        if not attr or not title:
+            return None
+        field = _EVENT_ATTR_NOUNS[attr.group(1)]
+        fixed = {"type": "lookup_field", "title": title, "field": field}
+        out = sa.execute(fixed, graph)
+        state.log_step(
+            "repair_shape",
+            "the question names one event and asks for its " + field + "; re-issuing it as a "
+            "single-event attribute read instead of a count over the discipline",
+            {"was": spec.get("type"), "now": "lookup_field",
+             "title": title, "field": field},
+            f"{out.get('answer')!r} from {len(out.get('evidence', []))} record(s)",
+            len(out.get("evidence", [])))
+        if out.get("answer") is None:
+            return None
+        return {**out, "repaired": "attribute_read"}
     # ---- wrong answer shape: a counting query for a "which ..." question ----
     if "answer shape does not match" in reason and "shape" not in _fixed:
         if _expected_answer_shape(question) != "name" or spec.get("type") != "aggregation":
@@ -809,6 +878,7 @@ def _adaptive_loop(state, graph, llm, embedder, usage, escalation_reason=""):
     # not to repeat them and the model does anyway, so this is enforced here
     # rather than requested there.
     barren = set()
+    issued_specs = set()
     tools = _available_tools(graph)
 
     while True:
@@ -874,7 +944,23 @@ def _adaptive_loop(state, graph, llm, embedder, usage, escalation_reason=""):
 
         if action == "graph_query":
             sub_q = args.get("question") or args.get("sub_question") or state.question
-            last_graph_result, _ = _run_graph_query(state, graph, llm, sub_q, usage=usage)
+            last_graph_result, last_spec = _run_graph_query(state, graph, llm, sub_q, usage=usage)
+            # Re-issuing a query that was already tried changes nothing but
+            # the step count. When the compiler cannot move off a spec the
+            # verifier rejected, it emitted the same one three more times
+            # and the run ended at max_steps still holding the rejected
+            # answer -- which is then what got reported.
+            sig = json.dumps({k: v for k, v in sorted((last_spec or {}).items())
+                              if not k.startswith("_")}, sort_keys=True, default=str)
+            if sig in issued_specs:
+                barren.add("graph_query")
+                state.log_step("graph_query",
+                               "the compiler returned a query that has already been run",
+                               {"spec": sig[:200]},
+                               "identical to an earlier query — not running it again, and "
+                               "not offering this tool for the rest of the run", 0)
+            else:
+                issued_specs.add(sig)
             loop_actions += 1
             state.total_tokens += r.total_tokens
             continue
