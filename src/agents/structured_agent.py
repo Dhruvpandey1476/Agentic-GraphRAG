@@ -161,20 +161,29 @@ def _find_by_title(graph, title: str):
     exact = [e for e in candidates if normalize(title) == normalize(e["title"])]
     if exact:
         return exact[0]
-    partial = [e for e in candidates if normalize(title) in normalize(e["title"])]
-    if partial:
-        return partial[0]
-    # Last resort: the title may be phrased loosely; match on event_name only.
+
+    # Word-boundary matching, not a raw normalize() substring test: once
+    # punctuation is stripped "womens20kilometreswalk" literally contains
+    # "mens20kilometreswalk", so a query for the men's 20 km walk matched
+    # the women's event and returned its medallist as an exact answer.
+    # contains_phrase pads both sides and is the same comparison the loader
+    # and GSQL use, so the backends cannot disagree about what matched.
+    tiers = [[e for e in candidates if contains_phrase(e["title"], title)]]
     if tail:
-        loose = [e for e in candidates if normalize(tail) in normalize(e["event_name"])]
-        if len(loose) == 1:
-            return loose[0]
-        if len(loose) > 1:
-            ranked = sorted(loose, key=lambda e: -_title_overlap(title, e["title"]))
-            top = _title_overlap(title, ranked[0]["title"])
-            runner_up = _title_overlap(title, ranked[1]["title"])
-            if top > runner_up:
-                return ranked[0]
+        tiers.append([e for e in candidates if contains_phrase(e["event_name"], tail)])
+    for pool in tiers:
+        if not pool:
+            continue
+        if len(pool) == 1:
+            return pool[0]
+        # Several editions run the same event. Accept one only if the rest
+        # of the requested title singles it out; otherwise the edition was
+        # never specified and guessing it is how the wrong Games' medallist
+        # gets reported as an exact answer.
+        ranked = sorted(pool, key=lambda e: -_title_overlap(title, e["title"]))
+        if _title_overlap(title, ranked[0]["title"]) > _title_overlap(title, ranked[1]["title"]):
+            return ranked[0]
+        return None
     return None
 
 

@@ -204,6 +204,55 @@ _YEAR_RE = re.compile(r"\b(1[89]\d{2}|20\d{2})\b")
 
 
 
+# The keys each spec type's executor branch actually reads. A key outside
+# its type's set is not a harmless extra: the branch ignores it silently,
+# so a spec that is the wrong SHAPE for the type it declares still runs and
+# still returns rows. llama3 emitted aggregation(title="How many shooting
+# events at the 2004 Summer Olympics had more than 37 competitors?",
+# field="competitors", games_id="2004-summer") with no discipline at all --
+# `title` and `field` were dropped on the floor, the discipline constraint
+# was never applied, and the query counted all 79 events at that edition
+# instead of the 8 shooting ones. Checking the spec against its own type
+# turns that into a rejection the planner can be told about.
+_SPEC_KEYS = {
+    "lookup_field": {"title", "field"},
+    "lookup_nations": {"title", "field"},
+    "medalist": {"title", "medal"},
+    "aggregation": {"discipline", "games_id", "min_competitors",
+                    "max_competitors", "venue_substr"},
+    "superlative": {"discipline", "games_id", "metric", "direction"},
+    "temporal": {"discipline", "event_name_substr", "season", "target_year",
+                 "direction", "field"},
+    "venue_date": {"venue", "date", "games_id", "field"},
+    "nation_medals": {"noc", "games_id", "discipline", "medal"},
+    "comparison": {"sub", "games_id_a", "games_id_b", "want"},
+    "discipline_superlative": {"games_id", "direction", "min_competitors"},
+    "chronology_lookup": {"season", "target_year", "direction"},
+    "venue_games": {"venue", "discipline"},
+    "unstructured": set(),
+}
+# The key that carries each query's SUBJECT. A spec that has shed all of
+# these has nothing left to constrain it but the Games edition.
+_TYPE_SUBJECT_KEYS = {
+    "aggregation": ("discipline", "venue_substr"),
+    "superlative": ("discipline",),
+    "lookup_field": ("title",),
+    "lookup_nations": ("title",),
+    "medalist": ("title",),
+    "temporal": ("event_name_substr", "discipline"),
+    "venue_date": ("venue",),
+    "nation_medals": ("noc",),
+    "venue_games": ("venue",),
+}
+
+# Bookkeeping the compiler adds; never part of the query itself.
+_META_SPEC_KEYS = {"type", "_planner"}
+
+# A question that says "men's" is not answered by the women's event. The
+# qualifier is a constraint like any other, and dropping it from the
+# event-name filter silently returns the wrong medallist -- which is a
+# failure that looks like a perfectly good answer.
+_QUALIFIER_RE = re.compile(r"\b(women's|men's|mixed)\b")
 # What a compiled query RETURNS, used for answer-shape grounding below.
 _COUNT_SPECS = ("aggregation",)
 _NAME_SPECS = ("superlative", "medalist", "discipline_superlative", "venue_games")
@@ -271,6 +320,30 @@ def _check_query_grounding(spec, question):
         return True, ""
     q_norm = normalize(question)
 
+    # 0. SHAPE VALIDITY. The executor reads only the keys its branch knows
+    #    and ignores the rest without complaint, so a spec that is the
+    #    wrong shape for the type it declares still runs and still returns
+    #    rows. That is harmless while the query keeps its subject: an
+    #    aggregation carrying a stray field="competitors" alongside a real
+    #    discipline is simply noisy. It is fatal when the stray keys are
+    #    where the subject WENT -- llama3 emitted aggregation(title="How
+    #    many shooting events at the 2004 Summer Olympics had more than 37
+    #    competitors?", field="competitors", games_id="2004-summer") with
+    #    no discipline at all, so the discipline constraint was never
+    #    applied and the query counted all 79 events at that edition rather
+    #    than the 8 shooting ones. Rejecting only the subject-losing case
+    #    keeps the rule from firing on specs that are merely untidy.
+    stype_declared = spec.get("type")
+    allowed = _SPEC_KEYS.get(stype_declared)
+    if allowed is not None:
+        stray = sorted(set(spec) - allowed - _META_SPEC_KEYS)
+        subject = _TYPE_SUBJECT_KEYS.get(stype_declared, ())
+        if stray and subject and not any(spec.get(k) for k in subject):
+            return False, (f"the query declares type={stype_declared!r} but carries {stray}, "
+                           f"which that type does not read, and it names none of "
+                           f"{list(subject)} — the subject of the question ended up in a key "
+                           f"the query ignores, so it would run unconstrained")
+
     for key in GROUNDED_FILTER_KEYS:
         val = spec.get(key)
         if not val or not isinstance(val, str):
@@ -288,7 +361,7 @@ def _check_query_grounding(spec, question):
     #     output, so the number has to be checked against the question
     #     rather than trusted.
     q_numbers = set(re.findall(r"\d+", question))
-    for key in ("min_competitors", "max_competitors"):
+    for key in ("min_competitors", "max_competitors", "target_year"):
         val = spec.get(key)
         if isinstance(val, int) and str(val) not in q_numbers:
             return False, (f"the query used {key}={val}, a number the question never mentions "
@@ -307,6 +380,25 @@ def _check_query_grounding(spec, question):
     #    what the spec type returns catches it for zero tokens, and tests
     #    the one thing structural validity never does — whether the query
     #    answers the question that was asked.
+    # 2b. QUALIFIER COVERAGE. Same principle as the year check, applied to
+    #     the one constraint that is invisible in a result: a question
+    #     asking about the men's event is not answered by the women's.
+    #     llama3 compiled "the men's 20 kilometres walk" to
+    #     event_name_substr="20 kilometres walk" -- grounded (every word of
+    #     it appears in the question) but missing the qualifier, matching
+    #     the women's event, and returning that medallist as a confident
+    #     exact answer.
+    q_quals = set(_QUALIFIER_RE.findall(question.lower()))
+    if q_quals:
+        for key in ("event_name_substr", "title"):
+            val = spec.get(key)
+            if not isinstance(val, str) or not val:
+                continue
+            dropped = q_quals - set(_QUALIFIER_RE.findall(val.lower()))
+            if dropped:
+                return False, (f"the question asks about the {sorted(dropped)[0]} event but "
+                               f"{key}={val!r} does not carry that qualifier — the query "
+                               f"would match the other event and return the wrong record")
     want = _expected_answer_shape(question)
     stype = spec.get("type")
     if want == "name" and stype in _COUNT_SPECS:
@@ -458,8 +550,60 @@ def _repair_query(state, graph, spec, question, reason, _fixed=None):
         if out.get("answer") is None or out.get("ambiguous"):
             return None
         return {**out, "repaired": "answer_shape"}
+    # ---- mis-stated target_year, recoverable from the question ----
+    if "target_year=" in reason and "the question never mentions" in reason \
+            and "year" not in _fixed:
+        years = sorted({int(y) for y in _YEAR_RE.findall(question)})
+        if len(years) != 1:
+            return None
+        fixed = {**spec, "target_year": years[0]}
+        fixed.pop("_planner", None)
+        out = sa.execute(fixed, graph)
+        state.log_step(
+            "repair_literal",
+            "the compiled query's target_year is not a year the question names; "
+            "substituting the only year it does name",
+            {"was": spec.get("target_year"), "now": years[0]},
+            f"re-ran with target_year={years[0]}: {out.get('answer')!r} from "
+            f"{len(out.get('evidence', []))} record(s)",
+            len(out.get("evidence", [])))
+        if out.get("answer") is None:
+            return None
+        ok, why = _check_query_grounding(fixed, question)
+        if not ok:
+            nested = _repair_query(state, graph, fixed, question, why, _fixed | {"year"})
+            return nested if nested else None
+        return {**out, "repaired": "literal_year"}
+
+    # ---- dropped men's/women's qualifier, recoverable from the question ----
+    if "does not carry that qualifier" in reason and "qualifier" not in _fixed:
+        quals = set(_QUALIFIER_RE.findall(question.lower()))
+        key = "event_name_substr" if spec.get("event_name_substr") else "title"
+        val = spec.get(key)
+        if len(quals) != 1 or not isinstance(val, str) or not val:
+            return None
+        qual = quals.pop()
+        fixed = {**spec, key: f"{qual} {val}"}
+        fixed.pop("_planner", None)
+        out = sa.execute(fixed, graph)
+        state.log_step(
+            "repair_literal",
+            "the question names the " + qual + " event but the compiled filter dropped "
+            "that qualifier, so it would match the other event; restoring it",
+            {"was": val, "now": fixed[key]},
+            f"re-ran with {key}={fixed[key]!r}: {out.get('answer')!r} from "
+            f"{len(out.get('evidence', []))} record(s)",
+            len(out.get("evidence", [])))
+        if out.get("answer") is None:
+            return None
+        ok, why = _check_query_grounding(fixed, question)
+        if not ok:
+            nested = _repair_query(state, graph, fixed, question, why,
+                                   _fixed | {"qualifier"})
+            return nested if nested else None
+        return {**out, "repaired": "literal_qualifier"}
     # ---- misread numeric threshold, recoverable from the question ----
-    if "a number the question never mentions" in reason:
+    if "a number the question never mentions" in reason and "competitors=" in reason:
         q_numbers = [int(n) for n in re.findall(r"\d+", question)]
         # Years are not thresholds; a threshold is whichever number is left
         # once the edition years are accounted for.
