@@ -280,6 +280,32 @@ _EVENT_PHRASE_RE = re.compile(r"\bin the\s+(.+?)\s+event\s+at the\b", re.I)
 _MEDAL_RE = re.compile(r"\b(gold|silver|bronze)\b")
 
 
+# "the event held at Richmond Olympic Oval on 14 February 2010" identifies
+# an event by where and when it happened rather than by name. No event page
+# is titled that, so a medalist query built around the phrase matches
+# nothing -- but venue and date are exactly what a venue_date query takes.
+_VENUE_DATE_RE = re.compile(
+    r"held at\s+(?P<venue>.+?)\s+on\s+(?P<date>.+?)"
+    r"(?:\s+at the\s+(?P<year>1[89]\d{2}|20\d{2})\s+(?P<season>Summer|Winter)\s+Olympics)?"
+    r"\s*\?*\s*$", re.I)
+
+
+def _venue_date_from_question(question):
+    """Rebuild a 'who won X at <venue> on <date>' question as a venue_date
+    spec. Both filters are copied out of the question verbatim, so there is
+    nothing here for the compiler to have guessed wrong."""
+    ql = (question or "").lower()
+    medal = _MEDAL_RE.search(ql)
+    if not medal or "who" not in ql:
+        return None
+    m = _VENUE_DATE_RE.search(question)
+    if not m:
+        return None
+    spec = {"type": "venue_date", "venue": m.group("venue").strip(),
+            "date": m.group("date").strip(), "field": medal.group(1)}
+    if m.group("year"):
+        spec["games_id"] = m.group("year") + "-" + m.group("season").lower()
+    return spec
 def _temporal_from_question(question, graph):
     """Rebuild a question that refers to an edition by description as a
     temporal spec. Every field is read out of the question or the graph's
@@ -745,6 +771,23 @@ def _repair_query(state, graph, spec, question, reason, _fixed=None):
             return nested if nested else None
         return {**out, "repaired": "literal_threshold"}
 
+    # ---- an event identified by venue and date rather than by name ----
+    if spec.get("type") != "venue_date" and "venue_date" not in _fixed:
+        rebuilt = _venue_date_from_question(question)
+        if rebuilt is not None:
+            out = sa.execute(rebuilt, graph)
+            state.log_step(
+                "replan_structural",
+                "the question identifies its event by where and when it was held, not by "
+                "name, so no title can match it; re-issuing as a venue+date lookup over "
+                "the events themselves",
+                {"was": spec.get("type"), "now": rebuilt},
+                f"{out.get('answer')!r} from {len(out.get('evidence', []))} record(s)"
+                + (" (tied — not usable)" if out.get("ambiguous") else ""),
+                len(out.get("evidence", [])))
+            if out.get("answer") is not None and not out.get("ambiguous"):
+                return {**out, "repaired": "venue_date"}
+            return None
     # ---- an edition named by description rather than by year ----
     if "title=" in reason and "edition" not in _fixed:
         rebuilt = _temporal_from_question(question, graph)
@@ -1051,7 +1094,12 @@ def _adaptive_loop(state, graph, llm, embedder, usage, escalation_reason=""):
         try:
             items = fn(state, graph, llm, embedder, **args)
         except TypeError as e:
-            state.log_step(action, reason, args, f"bad arguments for this tool ({e}) — skipped",
+            # The planner will produce the same malformed call again, and did:
+            # entity_linking was invoked without its `name` three times in one
+            # run, burning half the step budget on identical TypeErrors.
+            barren.add(action)
+            state.log_step(action, reason, args,
+                           f"bad arguments for this tool ({e}) — not offering it again",
                            0, tokens=r.total_tokens, latency_s=r.latency_s)
             continue
         n = state.add_evidence(items)
