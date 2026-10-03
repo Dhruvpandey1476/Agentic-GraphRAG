@@ -46,7 +46,7 @@ from src.agents import query_planner as qp
 from src.llm_client import UsageTracker, parse_json_safely
 from src.embeddings import Embedder
 from src.tigergraph_client import get_graph
-from src.ingestion.infobox import normalize
+from src.ingestion.infobox import normalize, contains_phrase
 
 
 PLANNER_SYSTEM = """You are the orchestrator of an investigative agent
@@ -265,6 +265,49 @@ def _event_title_in(question):
         return None
     tail = question[m.start():].rstrip().rstrip("?").rstrip()
     return dm.group(1) + tail
+# "the Summer Olympics held immediately before 2016" names an edition by
+# description, not by year. A title built around that phrase matches no
+# event page, because no page is titled that -- the edition has to be
+# resolved from the chronology first, which is exactly what a `temporal`
+# query does.
+_RELATIVE_EDITION_RE = re.compile(
+    r"\b(?:immediately\s+)?(before|after|preceding|following)\s+(?:the\s+)?"
+    r"(1[89]\d{2}|20\d{2})\b")
+# "...in the men's sprint biathlon event at the Winter Olympics..." -- the
+# phrase between "in the" and "event" is the event name with its discipline
+# appended, so removing the discipline leaves the event_name to filter on.
+_EVENT_PHRASE_RE = re.compile(r"\bin the\s+(.+?)\s+event\s+at the\b", re.I)
+_MEDAL_RE = re.compile(r"\b(gold|silver|bronze)\b")
+
+
+def _temporal_from_question(question, graph):
+    """Rebuild a question that refers to an edition by description as a
+    temporal spec. Every field is read out of the question or the graph's
+    own discipline list; nothing is guessed."""
+    m = _RELATIVE_EDITION_RE.search(question.lower())
+    if not m:
+        return None
+    ql = question.lower()
+    disc = next((d for d in graph.known_disciplines()
+                 if d and contains_phrase(question, d)), None)
+    if not disc:
+        return None
+    phrase = _EVENT_PHRASE_RE.search(question)
+    event_name = None
+    if phrase:
+        event_name = re.sub(re.escape(disc), "", phrase.group(1), flags=re.I).strip()
+    if not event_name:
+        return None
+    medal = _MEDAL_RE.search(ql)
+    return {
+        "type": "temporal",
+        "discipline": disc,
+        "event_name_substr": event_name,
+        "season": "Winter" if "winter" in ql else "Summer",
+        "target_year": int(m.group(2)),
+        "direction": "before" if m.group(1) in ("before", "preceding") else "after",
+        "field": medal.group(1) if medal else "gold",
+    }
 # The key that carries each query's SUBJECT. A spec that has shed all of
 # these has nothing left to constrain it but the Games edition.
 _TYPE_SUBJECT_KEYS = {
@@ -702,6 +745,24 @@ def _repair_query(state, graph, spec, question, reason, _fixed=None):
             return nested if nested else None
         return {**out, "repaired": "literal_threshold"}
 
+    # ---- an edition named by description rather than by year ----
+    if "title=" in reason and "edition" not in _fixed:
+        rebuilt = _temporal_from_question(question, graph)
+        if rebuilt is None:
+            return None
+        out = sa.execute(rebuilt, graph)
+        state.log_step(
+            "replan_structural",
+            "the query was built around a title containing \"held immediately "
+            + rebuilt["direction"] + " " + str(rebuilt["target_year"]) + "\", which no event "
+            "page is called; re-issuing it as a chronology walk that resolves the edition "
+            "first and then queries it",
+            {"was": spec.get("title"), "now": rebuilt},
+            f"{out.get('answer')!r} from {len(out.get('evidence', []))} record(s)",
+            len(out.get("evidence", [])))
+        if out.get("answer") is None or out.get("ambiguous"):
+            return None
+        return {**out, "repaired": "relative_edition"}
     # ---- guessed discipline, recoverable from the graph ----
     if "discipline=" in reason and spec.get("games_id") and "discipline" not in _fixed:
         direction = "min" if any(w in question.lower() for w in _SUPERLATIVE_MIN) else "max"
