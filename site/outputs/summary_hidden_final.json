@@ -1,0 +1,90 @@
+{
+  "rag": {
+    "n_questions": 50,
+    "n_errors": 0,
+    "avg_tokens": 2744.5,
+    "total_tokens": 137227,
+    "avg_input_tokens": 2700.0,
+    "avg_output_tokens": 44.5,
+    "avg_context_tokens": 2550.3,
+    "avg_llm_calls": 1.0,
+    "avg_steps": 1.0,
+    "avg_latency_s": 6.193,
+    "answered_rate": 0.54
+  },
+  "graphrag": {
+    "n_questions": 50,
+    "n_errors": 0,
+    "avg_tokens": 1147.3,
+    "total_tokens": 57364,
+    "avg_input_tokens": 1093.6,
+    "avg_output_tokens": 53.7,
+    "avg_context_tokens": 3.4,
+    "avg_llm_calls": 1.76,
+    "avg_steps": 2.76,
+    "avg_latency_s": 3.592,
+    "answered_rate": 1.0
+  },
+  "agentic_graphrag": {
+    "n_questions": 50,
+    "n_errors": 0,
+    "avg_tokens": 1689.7,
+    "total_tokens": 84483,
+    "avg_input_tokens": 1628.1,
+    "avg_output_tokens": 61.6,
+    "avg_context_tokens": 130.8,
+    "avg_llm_calls": 1.72,
+    "avg_steps": 3.62,
+    "avg_latency_s": 6.809,
+    "answered_rate": 1.0
+  },
+  "agentic_behavior": {
+    "escalation_rate": 0.7,
+    "n_escalated": 35,
+    "n_resolved_free": 15,
+    "avg_tokens_when_escalated": 1956.1,
+    "avg_tokens_when_not_escalated": 1067.9,
+    "avg_strategy_changes": 2.44,
+    "avg_citations": 4.52,
+    "avg_evidence_items": 4.72,
+    "retrieval_methods_used": {
+      "graph_query": 50,
+      "verify": 50,
+      "replan_structural": 16,
+      "repair_literal": 12,
+      "replan": 5,
+      "repair_shape": 3,
+      "entity_linking": 1
+    },
+    "specialized_agents_invoked": {
+      "graph_query": 50,
+      "replan_structural": 16,
+      "repair_literal": 12,
+      "replan": 5,
+      "repair_shape": 3,
+      "entity_linking": 1
+    },
+    "stopping_reasons": {
+      "escalated": 30,
+      "deterministic graph query resolved and passed verification — no agentic reasoning needed": 15,
+      "reached max_steps": 4,
+      "agent judged evidence sufficient after 5 steps": 1
+    }
+  },
+  "planner_provenance": {
+    "llm": 50
+  },
+  "_meta": {
+    "questions_file": "eval_hidden.jsonl",
+    "n_questions": 50,
+    "graph_backend": "tigergraph",
+    "embedder": "ollama:nomic-embed-text",
+    "llm_provider": "ollama",
+    "llm_model": "llama3",
+    "ablation_skip_triage": false,
+    "regex_fast_path": false,
+    "temperature": 0.0,
+    "started": "2026-10-03 23:10:57",
+    "elapsed_s": 1126.8
+  }
+}

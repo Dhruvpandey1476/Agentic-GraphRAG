@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic GraphRAG — Live Query</title>
+<link rel="stylesheet" href="shared.css">
+<script src="config.js"></script>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);line-height:1.5;padding:26px 16px;
+       font-family:-apple-system,Segoe UI,Roboto,Helvetica,sans-serif}
+  .wrap{max-width:1240px;margin:0 auto}
+  h1{font-size:21px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+  .meta{font-size:12px;color:var(--muted);background:var(--card2);border:1px solid var(--line);
+        border-radius:8px;padding:9px 13px;margin-bottom:18px}
+  .meta code{color:var(--fg)}
+  .askrow{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  textarea{flex:1;min-width:280px;min-height:62px;resize:vertical;background:var(--card2);
+           color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:11px 13px;
+           font-size:14px;font-family:inherit}
+  textarea:focus{outline:none;border-color:#3c4a80}
+  button{background:var(--agentic);color:#06281c;border:0;border-radius:10px;padding:0 22px;
+         font-weight:700;font-size:14px;cursor:pointer;min-height:62px}
+  button:disabled{opacity:.45;cursor:default}
+  .samples{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px}
+  .chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;
+        padding:5px 11px;font-size:11.5px;color:var(--muted);cursor:pointer;white-space:nowrap}
+  .chip:hover{color:var(--fg);border-color:#3c4a80}
+  .chip b{color:var(--fg);font-weight:600}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;
+        display:flex;flex-direction:column}
+  .card h3{margin:0 0 11px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;
+           display:flex;align-items:center;gap:9px}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .answer{font-size:17px;font-weight:650;margin:3px 0 10px;word-break:break-word;min-height:26px}
+  .verdict{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:auto}
+  .ok{background:rgba(56,199,147,.17);color:var(--good)}
+  .no{background:rgba(242,100,122,.17);color:var(--bad)}
+  .row{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:4px 0;
+       border-bottom:1px solid var(--line)}
+  .row:last-of-type{border-bottom:none}
+  .row span{color:var(--muted)} .row b{font-variant-numeric:tabular-nums}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--line);
+        border-top-color:var(--muted);border-radius:50%;animation:s .8s linear infinite}
+  @keyframes s{to{transform:rotate(360deg)}}
+  details{margin-top:11px}
+  summary{cursor:pointer;color:var(--muted);font-size:12px}
+  .trace{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;
+         background:var(--card2);border-radius:8px;padding:9px 11px;margin-top:7px;
+         white-space:pre-wrap;color:var(--muted);max-height:300px;overflow:auto}
+  .err{color:var(--bad);font-size:12px;white-space:pre-wrap}
+  .gold{font-size:12px;color:var(--muted);margin-bottom:14px}
+  .gold b{color:var(--fg)}
+  .banner{border:1px solid var(--warn);background:rgba(245,166,35,.09);color:var(--warn);
+          border-radius:9px;padding:10px 13px;font-size:12.5px;margin-bottom:16px}
+  a{color:var(--agentic)}
+  @media(max-width:620px){button{width:100%;min-height:46px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="live.html"><span class="dot"></span>Agentic GraphRAG <span style="color:var(--muted);font-weight:500">· TigerGraph</span></a>
+    <div class="nav-links">
+      <a href="live.html" aria-current="page">Live query</a>
+      <a href="index.html">Benchmark</a>
+      <a class="ext" href="https://github.com/Dhruvpandey1476/Agentic-GraphRAG" target="_blank" rel="noopener">GitHub &#8599;</a>
+    </div>
+  </div>
+</nav>
+  <h1>Agentic GraphRAG — live query</h1>
+  <div class="sub">Ask one question. All three pipelines answer it against the same
+    TigerGraph knowledge graph, and you can watch what each one actually did.</div>
+
+  <div class="meta" id="meta">connecting…</div>
+  <div id="banner"></div>
+
+  <div class="askrow">
+    <textarea id="q" placeholder="e.g. How many biathlon events at the 2018 Winter Olympics had more than 73 competitors?"></textarea>
+    <button id="go">Ask</button>
+  </div>
+  <div class="samples" id="samples"></div>
+  <div class="gold" id="gold"></div>
+
+  <div class="grid" id="cards"></div>
+</div>
+
+<script>
+const PIPES = [
+  {key:"rag", label:"RAG", colour:"var(--rag)",
+   note:"vector search → stuff context → generate"},
+  {key:"graphrag", label:"GraphRAG", colour:"var(--graphrag)",
+   note:"compile ONE graph query → execute → accept"},
+  {key:"agentic_graphrag", label:"Agentic GraphRAG", colour:"var(--agentic)",
+   note:"compile → verify grounding → repair → answer"},
+];
+
+const $ = s => document.querySelector(s);
+
+// By default the page and the API share an origin, which is what
+// `python server.py` gives you. Opening the file directly, or through a
+// static server on another port, sends /api/* to something that does not
+// implement it — which surfaces as a JSON parse error on an HTML or
+// "Forbidden." body rather than anything meaningful. Set window.API_BASE in
+// config.js to point a statically hosted page at a deployed backend.
+const API_BASE = (window.API_BASE || "").replace(/\/$/, "");
+async function api(path, opts){
+  let r;
+  try{
+    r = await fetch(API_BASE + path, opts);
+  }catch(e){
+    throw new Error(`cannot reach the API at ${API_BASE || location.origin}${path}. `
+      + `Start it with "python server.py" and open http://localhost:5000`);
+  }
+  const body = await r.text();
+  try{
+    return JSON.parse(body);
+  }catch(e){
+    throw new Error(`${API_BASE || location.origin}${path} returned ${r.status} `
+      + `"${body.slice(0,40).trim()}" instead of JSON — this page is being served `
+      + `from the wrong origin. Open http://localhost:5000 (python server.py), `
+      + `not a static file server or file://`);
+  }
+}
+const esc = s => String(s ?? "").replace(/[<>&]/g, c => ({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
+const num = v => v == null ? "—" : Number(v).toLocaleString();
+let GOLD = null;
+
+function norm(s){ return String(s ?? "").toLowerCase().replace(/[^a-z0-9]/g, ""); }
+
+function shell(){
+  $("#cards").innerHTML = PIPES.map(p => `
+    <div class="card" id="c-${p.key}">
+      <h3><span class="dot" style="background:${p.colour}"></span>${p.label}
+          <span class="verdict" id="v-${p.key}"></span></h3>
+      <div style="font-size:11.5px;color:var(--muted);margin-bottom:9px">${p.note}</div>
+      <div class="answer" id="a-${p.key}"><span class="spin"></span></div>
+      <div id="b-${p.key}"></div>
+    </div>`).join("");
+}
+
+function render(p, d){
+  const a = $("#a-" + p.key), body = $("#b-" + p.key), v = $("#v-" + p.key);
+  if(d.error){
+    a.innerHTML = `<span class="err">failed</span>`;
+    body.innerHTML = `<div class="err">${esc(d.error)}</div>`;
+    return;
+  }
+  const ans = d.answer;
+  a.textContent = (ans === null || ans === undefined || ans === "")
+    ? "— no answer —" : ans;
+
+  if(GOLD && ans != null && ans !== ""){
+    const hit = GOLD.some(g => norm(g) === norm(ans));
+    v.textContent = hit ? "correct" : "wrong";
+    v.className = "verdict " + (hit ? "ok" : "no");
+  } else { v.textContent = ""; v.className = "verdict"; }
+
+  const t = d.tokens || {};
+  let rows = `
+    <div class="row"><span>Tokens (in / out)</span><b>${num(t.input)} / ${num(t.output)}</b></div>
+    <div class="row"><span>Total tokens</span><b>${num(t.total)}</b></div>
+    <div class="row"><span>LLM calls</span><b>${num(t.calls)}</b></div>
+    <div class="row"><span>Time</span><b>${d.wall_time_s}s</b></div>
+    <div class="row"><span>Steps</span><b>${num(d.steps)}</b></div>`;
+  if(d.confidence != null)
+    rows += `<div class="row"><span>Confidence</span><b>${d.confidence}</b></div>`;
+  if(d.chunks_in_context != null)
+    rows += `<div class="row"><span>Chunks in context</span><b>${d.chunks_in_context}</b></div>`;
+  if(d.escalated != null)
+    rows += `<div class="row"><span>Escalated</span><b>${d.escalated ? "yes" : "no — resolved directly"}</b></div>`;
+  if(d.repair)
+    rows += `<div class="row"><span>Repair used</span><b>${esc(d.repair)}</b></div>`;
+  if(d.citations && d.citations.length)
+    rows += `<div class="row"><span>Citations</span><b>${d.citations.length}</b></div>`;
+
+  if(d.escalation_reason)
+    rows += `<details><summary>why it escalated</summary>
+             <div class="trace">${esc(d.escalation_reason)}</div></details>`;
+  if(d.query_spec)
+    rows += `<details><summary>compiled query</summary>
+             <div class="trace">${esc(JSON.stringify(d.query_spec, null, 2))}</div></details>`;
+  if(d.trace && d.trace.length){
+    const lines = d.trace.map(s =>
+      `${s.step}. ${s.action}  (${s.tokens||0} tok, ${s.seconds||0}s)\n`
+    + `    why: ${s.why || "—"}\n    ->   ${s.outcome || "—"}`).join("\n\n");
+    rows += `<details open><summary>investigation trace (${d.trace.length} steps)</summary>
+             <div class="trace">${esc(lines)}${
+               d.stopped_because ? "\n\nstopped: " + esc(d.stopped_because) : ""}</div></details>`;
+  }
+  if(d.citations && d.citations.length)
+    rows += `<details><summary>cited documents</summary>
+             <div class="trace">${esc(d.citations.join("\n"))}</div></details>`;
+  body.innerHTML = rows;
+}
+
+async function ask(){
+  const q = $("#q").value.trim();
+  if(!q) return;
+  $("#go").disabled = true;
+  shell();
+  // Fire all three at once: with a local model each takes ~60s, so running
+  // them in sequence would leave the page blank for three minutes.
+  await Promise.all(PIPES.map(async p => {
+    try{
+      render(p, await api("/api/query", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({question:q, pipeline:p.key}),
+      }));
+    }catch(e){
+      render(p, {error:String(e)});
+    }
+  }));
+  $("#go").disabled = false;
+}
+
+$("#go").addEventListener("click", ask);
+$("#q").addEventListener("keydown", e => {
+  if(e.key === "Enter" && (e.metaKey || e.ctrlKey)) ask();
+});
+
+(async () => {
+  try{
+    const h = await api("/api/health");
+    if(!h.ready) throw new Error(h.error || "not ready");
+    $("#meta").innerHTML =
+      `graph <code>${h.graph_backend}</code> · ` +
+      `${num(h.olympic_events)} events · ${num(h.chunks)} chunks · ` +
+      `model <code>${h.llm_model || "none"}</code> · temp <code>${h.temperature}</code> · ` +
+      `regex fast path <code>${h.regex_fast_path}</code> · ` +
+      `embedder <code>${h.embedder}</code>`;
+    if(h.graph_backend !== "tigergraph"){
+      $("#banner").innerHTML = `<div class="banner">Backend is
+        <code>${h.graph_backend}</code>, not TigerGraph — start the workspace and
+        restart the server to query the live graph.</div>`;
+    }
+  }catch(e){
+    $("#meta").innerHTML = `<span style="color:var(--bad)">backend not ready: ${esc(e.message)}</span>`;
+  }
+
+  try{
+    const s = await api("/api/samples");
+    $("#samples").innerHTML = s.map((x,i) =>
+      `<span class="chip" data-i="${i}"><b>${esc(x.qtype)}</b> · ${esc(x.set)}</span>`).join("");
+    $("#samples").addEventListener("click", ev => {
+      const c = ev.target.closest(".chip");
+      if(!c) return;
+      const x = s[+c.dataset.i];
+      $("#q").value = x.question;
+      GOLD = x.gold || null;
+      $("#gold").innerHTML = GOLD
+        ? `Known answer for this sample: <b>${esc(GOLD.join(" | "))}</b> — each pipeline is marked against it.`
+        : "";
+    });
+  }catch(e){}
+
+  $("#q").addEventListener("input", () => { GOLD = null; $("#gold").innerHTML = ""; });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic GraphRAG Benchmark</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,sans-serif;
+       background:var(--bg);color:var(--fg);padding:28px 16px;line-height:1.5}
+  .wrap{max-width:1180px;margin:0 auto}
+  h1{font-size:22px;margin:0 0 4px}
+  h2{font-size:15px;margin:34px 0 12px;color:var(--fg)}
+  .sub{color:var(--muted);margin-bottom:22px;font-size:13.5px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .tab{padding:7px 14px;border-radius:8px;border:1px solid var(--line);
+       background:var(--card2);color:var(--muted);cursor:pointer;font-size:13px}
+  .tab.on{background:var(--card);color:var(--fg);border-color:#33406e}
+  .meta{font-size:12px;color:var(--muted);margin-bottom:18px;
+        background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+  .meta code{color:var(--fg)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+  .card{background:var(--card);border-radius:12px;padding:16px 18px;border:1px solid var(--line)}
+  .card h3{margin:0 0 12px;font-size:11.5px;color:var(--muted);
+           text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+  .row{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:13.5px;
+       border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .row b{font-variant-numeric:tabular-nums}
+  .pill{padding:2px 9px;border-radius:999px;font-size:10.5px;font-weight:700;letter-spacing:.03em}
+  .rag{background:rgba(91,141,239,.16);color:var(--rag)}
+  .graphrag{background:rgba(245,166,35,.16);color:var(--graphrag)}
+  .agentic{background:rgba(56,199,147,.16);color:var(--agentic)}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:700;text-transform:uppercase;font-size:10.5px;
+     letter-spacing:.04em;position:sticky;top:0;background:var(--card)}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .bar-wrap{background:#1e2544;border-radius:5px;height:8px;overflow:hidden;margin-top:5px}
+  .bar{height:100%;border-radius:5px}
+  .verdict{font-size:12px;padding:3px 8px;border-radius:6px;display:inline-block;font-weight:600}
+  .v-needed{background:rgba(56,199,147,.18);color:var(--good)}
+  .v-worth{background:rgba(56,199,147,.12);color:var(--good)}
+  .v-not{background:rgba(138,147,179,.14);color:var(--muted)}
+  .v-harm{background:rgba(242,100,122,.16);color:var(--bad)}
+  .ok{color:var(--good)} .no{color:var(--bad)} .dim{color:var(--muted)}
+  .scroll{max-height:460px;overflow:auto;border-radius:10px}
+  details{margin-top:6px}
+  summary{cursor:pointer;color:var(--muted);font-size:12px}
+  .trace{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11.5px;
+         background:var(--card2);border-radius:7px;padding:9px 11px;margin-top:6px;
+         white-space:pre-wrap;color:var(--muted)}
+  .banner{border:1px solid var(--warn);background:rgba(245,166,35,.09);color:var(--warn);
+          border-radius:9px;padding:11px 14px;font-size:13px;margin-bottom:18px}
+  #err{color:var(--bad);font-size:13px;margin:12px 0}
+  @media(max-width:640px){body{padding:18px 12px}th,td{padding:6px 5px;font-size:11.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="live.html"><span class="dot"></span>Agentic GraphRAG <span style="color:var(--muted);font-weight:500">· TigerGraph</span></a>
+    <div class="nav-links">
+      <a href="live.html">Live query</a>
+      <a href="index.html" aria-current="page">Benchmark</a>
+      <a class="ext" href="https://github.com/Dhruvpandey1476/Agentic-GraphRAG" target="_blank" rel="noopener">GitHub &#8599;</a>
+    </div>
+  </div>
+</nav>
+  <h1>Agentic GraphRAG — Benchmark Dashboard</h1>
+  <div class="sub">RAG vs GraphRAG vs Agentic GraphRAG · accuracy, token efficiency, agentic trace</div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="err"></div>
+  <div id="banner"></div>
+  <div class="meta" id="meta"></div>
+
+  <div class="grid" id="cards"></div>
+
+  <h2>Is the agent worth it? — per question type</h2>
+  <div class="card"><div class="scroll">
+    <table id="valueTable"><thead><tr>
+      <th>Question type</th><th class="num">n</th>
+      <th class="num">RAG</th><th class="num">GraphRAG</th><th class="num">Agentic</th>
+      <th class="num">Δ acc</th><th class="num">Extra tokens</th><th>Verdict</th>
+    </tr></thead><tbody></tbody></table>
+  </div></div>
+
+  <h2>Agentic behaviour</h2>
+  <div class="grid" id="behavior"></div>
+
+  <h2>Per-question detail</h2>
+  <div class="card"><div class="scroll">
+    <table id="detail"><thead><tr>
+      <th>#</th><th>Question</th><th>Type</th>
+      <th class="num">RAG</th><th class="num">Graph</th><th class="num">Agentic</th>
+      <th class="num">Agentic tok</th><th class="num">Steps</th><th>Trace</th>
+    </tr></thead><tbody></tbody></table>
+  </div></div>
+</div>
+
+<script>
+// Each tab is one benchmark run written by src/eval/run_benchmark.py.
+// These suffixes must match the sweep in verify_then_sweep.sh. They drifted
+// once -- the page kept rendering an older run whose files still existed,
+// which is why loadSet() below now says so out loud instead of showing a
+// blank tab.
+const SETS = [
+  {key:"_v2_provided", label:"Provided 100 · controlled",
+   desc:"every pipeline compiles with the same LLM — answers 'does adaptivity help'"},
+  {key:"_v2_chained", label:"Chained 60 · controlled",
+   desc:"questions whose subject must be resolved before it can be queried"},
+  {key:"_v2_fastpath", label:"Provided 100 · production",
+   desc:"regex fast path on, as deployed — answers 'how well does it work'"},
+  {key:"_hidden_final", label:"Hidden 50 · submission",
+   desc:"no gold answers; raw outputs, tokens and agentic traces"},
+];
+const PIPES = ["rag","graphrag","agentic_graphrag"];
+const LABEL = {rag:"RAG", graphrag:"GraphRAG", agentic_graphrag:"Agentic GraphRAG"};
+
+const $ = s => document.querySelector(s);
+const pct = v => v==null ? "—" : (v*100).toFixed(1)+"%";
+const num = (v,d=0) => v==null ? "—" : Number(v).toLocaleString(undefined,
+              {minimumFractionDigits:d,maximumFractionDigits:d});
+
+async function loadJSON(p){
+  const r = await fetch(p);
+  if(!r.ok) throw new Error(p+" → "+r.status);
+  return r.json();
+}
+
+function verdictClass(v){
+  if(!v) return "v-not";
+  if(v.startsWith("AGENT NEEDED")) return "v-needed";
+  if(v.startsWith("AGENT WORTH")) return "v-worth";
+  if(v.startsWith("AGENT HARMFUL")) return "v-harm";
+  return "v-not";
+}
+
+function renderCards(summary){
+  const el = $("#cards"); el.innerHTML = "";
+  const maxTok = Math.max(...PIPES.map(p => summary[p]?.avg_tokens || 0), 1);
+  for(const p of PIPES){
+    const s = summary[p];
+    if(!s || !s.n_questions) continue;
+    const acc = s.exact_match_accuracy;
+    el.insertAdjacentHTML("beforeend", `
+      <div class="card">
+        <h3><span class="pill ${p==='agentic_graphrag'?'agentic':p}">${LABEL[p]}</span></h3>
+        <div class="row"><span>Exact-match accuracy</span><b>${pct(acc)}</b></div>
+        ${acc!=null?`<div class="bar-wrap"><div class="bar" style="width:${acc*100}%;
+           background:var(--${p==='agentic_graphrag'?'agentic':p})"></div></div>`:""}
+        <div class="row"><span>Answered at all</span><b>${pct(s.answered_rate)}</b></div>
+        ${s.avg_retrieval_recall!=null?`<div class="row"><span>Retrieval recall</span>
+           <b>${pct(s.avg_retrieval_recall)}</b></div>`:""}
+        <div class="row"><span>Avg total tokens</span><b>${num(s.avg_tokens,1)}</b></div>
+        <div class="bar-wrap"><div class="bar" style="width:${(s.avg_tokens/maxTok)*100}%;
+           background:var(--muted)"></div></div>
+        <div class="row"><span>· input / output</span>
+          <b>${num(s.avg_input_tokens,0)} / ${num(s.avg_output_tokens,0)}</b></div>
+        <div class="row"><span>· context tokens</span><b>${num(s.avg_context_tokens,0)}</b></div>
+        <div class="row"><span>Avg LLM calls</span><b>${num(s.avg_llm_calls,2)}</b></div>
+        <div class="row"><span>Avg steps</span><b>${num(s.avg_steps,2)}</b></div>
+        <div class="row"><span>Avg latency</span><b>${num(s.avg_latency_s,2)}s</b></div>
+        <div class="row"><span>Total tokens</span><b>${num(s.total_tokens)}</b></div>
+      </div>`);
+  }
+}
+
+function renderValue(summary){
+  const tb = $("#valueTable tbody"); tb.innerHTML = "";
+  const va = summary.agentic_value_by_qtype;
+  if(!va){ tb.innerHTML = `<tr><td colspan="8" class="dim">No gold answers in this set —
+      accuracy comparison unavailable.</td></tr>`; return; }
+  for(const [qt,e] of Object.entries(va)){
+    const d = e.accuracy_delta;
+    tb.insertAdjacentHTML("beforeend", `<tr>
+      <td><b>${qt}</b></td>
+      <td class="num">${e.n}</td>
+      <td class="num">${pct(e.accuracy.rag)}</td>
+      <td class="num">${pct(e.accuracy.graphrag)}</td>
+      <td class="num">${pct(e.accuracy.agentic_graphrag)}</td>
+      <td class="num ${d>0?'ok':d<0?'no':'dim'}">${d==null?"—":(d>0?"+":"")+(d*100).toFixed(1)}</td>
+      <td class="num">${e.extra_tokens==null?"—":num(e.extra_tokens,0)}</td>
+      <td><span class="verdict ${verdictClass(e.verdict)}">${e.verdict||"—"}</span></td>
+    </tr>`);
+  }
+}
+
+function renderBehavior(summary){
+  const el = $("#behavior"); el.innerHTML = "";
+  const b = summary.agentic_behavior;
+  if(!b){ el.innerHTML = `<div class="card dim">No agentic run in this set.</div>`; return; }
+  const kv = (k,v) => `<div class="row"><span>${k}</span><b>${v}</b></div>`;
+  const dict = d => Object.entries(d||{}).map(([k,v])=>kv(k,v)).join("") ||
+                    `<div class="dim" style="font-size:12.5px">none</div>`;
+  el.insertAdjacentHTML("beforeend", `
+    <div class="card"><h3>Escalation — when did it need to think?</h3>
+      ${kv("Escalation rate", pct(b.escalation_rate))}
+      ${kv("Escalated (reasoned)", b.n_escalated)}
+      ${kv("Resolved free (0 tokens)", b.n_resolved_free)}
+      ${kv("Avg tokens when escalated", num(b.avg_tokens_when_escalated,0))}
+      ${kv("Avg tokens when not", num(b.avg_tokens_when_not_escalated,0))}
+    </div>
+    <div class="card"><h3>Investigation shape</h3>
+      ${kv("Avg strategy changes", num(b.avg_strategy_changes,2))}
+      ${kv("Avg citations", num(b.avg_citations,2))}
+      ${kv("Avg evidence items", num(b.avg_evidence_items,2))}
+    </div>
+    <div class="card"><h3>Retrieval methods selected</h3>${dict(b.retrieval_methods_used)}</div>
+    <div class="card"><h3>Specialised agents invoked</h3>${dict(b.specialized_agents_invoked)}</div>
+    <div class="card"><h3>Why it stopped</h3>${dict(b.stopping_reasons)}</div>
+    ${summary.planner_provenance?`<div class="card"><h3>Planner provenance</h3>
+      ${dict(summary.planner_provenance)}
+      <div class="dim" style="font-size:11.5px;margin-top:8px">How many answers came from the
+      zero-token regex fast path vs the general LLM compiler.</div></div>`:""}
+  `);
+}
+
+function mark(r){
+  if(!r) return `<span class="dim">—</span>`;
+  if(r.error) return `<span class="no" title="${r.error}">err</span>`;
+  if(r.exact_match===undefined) return r.answer? `<span class="dim">·</span>` : `<span class="no">∅</span>`;
+  return r.exact_match ? `<span class="ok">✓</span>` : `<span class="no">✗</span>`;
+}
+
+function renderDetail(results){
+  const tb = $("#detail tbody"); tb.innerHTML = "";
+  results.forEach((row,i) => {
+    const ag = row.agentic_graphrag || {};
+    const trace = (ag.trace||[]).map(t =>
+      `${t.step}. ${t.action} — ${t.output_summary}\n     why: ${t.reason}`).join("\n");
+    tb.insertAdjacentHTML("beforeend", `<tr>
+      <td class="num">${i+1}</td>
+      <td title="${(row.question||"").replace(/"/g,"&quot;")}">${(row.question||"").slice(0,84)}</td>
+      <td class="dim">${row.qtype||"—"}</td>
+      <td class="num">${mark(row.rag)}</td>
+      <td class="num">${mark(row.graphrag)}</td>
+      <td class="num">${mark(ag)}</td>
+      <td class="num">${num(ag.usage?.total_tokens)}</td>
+      <td class="num">${ag.steps_taken ?? "—"}</td>
+      <td>${trace?`<details><summary>${ag.escalated?"escalated":"free"}${
+            ag.repair?" · repaired: "+ag.repair:""}</summary>
+            <div class="trace">${trace}\n\nstopped: ${ag.stopped_reason||"—"}\nanswer: ${
+            JSON.stringify(ag.answer)}</div></details>`:`<span class="dim">—</span>`}</td>
+    </tr>`);
+  });
+}
+
+async function show(key){
+  document.querySelectorAll(".tab").forEach(t =>
+    t.classList.toggle("on", t.dataset.key === key));
+  $("#err").textContent = ""; $("#banner").innerHTML = "";
+  try{
+    const [summary, results] = await Promise.all([
+      loadJSON(`../outputs/summary${key}.json`),
+      loadJSON(`../outputs/results${key}.json`),
+    ]);
+    const m = summary._meta || {};
+    $("#meta").innerHTML = `
+      <code>${m.questions_file||"?"}</code> · ${m.n_questions||results.length} questions ·
+      graph backend <code>${m.graph_backend||"?"}</code> ·
+      embedder <code>${m.embedder||"?"}</code> ·
+      LLM <code>${m.llm_model||"none"}</code> (${m.llm_provider||"—"})
+      ${m.temperature!=null?" · temp <code>"+m.temperature+"</code>":""}
+      ${m.regex_fast_path===false?" · <b>LLM planner in every pipeline</b>":
+        m.regex_fast_path===true?" · regex fast path ON":""}
+      ${m.ablation_skip_triage?" · triage disabled":""}
+      ${m.started?" · run "+m.started:""}${m.elapsed_s?" · "+m.elapsed_s+"s":""}`;
+
+    if(!m.llm_model){
+      $("#banner").innerHTML = `<div class="banner">No LLM was configured for this run, so
+        token columns are zero and RAG ran in proxy mode. These numbers are <b>not</b> a
+        publishable three-way comparison — set a provider key in <code>.env</code> and re-run.</div>`;
+    }
+    if(m.graph_backend !== "tigergraph"){
+      $("#banner").innerHTML += `<div class="banner">Graph backend is
+        <code>${m.graph_backend}</code>, not TigerGraph. Run
+        <code>python -m scripts.setup_tigergraph</code> to benchmark against a live instance.</div>`;
+    }
+
+    renderCards(summary); renderValue(summary);
+    renderBehavior(summary); renderDetail(results);
+  }catch(e){
+    $("#err").textContent = `Could not load this run (${e.message}). Generate it with: ` +
+      `python -m src.eval.run_benchmark${key?" --"+key.replace(/^_/,"").replace("_"," --"):""}`;
+    ["#cards","#behavior"].forEach(s=>$(s).innerHTML="");
+    ["#valueTable","#detail"].forEach(s=>$(s+" tbody").innerHTML="");
+    $("#meta").textContent = "";
+  }
+}
+
+// Only show a tab if its run actually exists on disk.
+(async () => {
+  const tabs = $("#tabs");
+  const available = [];
+  for(const s of SETS){
+    try{ await loadJSON(`../outputs/summary${s.key}.json`); available.push(s); }catch(e){}
+  }
+  if(!available.length){
+    $("#err").textContent = "No benchmark output found in outputs/. " +
+      "Run: python -m src.eval.run_benchmark";
+    return;
+  }
+  available.forEach(s => tabs.insertAdjacentHTML("beforeend",
+    `<div class="tab" data-key="${s.key}" title="${s.desc}">${s.label}</div>`));
+  tabs.addEventListener("click", e => {
+    const t = e.target.closest(".tab");
+    if(t) show(t.dataset.key);
+  });
+  show(available[0].key);
+})();
+</script>
+</body>
+</html>
