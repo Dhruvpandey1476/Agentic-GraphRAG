@@ -19,20 +19,45 @@ Nothing else is involved.
 
 ### GitHub Pages
 
+`site/` is already in the repo, and `.github/workflows/pages.yml` publishes it
+on every push to `main`. One-time setup:
+
+**Settings → Pages → Source → "GitHub Actions"**
+
+That is the whole thing. The first deploy runs within a minute; afterwards
+check the **Actions** tab, or trigger it by hand with **Run workflow**.
+
+> Do not look for a `/site` option under "Deploy from a branch" — that mode
+> only offers the repo root or `/docs`, which is why this uses a workflow.
+
+The site lands at `https://<user>.github.io/<repo>/`:
+
+| Path | What it is |
+|---|---|
+| `/` | redirects to the dashboard |
+| `/dashboard/index.html` | benchmark dashboard — fully working, no backend |
+| `/dashboard/live.html` | live query page — inert until you give it an API |
+| `/outputs/*.json` | the raw benchmark data it reads |
+
+`site/` mirrors the layout Flask serves, so the dashboard's `../outputs/`
+fetches and the nav links between the two pages work unchanged.
+
+**Refreshing it after a new benchmark run:**
+
 ```bash
-# from the repo root, on main
-mkdir -p site && cp -r dashboard/* site/ && mkdir -p site/outputs
 cp outputs/summary_v2_*.json outputs/results_v2_*.json \
    outputs/summary_hidden_final.json outputs/results_hidden_final.json site/outputs/
-git add site && git commit -m "Publish static dashboard" && git push
+cp dashboard/*.html dashboard/*.css dashboard/*.js site/dashboard/
+git add site && git commit -m "Refresh published dashboard" && git push
 ```
 
-Then **Settings → Pages → Deploy from a branch → `main` / `/site`**.
+### If Actions is unavailable
 
-The dashboard lands at `https://<user>.github.io/<repo>/index.html` and the live
-page at `/live.html`. The nav links between them are relative, so they work
-unchanged. The live page will say it cannot reach the API until you give it one
-(step 3).
+Copy the site into `docs/` and use **Deploy from a branch → `main` / `/docs`**:
+
+```bash
+cp -r site/* docs/ && git add docs && git commit -m "Publish dashboard" && git push
+```
 
 Netlify and Vercel work the same way — point them at `site/` with no build
 command.

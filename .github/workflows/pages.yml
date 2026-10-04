@@ -1,0 +1,39 @@
+# Publishes site/ to GitHub Pages.
+#
+# Pages' "deploy from a branch" mode only offers the repo root or /docs, so a
+# folder named site/ cannot be selected there. This workflow uploads it
+# directly instead, which also means the published site is always whatever the
+# last push to main contained.
+#
+# One-time setup: Settings -> Pages -> Source -> "GitHub Actions".
+name: Deploy dashboard to Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", ".github/workflows/pages.yml"]
+  workflow_dispatch:        # lets you run it by hand from the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
