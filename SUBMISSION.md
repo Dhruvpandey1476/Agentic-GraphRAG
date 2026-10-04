@@ -11,6 +11,10 @@ Round 1 deadline: **Wed 24 Sep**. Round 2 (top 15): **Wed 1 Oct**.
 | Working Agentic GraphRAG system | `src/agents/orchestrator.py` + 8 specialised agents |
 | Three pipelines benchmarked, same model throughout | `src/eval/run_benchmark.py` |
 | Metrics dashboard (tokens, accuracy, traces) | `dashboard/index.html` |
+| Live query UI — all three pipelines side by side | `dashboard/live.html` |
+| Technical blog post | `BLOG.md` |
+| X post / thread | `X_POST.md` |
+| Deployment guide | `DEPLOY.md` · `render.yaml` · `Procfile` |
 | Architecture diagram | `docs/architecture.svg` |
 | Results writeup | `RESULTS.md` — generated, never hand-copied |
 | Hidden-set answers + tokens + agentic traces | `outputs/submission_hidden.{json,jsonl}` |

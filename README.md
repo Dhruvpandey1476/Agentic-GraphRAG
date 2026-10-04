@@ -112,10 +112,14 @@ python -m src.eval.run_benchmark --stress
 python server.py                        # live query UI at localhost:5000
 ```
 
-Open **http://localhost:5000** — the same server provides the page *and* the
-API, so the live UI must be reached from there. Serving `dashboard/` from a
-separate static server breaks it: the page's `/api/*` calls would go to that
-other origin.
+Open **http://localhost:5000**, which redirects to the live query page. The
+two pages are linked: **Live query** and **Benchmark** in the header, both
+served from `/dashboard/`.
+
+By default the same server provides the pages *and* the API, so same-origin
+just works. To host the pages statically and call a deployed backend, set
+`window.API_BASE` in `dashboard/config.js` and `ALLOWED_ORIGIN` on the server —
+see **[DEPLOY.md](DEPLOY.md)**.
 
 **Live UI** (`server.py`) — ask any question and watch all three pipelines
 answer it side by side against the same graph: the answer, the token cost, the
@@ -405,6 +409,9 @@ src/agents/harness.py         state, evidence, trace, stopping criteria
 src/eval/run_benchmark.py     3-way benchmark + agentic-value analysis
 src/eval/stress_set.py        generates the chained-reasoning set
 dashboard/index.html          metrics dashboard, all runs, trace inspection
+dashboard/live.html           live query UI — all three pipelines, side by side
+dashboard/shared.css          nav chrome shared by both pages
+dashboard/config.js           API base, for statically hosted deployments
 tests/test_core.py            29 tests
 ```
 

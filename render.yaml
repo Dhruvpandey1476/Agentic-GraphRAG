@@ -1,0 +1,48 @@
+# One-click deploy for the live-query API on Render (render.com/deploy).
+#
+# One worker, many threads, on purpose: the graph client caches 9,065 chunk
+# vectors in process memory on first use. A second worker would be a second
+# copy of that cache and a second cold start, not more throughput.
+#
+# The timeout is 300s because a single question runs three pipelines against a
+# hosted LLM, and the first request also pays the chunk fetch.
+services:
+  - type: web
+    name: agentic-graphrag
+    runtime: python
+    plan: starter            # free tier sleeps; it will cold-start on first hit
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn server:app --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 300
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      # --- TigerGraph Savanna ---
+      - key: TG_HOST
+        sync: false          # https://tg-<id>.i.tgcloud.io
+      - key: TG_GRAPH
+        value: HackathonGraph
+      - key: TG_USERNAME
+        value: tigergraph
+      - key: TG_PASSWORD
+        sync: false
+      # --- LLM: a hosted provider, since Ollama is not reachable from here ---
+      - key: LLM_PROVIDER
+        value: groq
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: LLM_TEMPERATURE
+        value: "0"
+      # --- Embeddings MUST match what the chunks were embedded with ---
+      # The Chunk vectors in the graph are nomic-embed-text (768-dim). Point
+      # this at a reachable Ollama, or re-embed the corpus with another model.
+      # Getting this wrong does not error: retrieval silently returns noise.
+      - key: EMBEDDING_PROVIDER
+        value: ollama
+      - key: OLLAMA_BASE_URL
+        sync: false
+      # --- optional: let a statically hosted copy of the pages call this API ---
+      - key: ALLOWED_ORIGIN
+        sync: false

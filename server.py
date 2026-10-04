@@ -21,7 +21,7 @@ import threading
 import time
 import traceback
 
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, redirect, request, send_from_directory
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import config
@@ -174,16 +174,39 @@ def query():
     })
 
 
+DASHBOARD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dashboard")
+
+# Allow a statically hosted copy of the pages (GitHub Pages, Netlify) to call
+# this API. Unset means same-origin only, which is the right default: the
+# pages Flask serves itself need no CORS at all.
+ALLOWED_ORIGIN = os.getenv("ALLOWED_ORIGIN", "").rstrip("/")
+
+
+@app.after_request
+def _cors(resp):
+    if ALLOWED_ORIGIN:
+        resp.headers["Access-Control-Allow-Origin"] = ALLOWED_ORIGIN
+        resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        resp.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        resp.headers["Vary"] = "Origin"
+    return resp
+
+
 @app.get("/")
 def index():
-    return send_from_directory(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                            "dashboard"), "live.html")
+    # Both pages live under /dashboard/ so the links between them are plain
+    # relative hrefs that work the same when the folder is hosted statically.
+    return redirect("/dashboard/live.html", code=302)
+
+
+@app.get("/dashboard/")
+def dashboard_index():
+    return send_from_directory(DASHBOARD_DIR, "index.html")
 
 
 @app.get("/dashboard/<path:name>")
 def dashboard_files(name):
-    return send_from_directory(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                            "dashboard"), name)
+    return send_from_directory(DASHBOARD_DIR, name)
 
 
 @app.get("/outputs/<path:name>")
@@ -192,8 +215,10 @@ def outputs(name):
 
 
 if __name__ == "__main__":
-    print("Live query UI   ->  http://localhost:5000")
+    print("Live query UI   ->  http://localhost:5000/dashboard/live.html")
     print("Benchmark dash  ->  http://localhost:5000/dashboard/index.html")
     print("\nFirst query is slow: the graph client fetches and caches chunk "
           "vectors on first use.\n")
-    app.run(host="127.0.0.1", port=5000, threaded=True, debug=False)
+    port = int(os.getenv("PORT", "5000"))
+    host = os.getenv("HOST", "127.0.0.1")
+    app.run(host=host, port=port, threaded=True, debug=False)

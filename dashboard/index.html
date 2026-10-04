@@ -4,12 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Agentic GraphRAG Benchmark</title>
+<link rel="stylesheet" href="shared.css">
 <style>
-  :root{
-    --bg:#0b1020; --card:#151c33; --card2:#111730; --fg:#e8ecf7; --muted:#8a93b3;
-    --line:#232b4a; --rag:#5b8def; --graphrag:#f5a623; --agentic:#38c793;
-    --warn:#f5a623; --bad:#f2647a; --good:#38c793;
-  }
   *{box-sizing:border-box}
   body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,sans-serif;
        background:var(--bg);color:var(--fg);padding:28px 16px;line-height:1.5}
@@ -63,6 +59,16 @@
 </head>
 <body>
 <div class="wrap">
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="live.html"><span class="dot"></span>Agentic GraphRAG <span style="color:var(--muted);font-weight:500">· TigerGraph</span></a>
+    <div class="nav-links">
+      <a href="live.html">Live query</a>
+      <a href="index.html" aria-current="page">Benchmark</a>
+      <a class="ext" href="https://github.com/Dhruvpandey1476/Agentic-GraphRAG" target="_blank" rel="noopener">GitHub &#8599;</a>
+    </div>
+  </div>
+</nav>
   <h1>Agentic GraphRAG — Benchmark Dashboard</h1>
   <div class="sub">RAG vs GraphRAG vs Agentic GraphRAG · accuracy, token efficiency, agentic trace</div>
 
@@ -97,21 +103,19 @@
 
 <script>
 // Each tab is one benchmark run written by src/eval/run_benchmark.py.
+// These suffixes must match the sweep in verify_then_sweep.sh. They drifted
+// once -- the page kept rendering an older run whose files still existed,
+// which is why loadSet() below now says so out loud instead of showing a
+// blank tab.
 const SETS = [
-  // The final, reproducible sweep: temperature 0, live TigerGraph.
-  {key:"_final100", label:"Provided 100 · controlled",
+  {key:"_v2_provided", label:"Provided 100 · controlled",
    desc:"every pipeline compiles with the same LLM — answers 'does adaptivity help'"},
-  {key:"_finalstress", label:"Chained 60 · controlled",
+  {key:"_v2_chained", label:"Chained 60 · controlled",
    desc:"questions whose subject must be resolved before it can be queried"},
-  {key:"_final_fastpath", label:"Provided 100 · production",
+  {key:"_v2_fastpath", label:"Provided 100 · production",
    desc:"regex fast path on, as deployed — answers 'how well does it work'"},
-  {key:"_tg_hidden", label:"Hidden 50 · submission",
+  {key:"_hidden_final", label:"Hidden 50 · submission",
    desc:"no gold answers; raw outputs, tokens and agentic traces"},
-  // Earlier runs, kept for provenance.
-  {key:"_fair100", label:"(prior) Provided 100", desc:"before temperature was pinned"},
-  {key:"_fairstress", label:"(prior) Chained 60", desc:"before temperature was pinned"},
-  {key:"_tg_public", label:"(prior) Production", desc:"earlier fast-path run"},
-  {key:"_tg_stress", label:"(prior) Chained", desc:"earlier fast-path run"},
 ];
 const PIPES = ["rag","graphrag","agentic_graphrag"];
 const LABEL = {rag:"RAG", graphrag:"GraphRAG", agentic_graphrag:"Agentic GraphRAG"};

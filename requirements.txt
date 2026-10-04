@@ -9,3 +9,4 @@ tqdm>=4.66.0
 pydantic>=2.7.0
 flask>=3.0.3
 pytest>=8.0.0
+gunicorn>=21.2.0
